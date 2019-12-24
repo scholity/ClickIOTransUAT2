@@ -1,0 +1,309 @@
+/**
+ * Created by jbarker on 12/19/18.
+ */
+
+public with sharing class phss_cc_FulfillmentUtil {
+
+    private static final String INVOICE_STATUS_CLOSED                   = 'Closed';
+    private static final String FULFILLMENT_ITEM_STATUS_READY           = 'Ready';
+    private static final String FULFILLMENT_ITEM_STATUS_IN_PROGRESS     = 'In Progress';
+    private static final String FULFILLMENT_ITEM_STATUS_COMPLETE        = 'Complete';
+
+    //  error messages
+    private static final String FAILED_TO_COMPLETE_FULFILLMENT = 'Failed to complete fulfillment.';
+    private static final String FAILED_TO_CREATE_INVOICE = 'Failed to create invoice.';
+    private static final String FAILED_TO_CREATE_CAPTURE_TRANSACTION_PAYMENT = 'Failed to create the transaction payment for the payment capture.';
+    private static final String FAILED_TO_FINALIZE_PAYMENT = 'Failed to finalize payment.';
+
+
+    /**
+     * @description Completes the open items associated to a fulfillment record
+     *
+     * @param fulfillmentId
+     */
+    public static Fulfillment__c completeFulfillment(String fulfillmentId, String transactionPaymentId) {
+
+        List<Fulfillment_Item__c> fulfillmentItems = getFulfillmentItems(fulfillmentId);
+        List<Fulfillment_Item__c> updatedItems = new List<Fulfillment_Item__c>();
+
+        try {
+            Fulfillment__c fulfillment = fetchFulfillment(fulfillmentId);
+
+            if (String.isNotBlank(transactionPaymentId)) {
+                fulfillment.CC_Transaction_Payment__c = transactionPaymentId;
+                update fulfillment;
+            }
+
+            for (Fulfillment_Item__c item : fulfillmentItems) {
+                if (item.Status__c == FULFILLMENT_ITEM_STATUS_READY) {
+                    item.Status__c = FULFILLMENT_ITEM_STATUS_COMPLETE;
+                    updatedItems.add(item);
+                }
+            }
+            update updatedItems;
+
+            return fulfillment;
+
+        } catch (Exception e) {
+            system.debug('@@@completeFulfillment Exception: '+e.getMessage());
+            throw new phss_cc_Exception(FAILED_TO_COMPLETE_FULFILLMENT, e);
+        }
+    }
+
+	@testVisible
+    private static ccrz__E_TransactionPayment__c completeAuthTransactionPayment(String transactionPaymentId, String invoiceId) {
+        ccrz__E_TransactionPayment__c transactionPayment = getTransactionPayment(transactionPaymentId);
+        if (transactionPayment != null) {
+            transactionPayment.ccrz__InvoiceAppliedFor__c = invoiceId;
+            transactionPayment.ccrz__TransactionType__c = phss_cc_TransactionPaymentUtil.AUTH_TRANSACTION_TYPE;
+            update transactionPayment;
+        }
+        return transactionPayment;
+    }
+
+	@testVisible
+    private static ccrz__E_Invoice__c createInvoiceForPayment(String transactionPaymentId) {
+
+        try {
+            ccrz__E_TransactionPayment__c payment = getTransactionPayment(transactionPaymentId);
+            ccrz__E_Invoice__c invoice = new ccrz__E_Invoice__c();
+            invoice.ccrz__CCOrder__c = payment.ccrz__CCOrder__c;
+            invoice.ccrz__CurrencyCode__c = payment.ccrz__CurrencyISOCode__c;
+            invoice.ccrz__DateIssued__c = System.now().date();
+            invoice.ccrz__OriginalAmount__c = payment.ccrz__Amount__c;
+            invoice.ccrz__RemainingAmount__c = 0;
+            invoice.ccrz__Status__c = INVOICE_STATUS_CLOSED;
+            invoice.ccrz__Storefront__c = payment.ccrz__Storefront__c;
+            insert invoice;
+
+            // Create Invoice Items
+            List<ccrz__E_InvoiceItem__c> invoiceItems = new List<ccrz__E_InvoiceItem__c>();
+            List<ccrz__E_OrderItem__c> orderItems = getItemsForOrder(payment.ccrz__CCOrder__c);
+            for (ccrz__E_OrderItem__c orderItem : orderItems) {
+                ccrz__E_InvoiceItem__c invoiceItem = new ccrz__E_InvoiceItem__c();
+                invoiceItem.ccrz__Invoice__c = invoice.Id;
+                invoiceItem.ccrz__CCOrder__c = invoice.ccrz__CCOrder__c;
+                invoiceItem.ccrz__CCOrderItem__c = orderItem.Id;
+                invoiceItem.ccrz__OriginalAmount__c = orderItem.ccrz__AdjustmentAmount__c;
+                invoiceItem.Quantity__c = orderItem.ccrz__Quantity__c;
+                invoiceItems.add(invoiceItem);
+            }
+            if (invoiceItems.size() > 0) {
+                insert invoiceItems;
+            }
+
+            return invoice;
+
+        } catch (Exception e) {
+            throw new phss_cc_Exception(FAILED_TO_CREATE_INVOICE, e);
+        }
+    }
+
+
+    private static ccrz__E_TransactionPayment__c completeCaptureTransactionPayment(String transactionPaymentId, String invoiceId, String externalId, String cardType, Decimal amount, String timestamp) {
+
+        try {
+            ccrz__E_TransactionPayment__c transactionPayment = phss_cc_TransactionPaymentUtil.fetchTransactionPayment(transactionPaymentId);
+            transactionPayment.ccrz__InvoiceAppliedFor__c = invoiceId;
+            transactionPayment.ccrz__PaymentType__c = cardType;
+            transactionPayment.ccrz__TransactionPaymentId__c = externalId;
+            transactionPayment.ccrz__TransactionTS__c = DatetimeUtil.parse(timestamp, DatetimeUtil.format.YYYY_MM_DDTHH_MM_SSZ);
+            transactionPayment.ccrz__Amount__c = amount;
+
+            update transactionPayment;
+            return transactionPayment;
+
+        } catch (Exception e) {
+            throw new phss_cc_Exception(FAILED_TO_CREATE_CAPTURE_TRANSACTION_PAYMENT, e);
+        }
+    }
+
+
+    /**
+     * @description Finalizes a transaction payment
+     *
+     * @param paymentId
+     * @param fulfillmentId
+     */
+    public static void finalizePayment(String fulfillmentId, String authTransactionPaymentId, String captureTransactionPaymentId, String externalCaptureTxnPmtId, Decimal amount, String timestamp) {
+        try {
+            ccrz__E_Invoice__c invoice = createInvoiceForPayment(authTransactionPaymentId);
+            ccrz__E_TransactionPayment__c authTransactionPayment = completeAuthTransactionPayment(authTransactionPaymentId, invoice.Id);
+            ccrz__E_TransactionPayment__c captureTransactionPayment = completeCaptureTransactionPayment(captureTransactionPaymentId, invoice.Id, externalCaptureTxnPmtId, authTransactionPayment.ccrz__PaymentType__c, amount, timestamp);
+            completeFulfillment(fulfillmentId, captureTransactionPayment.Id);
+
+        } catch (Exception e) {
+            throw new phss_cc_Exception(FAILED_TO_FINALIZE_PAYMENT, e);
+        }
+    }
+
+	/**
+	 * @description Fetches the fulfillment record for the specified ID
+	 *
+	 * @param fulfillmentId
+	 *
+	 * @return
+	 */
+	@testVisible
+    private static Fulfillment__c fetchFulfillment(String fulfillmentId) {
+        return [
+                SELECT
+                        Id,
+                        Name,
+                        CC_Transaction_Payment__c
+                FROM
+                        Fulfillment__c
+                WHERE
+                        Id = :fulfillmentId
+        ];
+    }
+
+
+    /**
+     * @description Returns a list of fulfillment item identifiers for the specified fulfillment identifier
+     *
+     * @param fulfillmentId
+     *
+     * @return
+     */
+    @testVisible
+    private static List<Fulfillment_Item__c> getFulfillmentItems(String fulfillmentId) {
+        return [
+                SELECT
+                        Id,
+                        Order_Item__c,
+                        Quantity__c,
+                        Status__c
+                FROM
+                        Fulfillment_Item__c
+                WHERE
+                        Fulfillment__c = :fulfillmentId
+        ];
+    }
+
+	@testVisible
+    private static List<ccrz__E_OrderItem__c> getItemsForOrder(String orderId) {
+        return [
+                SELECT
+                        Id,
+                        ccrz__AdjustmentAmount__c,
+                        ccrz__Quantity__c
+                FROM
+                        ccrz__E_OrderItem__c
+                WHERE
+                        ccrz__Order__c = :orderId
+        ];
+    }
+
+	@testVisible
+    private static ccrz__E_TransactionPayment__c getTransactionPayment(String transactionPaymentId) {
+        ccrz__E_TransactionPayment__c transactionPayment = [
+                SELECT
+                        Id,
+                        ccrz__Account__c,
+                        ccrz__AccountType__c,
+                        ccrz__Amount__c,
+                        ccrz__CCOrder__c,
+                        ccrz__CurrencyISOCode__c,
+                        ccrz__PaymentType__c,
+                        ccrz__Storefront__c
+                FROM
+                        ccrz__E_TransactionPayment__c
+                WHERE
+                        Id = :transactionPaymentId
+        ];
+        return transactionPayment;
+    }
+
+
+    /**
+     * @description Fetches the transaction payment related to the order
+     *
+     * @param orderId
+     *
+     * @return
+     */
+    @testVisible
+    private static ccrz__E_TransactionPayment__c getTransactionPaymentForOrder(String orderId) {
+
+        if (String.isBlank(orderId)) {
+            return null;
+        }
+
+        List<ccrz__E_TransactionPayment__c> transactionPayments = [
+                SELECT
+                        Id
+                FROM
+                        ccrz__E_TransactionPayment__c
+                WHERE
+                        ccrz__CCOrder__c = :orderId
+        ];
+
+        if (transactionPayments.size() > 0) {
+            String transactionPaymentId = transactionPayments[0].Id;
+            ccrz__E_TransactionPayment__c transactionPayment = getTransactionPayment(transactionPaymentId);
+            return transactionPayment;
+        }
+
+        return null;
+    }
+
+
+    /**
+     *
+     *
+     * @param dtStr A String representation of a Datetime in the format 'YYYY-MM-DDTHHMMSSZ'
+     *
+     * @return
+     */
+    @testVisible
+    private static Datetime parseDatetime(String dtStr) {
+        try {
+            List<String> components = dtStr.split('T');
+            String dateStr = components.get(0);
+            List<String> dateComponents = dateStr.split('-');
+            Integer year = Integer.valueOf(dateComponents.get(0));
+            Integer month = Integer.valueOf(dateComponents.get(1));
+            Integer day = Integer.valueOf(dateComponents.get(2));
+
+            String timeStr = components.get(1);
+            Integer hours = Integer.valueOf(timeStr.substring(0, 2));
+            Integer minutes = Integer.valueOf(timeStr.substring(2, 4));
+            Integer seconds = Integer.valueOf(timeStr.substring(4, 6));
+
+            return Datetime.newInstanceGmt(year, month, day, hours, minutes, seconds);
+
+        } catch (Exception e) {
+            throw new phss_cc_Exception('Failed to parse String (' + dtStr + ') as Datetime', e);
+        }
+    }
+
+
+    public static Fulfillment__c getFulfillment(String fulfillmentId) {
+        Id identifier = Id.valueOf(fulfillmentId);
+        Fulfillment__c fulfillment = [
+                SELECT
+                        Account__c,
+                        CC_Transaction_Payment__c,
+                        CC_Transaction_Payment_Date__c,
+                        FOCIS_Category__c,
+                        Fulfillment_Date__c,
+                        Id,
+                        Name,
+                        Open_Fulfillment_Items__c,
+                        Order__c,
+                        OwnerId,
+                        Payment_Method__c,
+                        Payment_Type__c,
+                        Status__c,
+                        Stored_Payment_Name__c,
+                        Supplemental_Information__c,
+                        Type__c
+                FROM
+                        Fulfillment__c
+                WHERE
+                        Id = :identifier
+        ];
+        return fulfillment;
+    }
+}

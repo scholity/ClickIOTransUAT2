@@ -1,0 +1,24 @@
+.ltuiLearningListCmp .fieldset-label{
+    display:none;
+}
+
+.ltuiLearningListCmp .default-field-label{
+    display:none;
+}
+
+.ltuiLearningListCmp a.slds-grid.slds-grid_align-end.text-capitalize {
+    display: none;
+}
+.ltuiUserAchievementsCmp div.slds-grid.slds-grid_align-end a {
+    display: none;
+}
+.ltuiUserAchievementsCmp .add-certificate{
+    display:none;
+}
+
+.ltuiILTEventViewerCmp .register button {
+	display: none !important;
+}
+.ltuiILTEventViewerCmp .slds-section.slds-is-open .slds-section__content div a {
+	display: none !important;
+}

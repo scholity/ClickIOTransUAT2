@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Network xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInternalUserLogin>false</allowInternalUserLogin>
+    <allowMembersToFlag>true</allowMembersToFlag>
+    <changePasswordTemplate>All/PHSS_IC_Change_Password</changePasswordTemplate>
+    <communityRoles>
+        <customerUserRole>Instructor</customerUserRole>
+        <employeeUserRole>Employee</employeeUserRole>
+        <partnerUserRole>Partner</partnerUserRole>
+    </communityRoles>
+    <description>Website for Instructors to stream &amp; download course materials, collaborate in the forum and get online support.</description>
+    <disableReputationRecordConversations>true</disableReputationRecordConversations>
+    <emailFooterLogo>Communities_Shared_Document_Folder/American_Red_Cross.png</emailFooterLogo>
+    <emailFooterText>© 2018 The American National Red Cross</emailFooterText>
+    <emailSenderAddress>InstructorsCorner@redcross.org</emailSenderAddress>
+    <emailSenderName>American Red Cross</emailSenderName>
+    <enableCustomVFErrorPageOverrides>false</enableCustomVFErrorPageOverrides>
+    <enableDirectMessages>false</enableDirectMessages>
+    <enableGuestChatter>true</enableGuestChatter>
+    <enableGuestFileAccess>true</enableGuestFileAccess>
+    <enableGuestMemberVisibility>true</enableGuestMemberVisibility>
+    <enableInvitation>false</enableInvitation>
+    <enableKnowledgeable>true</enableKnowledgeable>
+    <enableMemberVisibility>true</enableMemberVisibility>
+    <enableNicknameDisplay>true</enableNicknameDisplay>
+    <enablePrivateMessages>true</enablePrivateMessages>
+    <enableReputation>true</enableReputation>
+    <enableShowAllNetworkSettings>true</enableShowAllNetworkSettings>
+    <enableSiteAsContainer>true</enableSiteAsContainer>
+    <enableTalkingAboutStats>true</enableTalkingAboutStats>
+    <enableTopicAssignmentRules>false</enableTopicAssignmentRules>
+    <enableTopicSuggestions>true</enableTopicSuggestions>
+    <enableUpDownVote>false</enableUpDownVote>
+    <forgotPasswordTemplate>All/PHSS_IC_Forgot_Password</forgotPasswordTemplate>
+    <gatherCustomerSentimentData>false</gatherCustomerSentimentData>
+    <logoutUrl>https://www.instructorscorner.org/s/login</logoutUrl>
+    <networkMemberGroups>
+        <permissionSet>PHSS_IC_Community_Access_TEST</permissionSet>
+        <permissionSet>PHSS_IC_Community_Access</permissionSet>
+        <profile>Admin</profile>
+        <profile>ARC %2F TSC Agent</profile>
+        <profile>ARC %2F TSC Manager</profile>
+        <profile>PHSS-IC-Community Plus Login TEST</profile>
+        <profile>PHSS-IC-Community Plus Login BETA</profile>
+        <profile>ARC BGST Sales Admin</profile>
+        <profile>ARC BGST Sales User</profile>
+        <profile>PHSS-IC-Community Plus Login</profile>
+        <profile>SB PHSS-IC-Community Plus Login</profile>
+        <profile>ARC RSG Agent</profile>
+        <profile>SB ARC %2F TSC Agent</profile>
+        <profile>SB ARC %2F TSC Manager</profile>
+        <profile>Partner Community Profile</profile>
+    </networkMemberGroups>
+    <networkPageOverrides>
+        <changePasswordPageOverrideSetting>VisualForce</changePasswordPageOverrideSetting>
+        <forgotPasswordPageOverrideSetting>Designer</forgotPasswordPageOverrideSetting>
+        <homePageOverrideSetting>Designer</homePageOverrideSetting>
+        <loginPageOverrideSetting>Designer</loginPageOverrideSetting>
+        <selfRegProfilePageOverrideSetting>Designer</selfRegProfilePageOverrideSetting>
+    </networkPageOverrides>
+    <picassoSite>Instructor_s_Corner1</picassoSite>
+    <reputationLevels>
+        <level>
+            <label>Beginner</label>
+            <lowerThreshold>0.0</lowerThreshold>
+        </level>
+        <level>
+            <label>Advanced</label>
+            <lowerThreshold>51.0</lowerThreshold>
+        </level>
+        <level>
+            <label>Guru</label>
+            <lowerThreshold>151.0</lowerThreshold>
+        </level>
+        <level>
+            <label>Jedi</label>
+            <lowerThreshold>401.0</lowerThreshold>
+        </level>
+        <level>
+            <label>Sensi</label>
+            <lowerThreshold>801.0</lowerThreshold>
+        </level>
+        <level>
+            <lowerThreshold>1501.0</lowerThreshold>
+        </level>
+        <level>
+            <lowerThreshold>2501.0</lowerThreshold>
+        </level>
+        <level>
+            <lowerThreshold>4001.0</lowerThreshold>
+        </level>
+        <level>
+            <lowerThreshold>6001.0</lowerThreshold>
+        </level>
+        <level>
+            <lowerThreshold>10001.0</lowerThreshold>
+        </level>
+    </reputationLevels>
+    <reputationPointsRules>
+        <pointsRule>
+            <eventType>FeedItemPostQuestion</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemAnswerAQuestion</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>EndorsedForKnowledgeOnATopic</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemReceiveAnAnswer</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>EndorseSomeoneForKnowledgeOnATopic</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemYourAnswerMarkedBest</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemLikeSomething</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemShareAPost</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemReceiveAMention</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemReceiveAComment</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemMarkAnswerAsBest</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemMentionSomeone</eventType>
+            <points>0</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemReceiveALike</eventType>
+            <points>5</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemWriteAComment</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemWriteAPost</eventType>
+            <points>1</points>
+        </pointsRule>
+        <pointsRule>
+            <eventType>FeedItemSomeoneSharesYourPost</eventType>
+            <points>5</points>
+        </pointsRule>
+    </reputationPointsRules>
+    <selfRegistration>false</selfRegistration>
+    <sendWelcomeEmail>false</sendWelcomeEmail>
+    <site>Instructor_s_Corner</site>
+    <status>Live</status>
+    <tabs>
+        <defaultTab>home</defaultTab>
+        <standardTab>Chatter</standardTab>
+    </tabs>
+    <urlPathPrefix>instructorscorner</urlPathPrefix>
+    <welcomeTemplate>All/PHSS_IC_Welcome_Email</welcomeTemplate>
+</Network>
