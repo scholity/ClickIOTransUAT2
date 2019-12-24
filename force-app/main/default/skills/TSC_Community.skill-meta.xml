@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Skill xmlns="http://soap.sforce.com/2006/04/metadata">
+    <assignments>
+        <users>
+            <user>cora.killebrew@redcross.org</user>
+            <user>debra.baker@redcross.org</user>
+            <user>erica.hanon@redcross.org</user>
+            <user>geraldine.harris@redcross.org</user>
+            <user>gordon.smith@redcross.org</user>
+            <user>guy.galluzzo@redcross.org</user>
+            <user>hector.rivera@redcross.org</user>
+            <user>janice.fischer@redcross.org</user>
+            <user>kathryn.lee@redcross.org</user>
+            <user>lernecca.videau@redcross.org</user>
+            <user>nancy.mickey@redcross.org</user>
+            <user>nancy.mitchell@redcross.org</user>
+            <user>sha-retha.jackson@redcross.org</user>
+            <user>sharon.reynolds@redcross.org</user>
+            <user>sheila.meade@redcross.org</user>
+            <user>tracy.quinn@redcross.org</user>
+            <user>yolanda.jones@redcross.org</user>
+        </users>
+    </assignments>
+    <description>Skill to use for all chats that originate from the PHSS Instructors corner</description>
+    <label>TSC Community</label>
+</Skill>

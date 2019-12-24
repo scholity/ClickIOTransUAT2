@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Network xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInternalUserLogin>false</allowInternalUserLogin>
+    <allowMembersToFlag>false</allowMembersToFlag>
+    <changePasswordTemplate>All/PHSS_Community_Change_Password</changePasswordTemplate>
+    <communityRoles/>
+    <disableReputationRecordConversations>true</disableReputationRecordConversations>
+    <emailFooterLogo>Communities_Shared_Document_Folder/RC_TrainingServices_Logo_PNG.png</emailFooterLogo>
+    <emailFooterText>© 2019 The American National Red Cross</emailFooterText>
+    <emailSenderAddress>trainingsvcsacct@redcross.org</emailSenderAddress>
+    <emailSenderName>American Red Cross</emailSenderName>
+    <enableCustomVFErrorPageOverrides>false</enableCustomVFErrorPageOverrides>
+    <enableDirectMessages>true</enableDirectMessages>
+    <enableGuestChatter>false</enableGuestChatter>
+    <enableGuestFileAccess>true</enableGuestFileAccess>
+    <enableGuestMemberVisibility>true</enableGuestMemberVisibility>
+    <enableInvitation>false</enableInvitation>
+    <enableKnowledgeable>false</enableKnowledgeable>
+    <enableMemberVisibility>true</enableMemberVisibility>
+    <enableNicknameDisplay>false</enableNicknameDisplay>
+    <enablePrivateMessages>false</enablePrivateMessages>
+    <enableReputation>false</enableReputation>
+    <enableShowAllNetworkSettings>false</enableShowAllNetworkSettings>
+    <enableSiteAsContainer>true</enableSiteAsContainer>
+    <enableTalkingAboutStats>true</enableTalkingAboutStats>
+    <enableTopicAssignmentRules>true</enableTopicAssignmentRules>
+    <enableTopicSuggestions>false</enableTopicSuggestions>
+    <enableUpDownVote>true</enableUpDownVote>
+    <forgotPasswordTemplate>All/PHSS_ICommunity_Forgot_Password</forgotPasswordTemplate>
+    <gatherCustomerSentimentData>false</gatherCustomerSentimentData>
+    <logoutUrl>https://transuat-americanredcross.cs26.force.com/learner</logoutUrl>
+    <networkMemberGroups>
+        <profile>Admin</profile>
+        <profile>SB PHSS-IC-Community Plus Login</profile>
+        <profile>SB PHSS-Partner-Community Plus Login</profile>
+        <profile>Learner Community Profile - OLD</profile>
+        <profile>SB ARC Business User Profile</profile>
+        <profile>SB ARC %2F TSC Agent</profile>
+        <profile>SB ARC %2F TSC Manager</profile>
+        <profile>SB ARC SD Instructor</profile>
+        <profile>Learner Community Profile - Incorrect</profile>
+        <profile>Learner Community Profile</profile>
+    </networkMemberGroups>
+    <networkPageOverrides>
+        <changePasswordPageOverrideSetting>Standard</changePasswordPageOverrideSetting>
+        <forgotPasswordPageOverrideSetting>Designer</forgotPasswordPageOverrideSetting>
+        <homePageOverrideSetting>Designer</homePageOverrideSetting>
+        <loginPageOverrideSetting>Designer</loginPageOverrideSetting>
+        <selfRegProfilePageOverrideSetting>Designer</selfRegProfilePageOverrideSetting>
+    </networkPageOverrides>
+    <picassoSite>Red_Cross_Learning_Center_C</picassoSite>
+    <selfRegistration>true</selfRegistration>
+    <sendWelcomeEmail>true</sendWelcomeEmail>
+    <site>Red_Cross_Learning_Center</site>
+    <status>Live</status>
+    <tabs>
+        <defaultTab>home</defaultTab>
+        <standardTab>Chatter</standardTab>
+    </tabs>
+    <urlPathPrefix>learner</urlPathPrefix>
+    <welcomeTemplate>All/PHSS_Comm_Welcome_Email</welcomeTemplate>
+</Network>

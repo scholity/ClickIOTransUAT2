@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CRS__c</fullName>
+    <description>To be used in Service Cases with Type Invoicing</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If the Order is for a class, insert ILT Class#, if it&#39;s for a fee, insert the CC Order Item (000000), and Inventory type=FEE. </inlineHelpText>
+    <label>CRS #</label>
+    <length>15</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

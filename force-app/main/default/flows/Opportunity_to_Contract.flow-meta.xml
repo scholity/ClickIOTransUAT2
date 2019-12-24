@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <assignments>
+        <description>Uses the opportunity’s or account’s field values to assign field values to the contract.
+
+ACTION: Review the assigned contract fields. Add or remove fields as needed.  
+
+If you need fields from another object, use a Fast Lookup element to store the fields in another sObject variable before this element in the flow, and then assign the stored values to the contract here.</description>
+        <name>Assign_Contract_Fields</name>
+        <label>Assign Contract Fields</label>
+        <locationX>654</locationX>
+        <locationY>259</locationY>
+        <assignmentItems>
+            <assignToReference>oContract.AccountId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.StartDate</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oOppty.CloseDate</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.ContractTerm</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>TwentyFour</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Draft</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.BillingStreet</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.BillingStreet</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.BillingCity</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.BillingCity</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.BillingState</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.BillingState</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.BillingPostalCode</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.BillingPostalCode</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.BillingCountry</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.BillingCountry</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.ShippingStreet</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.ShippingStreet</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.ShippingCity</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.ShippingCity</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.ShippingState</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.ShippingState</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.ShippingPostalCode</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.ShippingPostalCode</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.ShippingCountry</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oAccount.ShippingCountry</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.Addendum_1_Opportunity__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oOppty.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.CC_Price_Group_Account__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Price_Group_Account.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>oContract.CC_Price_Group__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Price_Group.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_Contract</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Relates the opportunity to the contract that was just created.</description>
+        <name>Set_Contract_on_Oppty</name>
+        <label>Set Contract on Oppty</label>
+        <locationX>966</locationX>
+        <locationY>336</locationY>
+        <assignmentItems>
+            <assignToReference>oOppty.ContractId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>oContract.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Oppty</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets the contract’s Status field to Activated.
+
+Include this element if you want the new contract to be Activated.
+
+Default is Draft</description>
+        <name>Set_Contract_Status_to_Draft</name>
+        <label>Set Contract Status to Draft</label>
+        <locationX>964</locationX>
+        <locationY>53</locationY>
+        <assignmentItems>
+            <assignToReference>oContract.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Draft</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Contract</targetReference>
+        </connector>
+    </assignments>
+    <constants>
+        <name>Twelve</name>
+        <dataType>Number</dataType>
+        <value>
+            <numberValue>12.0</numberValue>
+        </value>
+    </constants>
+    <constants>
+        <name>TwentyFour</name>
+        <dataType>Number</dataType>
+        <value>
+            <numberValue>24.0</numberValue>
+        </value>
+    </constants>
+    <decisions>
+        <name>Check_Price_Group_Records</name>
+        <label>Check Price Group Records</label>
+        <locationX>482</locationX>
+        <locationY>429</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>FoundPriceGroup_Records</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Price_Group_Account</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Contract_Fields</targetReference>
+            </connector>
+            <label>FoundPriceGroup Records</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Evaluates whether the opportunity has a contract or not.
+
+If the opportunity is already related to a contract, a new contract will not be generated.</description>
+        <name>Contract_on_Oppty</name>
+        <label>Contract on Oppty?</label>
+        <locationX>478</locationX>
+        <locationY>50</locationY>
+        <defaultConnectorLabel>[Default Outcome]</defaultConnectorLabel>
+        <rules>
+            <name>Contract_is_null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>oOppty.ContractId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Price_Group_Account</targetReference>
+            </connector>
+            <label>Contract is null</label>
+        </rules>
+    </decisions>
+    <description>Creates a contract from an opportunity</description>
+    <interviewLabel>Opportunity to Contract V2 {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Opportunity to Contract V2</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <description>Uses the field values that are stored in the sObject variable to create a new contract.</description>
+        <name>Create_Contract</name>
+        <label>Create Contract</label>
+        <locationX>654</locationX>
+        <locationY>52</locationY>
+        <connector>
+            <targetReference>Set_Contract_Status_to_Draft</targetReference>
+        </connector>
+        <inputReference>oContract</inputReference>
+    </recordCreates>
+    <recordLookups>
+        <description>Looks up the account that’s related to the opportunity, and stores selected account fields in an sObject variable.
+
+ACTION: Review the account fields, and add additional fields as needed to the sObject variable.</description>
+        <name>Get_Account_Fields</name>
+        <label>Get Account Fields</label>
+        <locationX>331</locationX>
+        <locationY>49</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Contract_on_Oppty</targetReference>
+        </connector>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>oOppty.AccountId</elementReference>
+            </value>
+        </filters>
+        <object>Account</object>
+        <outputReference>oAccount</outputReference>
+        <queriedFields>BillingStreet</queriedFields>
+        <queriedFields>BillingCity</queriedFields>
+        <queriedFields>BillingState</queriedFields>
+        <queriedFields>BillingPostalCode</queriedFields>
+        <queriedFields>BillingCountry</queriedFields>
+        <queriedFields>ShippingStreet</queriedFields>
+        <queriedFields>ShippingCity</queriedFields>
+        <queriedFields>ShippingState</queriedFields>
+        <queriedFields>ShippingPostalCode</queriedFields>
+        <queriedFields>ShippingCountry</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <description>Uses the Opportunity ID passed to the flow to look up the opportunity, and stores the selected opportunity fields in an sObject variable.
+
+ACTION: Review the retrieved opportunity fields, and add any additional fields that you need to the sObject variable.</description>
+        <name>Get_Opportunity_Fields</name>
+        <label>Get Opportunity Fields</label>
+        <locationX>179</locationX>
+        <locationY>49</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Account_Fields</targetReference>
+        </connector>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>frmOpptyID</elementReference>
+            </value>
+        </filters>
+        <object>Opportunity</object>
+        <outputReference>oOppty</outputReference>
+        <queriedFields>AccountId</queriedFields>
+        <queriedFields>ContractId</queriedFields>
+        <queriedFields>Pricebook2Id</queriedFields>
+        <queriedFields>CloseDate</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Price_Group</name>
+        <label>Get Price Group</label>
+        <locationX>660</locationX>
+        <locationY>423</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assign_Contract_Fields</targetReference>
+        </connector>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Price_Group_Account.ccrz__PriceGroup__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ccrz__E_PriceGroup__c</object>
+        <queriedFields>Id</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Price_Group_Account</name>
+        <label>Get Price Group Account</label>
+        <locationX>489</locationX>
+        <locationY>229</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Price_Group_Records</targetReference>
+        </connector>
+        <filters>
+            <field>Opportunity__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>frmOpptyID</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ccrz__E_PriceGroupAccount__c</object>
+        <queriedFields>Id</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <description>Uses the field values that are stored in the sObject variable to update the contract.
+
+Include this element if you want the new contract to be Activated.</description>
+        <name>Update_Contract</name>
+        <label>Update Contract</label>
+        <locationX>961</locationX>
+        <locationY>207</locationY>
+        <connector>
+            <targetReference>Set_Contract_on_Oppty</targetReference>
+        </connector>
+        <inputReference>oContract</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Uses the field values that are stored in the sObject variable to update the opportunity.</description>
+        <name>Update_Oppty</name>
+        <label>Update Oppty</label>
+        <locationX>967</locationX>
+        <locationY>494</locationY>
+        <inputReference>oOppty</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Get_Opportunity_Fields</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>frmOpptyID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>oAccount</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Account</objectType>
+    </variables>
+    <variables>
+        <name>oContract</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Contract</objectType>
+    </variables>
+    <variables>
+        <name>oOppty</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Opportunity</objectType>
+    </variables>
+</Flow>

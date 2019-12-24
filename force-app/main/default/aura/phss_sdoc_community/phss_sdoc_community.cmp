@@ -1,0 +1,34 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,lightning:isURLAddressable,force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global" >
+    <aura:attribute name="buttonTitle" type="String" description="Button Title" access="global" default="Submit"/>
+    <aura:attribute name="buttonURL" type="String" description="Button URL" access="global"/>
+    <aura:attribute name="doclist" type="String" description="S-Doc List" access="global"/>
+    <aura:attribute name="sdocURL" type="String" description="URL" access="global"/>
+    <aura:attribute name="prepMail" type="String" description="SDoc Email Send" access="global"/>
+    <aura:attribute name="recordId" type="String" description="Record ID" access="global"/>
+    <aura:attribute name="planId" type="String" description="Learning Plan ID" access="global"/>        
+    <aura:attribute name="object" type="String" description="Object Name API" access="global"/>
+    <aura:attribute name="cbaseURL" type="String" description="Base URL" access="global"/>
+    <aura:attribute name="childObjName" type="String" description="Related List API" access="global"/>
+    <aura:attribute name="lookUpField" type="String" description="Field in Related List API" access="global"/>
+    <aura:attribute name="message" type="String" description="button label" access="global"/>
+    <aura:attribute name="combineAll" type="String" description="Individual or Combined Documents" access="global"/>
+    <aura:attribute name="autoRedirect" type="String" description="Send back to calling page" access="global"/>
+    <aura:attribute name="relatedReport" type="String" description="S-Doc based on Related Report" access="global"/>
+    <aura:attribute name="additionalFilters" type="String" description="Related Report SOQL Where Clause ex. and redwing__Achievement__r.redwing__Type__c = 'Certifications'" access="global"/>
+    <aura:attribute name="whereClause" type="String" description="Related Report SOQL Where Clause ex. and redwing__Achievement__r.redwing__Type__c = 'Certifications'" access="global"/>
+
+             
+  <!--   <p>Message:  {!v.sdocURL}</p>
+-->
+     <div >
+                  <lightning:button 
+                          variant="brand" 
+                          aura:id="address" 
+                          class="buttonStyle" 
+                          onclick="{!c.handleClick}" 
+                          value="{!v.sdocURL}">
+                          {!v.buttonTitle}
+              </lightning:button>  
+             </div>
+    
+ </aura:component>
