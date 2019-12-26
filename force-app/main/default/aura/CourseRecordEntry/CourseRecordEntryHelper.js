@@ -19,7 +19,7 @@
             }
             
             if((tempList[i].Grade == "Unsuccessful" || tempList[i].Grade == "Not Evaluated") && 
-               tempList[i].Fail_Reason !== "Did not successfully complete course all objectives" &&
+               tempList[i].Fail_Reason !== "Did not successfully complete all course objectives" &&
                tempList[i].Fail_Reason !== "Failed written exam" &&
                tempList[i].Fail_Reason !== "Unable to perform one or more skills" &&
                tempList[i].Fail_Reason !== "Did not attend all course sessions" &&
@@ -301,6 +301,9 @@
             console.log(jsonStr);
             jsonStr = '{'+'\"Students\": ['+jsonStr+'] } ';
             console.log(jsonStr);
+
+            console.log('JASON: JSON parameter: ' + classDetailJSON);
+            console.log('JASON: JSON1 parameter: ' + jsonStr);
             
             var action = cmp.get("c.invokeMethods");
             action.setParams({ JSON : classDetailJSON, JSON1 : jsonStr });

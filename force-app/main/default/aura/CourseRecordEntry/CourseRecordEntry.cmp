@@ -569,7 +569,7 @@
                                         <div class="slds-size_3-of-12 slds-m-around_x-small">
                                             <lightning:select value="{!item.Fail_Reason}" label="Unsuccessful/Not Evaluated Reason" required = "true" >
                                                 <option value="">Select an Option</option>
-                                                <option value = "Did not successfully complete course all objectives">Did not successfully complete course all objectives</option>
+                                                <option value = "Did not successfully complete all course objectives">Did not successfully complete all course objectives</option>
                                                 <option value = "Failed written exam">Failed written exam</option>
                                                 <option value = "Unable to perform one or more skills">Unable to perform one or more skills</option>
                                                 <option value = "Did not attend all course sessions">Did not attend all course sessions</option>
@@ -596,7 +596,7 @@
                                             <lightning:select value="{!item.Fail_Reason}" label="* Unsuccessful/Not Evaluated Reason" disabled="{!or(item.Grade == 'Successful',item.Grade == '')}" onchange ="{!c.onReasonChange}">
 
                                                 <option value="">Select an Option if not Successful</option>
-                                                <option value = "Did not successfully complete course all objectives">Did not successfully complete course all objectives</option>
+                                                <option value = "Did not successfully complete all course objectives">Did not successfully complete all course objectives</option>
                                                 <option value = "Failed written exam">Failed written exam</option>
                                                 <option value = "Unable to perform one or more skills">Unable to perform one or more skills</option>
                                                 <option value = "Did not attend all course sessions">Did not attend all course sessions</option>
