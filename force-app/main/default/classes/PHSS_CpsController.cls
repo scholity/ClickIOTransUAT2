@@ -286,7 +286,7 @@ public without sharing class PHSS_CpsController {
         
         o.Name          = 'Community Opportunity';
         o.AccountId     = AccountId;
-        o.StageName     = 'Approach';
+        o.StageName     = 'ONLY FOR ORDERS';
         o.CloseDate     = date.today();
         o.Type          = 'New Business - FS';
         o.RecordTypeId  = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Order Opportunity').getRecordTypeId();

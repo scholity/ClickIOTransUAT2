@@ -352,11 +352,11 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         // and product (class) catalogs.  Each product in DemandWare is an active public community course.
 
         if (!exportAllClasses) {
-            // Get last run date/time from integration files object
             List<Integration_Files__c> integrationFiles = [
                     Select Id, CreatedDate
                     From Integration_Files__c
                     Where File_Name__c Like 'ARC_LMS_Master%'
+                    Or File_Name__c Like 'ARC_Master%'
                     Order By CreatedDate Desc
                     Limit 1
             ];
@@ -398,7 +398,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         theClassQuery += 'CPS_Registration_URL__c, Skedulo_Account__r.Name, Learning_Plan__r.Classroom_Setting__c, ';
         theClassQuery += 'redwing__Start_Date__c, redwing__Start_Time__c, redwing__End_Time__c, redwing__Timezone__c, ';
         // DE2044/DE1949 - Query simplification for price override lookup and inventory level
-        theClassQuery += 'redwing__Location__r.redwing__Postal_Code__c, Price_Override__c, Available_Seats__c ';
+        theClassQuery += 'redwing__Location__r.redwing__Postal_Code__c, Price_Override__c, Available_Seats__c, Cloud_Craze_Product__c ';
         theClassQuery += 'From redwing__ILT_Class__c ';
         theClassQuery += 'Where ((Request_Type__c = \'Community\' And Skedulo_Job_Active__c = true) ';
         theClassQuery += 'OR (Request_Type__c = \'Nurse Assistant Testing\' And Skedulo_Job_Active__c = true And ((Is_Stacked_Class__c = false) OR (Is_Stacked_Class__c = true And Is_Master_Class__c = true))) ';
@@ -530,7 +530,39 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
             classSessionList.add(theILTSession);
             classSessionMap.put(theClassId, classSessionList);
+        }
 
+        // DExxxx - Sessions need to be sorted in ascending date order before creating integration custom attribute
+        // field values for sting of dates/times
+
+        for (Id theClassId : classSessionMap.keySet()) {
+            List<redwing__ILT_Session__c> classSessionList = classSessionMap.get(theClassId);
+
+            Boolean swappedSession;
+            Integer numberOfSessions = classSessionList.size();
+            redwing__ILT_Session__c saveSession = new redwing__ILT_Session__c();
+
+            if (numberOfSessions > 1) {
+                for (Integer sessionIndex=0; sessionIndex < numberOfSessions-1; sessionIndex++) {
+                    do {
+                        swappedSession = false;
+                        for (Integer sessionIndex2=sessionIndex+1; sessionIndex2 < numberOfSessions; sessionIndex2++) {
+                            if (classSessionList[sessionIndex2].redwing__Date__c <
+                                classSessionList[sessionIndex].redwing__Date__c) {
+                                saveSession = classSessionList[sessionIndex];
+                                classSessionList[sessionIndex] = classSessionList[sessionIndex2];
+                                classSessionList[sessionIndex2] = saveSession;
+                                swappedSession = true;
+                            }
+                        }
+                    } while (swappedSession == true);
+                }
+            }
+
+            classSessionMap.put(theClassId, classSessionList);
+            classFirstSessionMap.put(theClassId, classSessionList[0]);
+
+            /*
             if (!classFirstSessionMap.containsKey(theClassId)) {
                 classFirstSessionMap.put(theClassId, theILTSession);
             } else {
@@ -538,7 +570,9 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
                     classFirstSessionMap.put(theClassId, theILTSession);
                 }
             }
+            */
         }
+
         //System.debug('classFirstSessionMap='+classFirstSessionMap);
 
 
@@ -572,12 +606,12 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
                     siteCatalogXMLMap.put(theLearningPlan.Id, getSiteCatalogXml(theLearningPlan));
                 }
             }
-
+            System.debug('Here I am line 609');
             // Generate master catalog (community ILT course/class)
             CPS = (theClass.Request_Type__c == 'CPS') ? true : false;
             // Throw out CPS without location (data issue)
             if (CPS && theSessionList[0].redwing__Location__c == null) continue;
-
+            System.debug('Here I am line 614');
             if (CPS) {
                 CPSXMLList.add(getClassXml(CPS, theLearningPlan, theClass, theSessionList, classFirstSessionMap.get(theClass.Id)));
             } else {
@@ -1296,16 +1330,21 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
     private void getClassPrice(List<redwing__ILT_Class__c> communityClassList,
             List<redwing__Training_Plan_Section_Item__c> onlineClassList) {
         Set<Id> communityCourseSet = new Set<Id>();
+        Set<Id> communityProductSet = new Set<Id>();
         Map<Id, Id> classCourseMap = new Map<Id, Id>();
-        Map<Id, Double> coursePriceMap = new Map<Id, Double>();
+        Map<Id, Id> classProductMap = new Map<Id, Id>();
+        Map<Id, Id> onlineCourseClassMap = new Map<Id, Id>();
+        Map<Id, Double> productPriceMap = new Map<Id, Double>();
         Map<Id, Double> classPriceOverrideMap = new Map<Id, Double>();
 
-        // Add community courses (blended and classroom only) to communityCourseSet and classCourseMap
+        // Add community courses (blended and classroom only) to communityCourseSet, communityProductSet, and classCourseMap
         for (redwing__ILT_Class__c theClass : communityClassList) {
             if (theClass.Request_Type__c != 'CPS') {
                 communityCourseSet.add(theClass.Learning_Plan__c);
+                communityProductSet.add(theClass.Cloud_Craze_Product__c);
             }
             classCourseMap.put(theClass.Id, theClass.Learning_Plan__c);
+            classProductMap.put(theClass.Id, theClass.Cloud_Craze_Product__c);
         }
         system.debug('*** communityCourseSet.size='+communityCourseSet.size());
         system.debug('*** classCourseMap.size='+classCourseMap.size());
@@ -1325,32 +1364,57 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         system.debug('*** remove price override *** communityCourseSet.size='+communityCourseSet.size());
         */
 
-        // Add community classes (online) to communityCourseSet and classCourseMap
+        // Add community classes (online) to communityCourseSet, communityProductSet, and classCourseMap
         // Note: online classes use Learning Id as the class Id
+
+        // Note: Logic currently assumes 1-to-1 relationship between CC product and online learning plan
+        // If this is untrue, need way to determine which product the online class relates to
+        // This data does not seem to be available
+
         for (redwing__Training_Plan_Section_Item__c theTPSI : onlineClassList) {
             communityCourseSet.add(theTPSI.redwing__Training_Plan_Section__r.redwing__Training_Plan__c);
             classCourseMap.put(theTPSI.redwing__Learning__c, theTPSI.redwing__Training_Plan_Section__r.redwing__Training_Plan__c);
+            onlineCourseClassMap.put(theTPSI.redwing__Training_Plan_Section__r.redwing__Training_Plan__c, theTPSI.redwing__Learning__c);
+        }
+        List<ccrz__E_Product__c> onlineProductList = [Select Id, LMS_Learning_Plan__c
+            From ccrz__E_Product__c
+            Where LMS_Learning_Plan__c In :classCourseMap.values()];
+        for (ccrz__E_Product__c theOnlineProduct : onlineProductList) {
+            communityProductSet.add(theOnlineProduct.Id);
+            if (onlineCourseClassMap.containsKey(theOnlineProduct.LMS_Learning_Plan__c)) {
+                classProductMap.put(onlineCourseClassMap.get(theOnlineProduct.LMS_Learning_Plan__c), theOnlineProduct.Id);
+            }
         }
 
-        // Fetch retail pricing and write to coursePriceMap (retail pricing is by product (course))
+        // DExxxx - Retail pricing is by product Id, not Learning Plan Id (multiple products may reference
+        // the same learning plan, hence a reverse lookup by learning plan was incorrect)
+
+        // Fetch retail pricing and write to productPriceMap (retail pricing is by product (course))
         List<ccrz__E_PriceListItem__c> priceItemList = [Select Id, ccrz__Price__c, ccrz__Product__r.LMS_Learning_Plan__c
             From ccrz__E_PriceListItem__c
             Where ccrz__Pricelist__r.Name = 'Retail Price List'
-            And ccrz__Product__r.LMS_Learning_Plan__c In :communityCourseSet];
+            And ccrz__Product__c In :communityProductSet];
+            // And ccrz__Product__r.LMS_Learning_Plan__c In :communityCourseSet];
         system.debug('*** priceItemList.size='+priceItemList.size());
 
         for (ccrz__E_PriceListItem__c thePriceListItem : priceItemList) {
-            coursePriceMap.put(thePriceListItem.ccrz__Product__r.LMS_Learning_Plan__c, thePriceListItem.ccrz__Price__c);
+            productPriceMap.put(thePriceListItem.ccrz__Product__c, thePriceListItem.ccrz__Price__c);
+            //coursePriceMap.put(thePriceListItem.ccrz__Product__r.LMS_Learning_Plan__c, thePriceListItem.ccrz__Price__c);
         }
-        system.debug('*** coursePriceMap.size()'+coursePriceMap.size());
+        system.debug('*** productPriceMap.size()'+productPriceMap.size());
 
         // Create pricing map by class (online, classroom, and blended)
         for (Id theClassId: classCourseMap.keySet()) {
             if (classPriceOverrideMap.containsKey(theClassId)) {
                 classPriceMap.put(theClassId, classPriceOverrideMap.get(theClassId));
             } else {
-                if (coursePriceMap.containsKey(classCourseMap.get(theClassId))) {
-                    classPriceMap.put(theClassId, coursePriceMap.get(classCourseMap.get(theClassId)));
+                if (classProductMap.containsKey(theClassId)) {
+                    Id classProductId = classProductMap.get(theClassId);
+                    if (productPriceMap.containsKey(classProductId)) {
+                        classPriceMap.put(theClassId, productPriceMap.get(classProductId));
+                    //if (coursePriceMap.containsKey(classCourseMap.get(theClassId))) {
+                        //classPriceMap.put(theClassId, coursePriceMap.get(classCourseMap.get(theClassId)));
+                    }
                 }
             }
         }
@@ -2233,11 +2297,29 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         xmlW.writeEndElement(); // Close store-hours
         xmlW.writeCharacters('\n');
 
+        // DExxxx - Geo Coordinates for CPS Classes are stored in GeoCoordinates field in ILT Location record,
+        // not in Skedulo Location field
+
         String geoLatitude = '';
+        String geoLongitude = '';
+
+        // If GeoLocation field in ILT Location record has a value, use this to define location's coordinates
+        if (theLocation.GeoLocation__c != null) {
+            geoLatitude  = String.valueOf(theLocation.GeoLocation__c.getLatitude());
+            geoLongitude = String.valueOf(theLocation.GeoLocation__c.getLongitude());
+        } else if (theLocation.Skedulo_Location__c != null
+            && theLocation.Skedulo_Location__r.sked__GeoLocation__c != null) {
+            geoLatitude = String.valueOf(theLocation.Skedulo_Location__r.sked__GeoLocation__c.getLatitude());
+            geoLongitude = String.valueOf(theLocation.Skedulo_Location__r.sked__GeoLocation__c.getLongitude());
+        }
+
+        /*
         if (theLocation.Skedulo_Location__c != null
                 && theLocation.Skedulo_Location__r.sked__GeoLocation__c != null) {
             geoLatitude = String.valueOf(theLocation.Skedulo_Location__r.sked__GeoLocation__c.getLatitude());
         }
+        */
+
         if (String.isNotEmpty(geoLatitude)) {
             xmlW.writeStartElement(null,'latitude', null);
             xmlW.writeCharacters(geoLatitude);
@@ -2245,11 +2327,13 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             xmlW.writeCharacters('\n');
         }
 
-        String geoLongitude = '';
+        /*
         if (theLocation.Skedulo_Location__c != null
                 && theLocation.Skedulo_Location__r.sked__GeoLocation__c != null) {
             geoLongitude = String.valueOf(theLocation.Skedulo_Location__r.sked__GeoLocation__c.getLongitude());
         }
+        */
+
         if (String.isNotEmpty(geoLongitude)) {
             xmlW.writeStartElement(null,'longitude', null);
             xmlW.writeCharacters(geoLongitude);
