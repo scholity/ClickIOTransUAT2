@@ -163,6 +163,7 @@
             merchant_defined_data40: component.get("v.accountLastModified")
         };
         var iframeURL = component.get('v.iframeURL');
+        console.log(iframeURL);
         var vfWindow = component.find("CC_Cybersource_pmt_iframe").getElement().contentWindow;
         vfWindow.postMessage(message, iframeURL);
     },

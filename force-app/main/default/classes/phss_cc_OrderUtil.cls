@@ -758,6 +758,7 @@ public with sharing class phss_cc_OrderUtil {
         String message = '';
         try {
             String failureCode = (String) cyberSourceResponseMap.get(CYBER_SOURCE_AUTH_RESPONSE_CODE_KEY);
+            system.debug('***failureCode***'+failureCode);
             if (failureCode == CYBER_SOURCE_ERROR_INSUFFICIENT_FUNDS) {
                 message = ERROR_MESSAGE_INSUFFICIENT_FUNDS;
             } else if (failureCode == CYBER_SOURCE_ERROR_INVALID_ADDRESS) {

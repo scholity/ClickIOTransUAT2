@@ -500,9 +500,13 @@ public without sharing class ILTInstructorCommunity{
             studentFirstNames.add(student.FirstName);
             studentEmails.add(student.Email);
 
+            system.debug('***student.voucherid***'+student.voucherid);
+
             //if (!onlineCourse) {
             if(String.IsNotBlank(student.voucherid)) {
                 try {
+                     system.debug('***student.voucherid1***'+student.voucherid);
+                     system.debug('***allVoucher.allVoucher***'+allVoucher);
                     if (allVoucher.IsEmpty() || !allVoucher.contains(student.VoucherId)) {
                         System.debug('Wrong voucher id');
                         boolErrorExists = true;
@@ -648,7 +652,7 @@ public without sharing class ILTInstructorCommunity{
             Map<id,id> rtpa = new map<id,id>();// To retrieve Learning plan Achievement belonging to the current learning plan
             Map<id,id> rtpaac = new map<id, id>();// To retrieve Achievement belonging to the current learning plan Achievement
 
-            List <redwing__Training_Plan_Section__c> trpseclst = [select id, redwing__Training_Plan__c, redwing__Order__c from redwing__Training_Plan_Section__c where redwing__Training_Plan__c=: learningPlanId];
+            List <redwing__Training_Plan_Section__c> trpseclst = [select id, name, redwing__Training_Plan__c, redwing__Order__c from redwing__Training_Plan_Section__c where redwing__Training_Plan__c=: learningPlanId];
 
             map<id,list<redwing__Training_Plan_Achievement__c>> mapTrainingPlanWithTrainingPlanAchievements = new map<id,list<redwing__Training_Plan_Achievement__c>>();
             for (redwing__Training_Plan_Achievement__c rtpalist:[select id, Name, redwing__Training_Plan__c, redwing__Achievement__c from redwing__Training_Plan_Achievement__c where redwing__Training_Plan__c=: learningPlanId]){
@@ -674,9 +678,12 @@ public without sharing class ILTInstructorCommunity{
                                                                                  And redwing__Learning__c != null And redwing__Learning__r.recordtype.Name != null
                                                                                  And redwing__Learning__r.redwing__Current_Published_Version__c != null];
 
+            // DE2157 - Invalid assumption - Learning plans may contain multiple learning objects of same type
+            /*
             for (redwing__Training_Plan_Section_Item__c tpsi: learningPlanILTEventItem ){
                 tpsiRecordTypeMap.put(tpsi.redwing__Learning__r.recordtype.Name,tpsi ); // Used while creating learning assignments with learning plan section
             }
+            */
 
             profileId = [SELECT Id, Name FROM Profile WHERE Name = 'Learner Community Profile' LIMIT 1];//Can be changed based
 
@@ -816,7 +823,14 @@ public without sharing class ILTInstructorCommunity{
                     }
 
                     /******************Create learning assignments for all learning objects defined in learning plan***********/
-                    for (String learningRecordType:tpsiRecordTypeMap.keyset()) {
+                    // DE2157 - Learning assignments are required for EACH learning object in a learning plan
+                    // Previous code base assumed one learning object of each type (Media, ILT Class, Task, etc) per plan
+                    // so some important assignments were being missed
+
+                    //for (String learningRecordType:tpsiRecordTypeMap.keyset()) {
+                    Integer tpsiNumber = 0;
+                    for (redwing__Training_Plan_Section_Item__c tpsi: learningPlanILTEventItem ){
+                        String learningRecordType = tpsi.redwing__Learning__r.recordtype.Name + String.valueOf(++tpsiNumber);
                         redwing__Learning_Assignment__c learningAssignment = new redwing__Learning_Assignment__c();
 
                         // Contact matching logic is always LN+FN+Email
@@ -843,7 +857,7 @@ public without sharing class ILTInstructorCommunity{
                             }
                         } else {
                             learningAssignment.External_Id__c = student.Email+student.LastName+student.FirstName+classId+learningRecordType; //Can be chaged if needed
-                            System.debug('learning event id'+tpsiRecordTypeMap.get(learningRecordType).redwing__Learning__r.id);
+                            System.debug('learning event id'+tpsi.redwing__Learning__r.id);
                         }
                         System.debug('planAssignment='+planAssignment);
                         System.debug('redwing__User__c '+ planAssignment.redwing__User__c);
@@ -858,23 +872,27 @@ public without sharing class ILTInstructorCommunity{
                         String lpsAssignmentExternalId = '';
                         if (String.IsNotBlank(student.Voucherid) && studentvoucherMap.containskey(student.voucherid)) {
                             if (!onlineCourse) {
-                                lpsAssignmentExternalId = student.Email+student.LastName+student.FirstName+studentvoucherMap.get((student.voucherid)).ILT_Class__c+String.valueOf(tpsiRecordTypeMap.get(learningRecordType).redwing__Training_Plan_Section__r.redwing__Order__c);
+                                lpsAssignmentExternalId = student.Email+student.LastName+student.FirstName+studentvoucherMap.get((student.voucherid)).ILT_Class__c+String.valueOf(tpsi.redwing__Training_Plan_Section__r.redwing__Order__c)+String.valueOf(tpsi.redwing__Training_Plan_Section__r.Id);
                             } else {
-                                lpsAssignmentExternalId = student.Email+student.LastName+student.FirstName+studentvoucherMap.get((student.voucherid)).Id+String.valueOf(tpsiRecordTypeMap.get(learningRecordType).redwing__Training_Plan_Section__r.redwing__Order__c);
+                                lpsAssignmentExternalId = student.Email+student.LastName+student.FirstName+studentvoucherMap.get((student.voucherid)).Id+String.valueOf(tpsi.redwing__Training_Plan_Section__r.redwing__Order__c)+String.valueOf(tpsi.redwing__Training_Plan_Section__r.Id);
                             }
                         } else {
-                            lpsAssignmentExternalId = student.Email+student.LastName+student.FirstName+classId+String.valueOf(tpsiRecordTypeMap.get(learningRecordType).redwing__Training_Plan_Section__r.redwing__Order__c);
+                            lpsAssignmentExternalId = student.Email+student.LastName+student.FirstName+classId+String.valueOf(tpsi.redwing__Training_Plan_Section__r.redwing__Order__c)+String.valueOf(tpsi.redwing__Training_Plan_Section__r.Id);
                         }
 
                         learningAssignment.RCO_Order_Id__c = onlineOrderNumber;
                         learningAssignment.redwing__Progress__c = 'Not Started';
                         learningAssignment.redwing__Progress_Percentage__c = 0;
-                        learningAssignment.redwing__Learning__c = tpsiRecordTypeMap.get(learningRecordType).redwing__Learning__c;
+                        learningAssignment.redwing__Learning__c = tpsi.redwing__Learning__c;
+                        //learningAssignment.redwing__Learning__c = tpsiRecordTypeMap.get(learningRecordType).redwing__Learning__c;
                         learningAssignment.redwing__Training_Plan__c = learningPlanId;
-                        learningAssignment.redwing__Training_Plan_Section__c = tpsiRecordTypeMap.get(learningRecordType).redwing__Training_Plan_Section__c;
-                        learningAssignment.redwing__Training_Plan_Section_Item__c =  tpsiRecordTypeMap.get(learningRecordType).Id;
+                        learningAssignment.redwing__Training_Plan_Section__c = tpsi.redwing__Training_Plan_Section__c;
+                        //learningAssignment.redwing__Training_Plan_Section__c = tpsiRecordTypeMap.get(learningRecordType).redwing__Training_Plan_Section__c;
+                        learningAssignment.redwing__Training_Plan_Section_Item__c =  tpsi.Id;
+                        //learningAssignment.redwing__Training_Plan_Section_Item__c =  tpsiRecordTypeMap.get(learningRecordType).Id;
                         learningAssignment.redwing__Training_Plan_Section_Assignment__r = new redwing__Training_Plan_Section_Assignment__c(External_Id__c = lpsAssignmentExternalId);
-                        learningAssignment.redwing__Learning_Version__c = tpsiRecordTypeMap.get(learningRecordType).redwing__Learning__r.redwing__Current_Published_Version__c;
+                        learningAssignment.redwing__Learning_Version__c = tpsi.redwing__Learning__r.redwing__Current_Published_Version__c;
+                        //learningAssignment.redwing__Learning_Version__c = tpsiRecordTypeMap.get(learningRecordType).redwing__Learning__r.redwing__Current_Published_Version__c;
 
                         learningAssignmentList.add(learningAssignment);
                         System.debug('learning assignment record creation');
@@ -882,6 +900,7 @@ public without sharing class ILTInstructorCommunity{
 
                     /******************Create learning plan section assignments***********/
 
+                    Integer tpsNumber = 0;
                     for(redwing__Training_Plan_Section__c trpsec:trpseclst) {
                         //if (trpsec.containskey(learningPlanId)) {
                             redwing__Training_Plan_Section_Assignment__c lpsAssignment = new redwing__Training_Plan_Section_Assignment__c();
@@ -895,12 +914,12 @@ public without sharing class ILTInstructorCommunity{
 
                             if(String.IsNotBlank(student.Voucherid) && studentvoucherMap.containskey(student.voucherid)) {
                                 if (!onlineCourse) {
-                                    lpsAssignment.External_Id__c = student.Email+student.LastName+student.FirstName+studentvoucherMap.get((student.voucherid)).ILT_Class__c+String.valueOf(trpsec.redwing__Order__c);
+                                    lpsAssignment.External_Id__c = student.Email+student.LastName+student.FirstName+studentvoucherMap.get((student.voucherid)).ILT_Class__c+String.valueOf(trpsec.redwing__Order__c)+String.valueOf(trpsec.Id);
                                 } else {
-                                    lpsAssignment.External_Id__c = student.Email+student.LastName+student.FirstName+studentvoucherMap.get((student.voucherid)).Id+String.valueOf(trpsec.redwing__Order__c);
+                                    lpsAssignment.External_Id__c = student.Email+student.LastName+student.FirstName+studentvoucherMap.get((student.voucherid)).Id+String.valueOf(trpsec.redwing__Order__c)+String.valueOf(trpsec.Id);
                                 }
                             } else {
-                                lpsAssignment.External_Id__c = student.Email+student.lastName+student.FirstName+classId+String.valueOf(trpsec.redwing__Order__c);
+                                lpsAssignment.External_Id__c = student.Email+student.lastName+student.FirstName+classId+String.valueOf(trpsec.redwing__Order__c)+String.valueOf(trpsec.Id);
                             }
 
                             lpsAssignment.redwing__Training_Plan_Section__c = trpsec.Id; // get(learningPlanId);

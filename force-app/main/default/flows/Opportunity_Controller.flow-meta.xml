@@ -1644,7 +1644,7 @@
                 <stringValue>DATETIMEVALUE (ADDMONTHS([Opportunity].Closed_Won_Date__c - 1, [Opportunity].Contract.ContractTerm))</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_13_myRule_12_A4_7480617883</name>
+        <name>formula_13_myRule_12_A4_1023519199</name>
         <dataType>DateTime</dataType>
         <expression>DATETIMEVALUE (ADDMONTHS({!myVariable_current.Closed_Won_Date__c} - 1, {!myVariable_current.Contract.ContractTerm}))</expression>
     </formulas>
@@ -1656,7 +1656,7 @@
 </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_14_myRule_12_A2_7539693905</name>
+        <name>formula_14_myRule_12_A2_9984184393</name>
         <dataType>DateTime</dataType>
         <expression>DATETIMEVALUE (ADDMONTHS({!myVariable_current.Closed_Won_Date__c} -1, {!myVariable_current.Contract.ContractTerm}))</expression>
     </formulas>
@@ -1667,11 +1667,11 @@
                 <stringValue>DATETIMEVALUE ( [Opportunity].Closed_Won_Date__c )</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_15_myRule_12_A1_6177296758</name>
+        <name>formula_15_myRule_12_A1_5469625534</name>
         <dataType>Date</dataType>
         <expression>DATETIMEVALUE ( {!myVariable_current.Closed_Won_Date__c} )</expression>
     </formulas>
-    <interviewLabel>Opportunity_Controller-34_InterviewLabel</interviewLabel>
+    <interviewLabel>Opportunity_Controller-35_InterviewLabel</interviewLabel>
     <label>Opportunity Controller</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -1776,7 +1776,7 @@
             </processMetadataValues>
             <field>StartDate</field>
             <value>
-                <elementReference>formula_15_myRule_12_A1_6177296758</elementReference>
+                <elementReference>formula_15_myRule_12_A1_5469625534</elementReference>
             </value>
         </inputAssignments>
         <object>Contract</object>
@@ -1859,7 +1859,7 @@
             </processMetadataValues>
             <field>ccrz__EffectiveEnd__c</field>
             <value>
-                <elementReference>formula_14_myRule_12_A2_7539693905</elementReference>
+                <elementReference>formula_14_myRule_12_A2_9984184393</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1975,7 +1975,7 @@
             </processMetadataValues>
             <field>ccrz__EffectiveEnd__c</field>
             <value>
-                <elementReference>formula_13_myRule_12_A4_7480617883</elementReference>
+                <elementReference>formula_13_myRule_12_A4_1023519199</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -2097,7 +2097,7 @@
         <object>ccrz__E_Order__c</object>
     </recordUpdates>
     <startElementReference>isChangedDecision6_myRule_5_Highest_Product_Discount_c</startElementReference>
-    <status>Obsolete</status>
+    <status>Draft</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>

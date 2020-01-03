@@ -16,6 +16,8 @@ ISCHANGED(RecordTypeId),
 !AND($User.Id = &quot;005d0000002mPMz&quot;/*Stephen Lynch*/, PRIORVALUE(RecordTypeId) = &#39;0120V000001pNzT&#39; /*Read only RCSPO record Type*/
 ), 
 !AND($User.Id = &quot;005d0000001Vmik&quot;/*Wendy Firdman*/, PRIORVALUE(RecordTypeId) = &#39;0120V000001pNzT&#39; /*Read only RCSPO record Type*/
+),
+!AND($User.Id = &quot;005d0000001WGrq&quot;/*Mandy Skomorucha*/, PRIORVALUE(RecordTypeId) = &#39;0120V000001pNzT&#39; /*Read only RCSPO record Type*/ 
 ), 
 !AND($User.Id = &quot;005d0000000Tvsu&quot;/*LaJuanya Jones*/, PRIORVALUE(RecordTypeId) = &#39;0120V000001pNzT&#39; /*Read only RCSPO record Type*/
 ), 
