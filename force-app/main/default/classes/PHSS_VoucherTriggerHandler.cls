@@ -170,6 +170,11 @@ public class PHSS_VoucherTriggerHandler {
                     from voucher__c
                     where ILT_Class__r.Skedulo_Parent_Job__c IN :setParentJobIds];
                 System.debug('+++lstvchrs='+lstvchrs);
+
+                // Initialize number of claimed vouchers to zero
+                for(id theParentJobId : setParentJobIds){
+                    mapStackedParentIdWithNoOfClaimedVouchers.put(theParentJobId, 0);
+                }
                 for(voucher__c ar : lstvchrs){
                     if(ClaimedStatuses.contains(ar.status__c)){
                     	if (ar.ILT_Class__r.Skedulo_Parent_Job__c != null) {

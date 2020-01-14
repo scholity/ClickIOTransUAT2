@@ -498,6 +498,7 @@
                         document.getElementById('geoCodeLng').value = lng;
 						console.log("Lat: " + document.getElementById('geoCodeLat').value + " Lng: " + document.getElementById('geoCodeLng').value);
                         //console.log("Returned GEO Codes Lat: " + component.get("v.geoLat") + " Long:" + component.get("v.geoLong") );
+						this.updateGeoLatLong(component,event,helper);
                     }
 
 		        }

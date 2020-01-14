@@ -50,6 +50,7 @@
         <profile>SB ARC %2F TSC Agent</profile>
         <profile>SB ARC %2F TSC Manager</profile>
         <profile>Partner Community Profile</profile>
+        <profile>Learner Community Profile</profile>
     </networkMemberGroups>
     <networkPageOverrides>
         <changePasswordPageOverrideSetting>VisualForce</changePasswordPageOverrideSetting>

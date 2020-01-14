@@ -323,9 +323,6 @@
         <locationY>200</locationY>
         <actionName>Manage_Order_Status</actionName>
         <actionType>flow</actionType>
-        <connector>
-            <targetReference>myRule_20_A2</targetReference>
-        </connector>
         <inputParameters>
             <processMetadataValues>
                 <name>dataType</name>
@@ -382,14 +379,14 @@
                 <stringValue>Create Training Event from Opportunity</stringValue>
             </value>
         </processMetadataValues>
-        <name>myRule_23_A1</name>
+        <name>myRule_22_A1</name>
         <label>Create Training Event</label>
-        <locationX>2300</locationX>
+        <locationX>2200</locationX>
         <locationY>200</locationY>
         <actionName>Create_Training_Event_from_Opputunity</actionName>
         <actionType>flow</actionType>
         <connector>
-            <targetReference>myRule_23_A2</targetReference>
+            <targetReference>myRule_22_A2</targetReference>
         </connector>
         <inputParameters>
             <processMetadataValues>
@@ -447,15 +444,77 @@
                 <stringValue>Manage Order Status</stringValue>
             </value>
         </processMetadataValues>
-        <name>myRule_23_A2</name>
+        <name>myRule_22_A2</name>
         <label>Fulfill Order</label>
-        <locationX>2300</locationX>
+        <locationX>2200</locationX>
         <locationY>300</locationY>
         <actionName>Manage_Order_Status</actionName>
         <actionType>flow</actionType>
         <connector>
-            <targetReference>myRule_23_A3</targetReference>
+            <targetReference>myRule_22_A3</targetReference>
         </connector>
+        <inputParameters>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>String</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>frmOrderId</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>maxOccurs</name>
+                <value>
+                    <numberValue>1.0</numberValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>objectType</name>
+                <value>
+                    <stringValue/>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Reference</stringValue>
+                </value>
+            </processMetadataValues>
+            <name>frmOrderId</name>
+            <value>
+                <elementReference>myVariable_current.Id</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <processMetadataValues>
+            <name>ActionCallType</name>
+            <value>
+                <stringValue>flow</stringValue>
+            </value>
+        </processMetadataValues>
+        <processMetadataValues>
+            <name>flowSelection</name>
+            <value>
+                <stringValue>Manage Order Status</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>myRule_24_A1</name>
+        <label>Prepare Order Fulfillment</label>
+        <locationX>2400</locationX>
+        <locationY>200</locationY>
+        <actionName>Manage_Order_Status</actionName>
+        <actionType>flow</actionType>
         <inputParameters>
             <processMetadataValues>
                 <name>dataType</name>
@@ -513,7 +572,7 @@
             </value>
         </processMetadataValues>
         <name>myRule_26_A1</name>
-        <label>Prepare Order Fulfillment</label>
+        <label>Validate Order ready for Fulfillment</label>
         <locationX>2600</locationX>
         <locationY>200</locationY>
         <actionName>Manage_Order_Status</actionName>
@@ -571,82 +630,17 @@
         <processMetadataValues>
             <name>flowSelection</name>
             <value>
-                <stringValue>Manage Order Status</stringValue>
-            </value>
-        </processMetadataValues>
-        <name>myRule_28_A1</name>
-        <label>Validate Order ready for Fulfillment</label>
-        <locationX>2800</locationX>
-        <locationY>200</locationY>
-        <actionName>Manage_Order_Status</actionName>
-        <actionType>flow</actionType>
-        <connector>
-            <targetReference>myRule_28_A2</targetReference>
-        </connector>
-        <inputParameters>
-            <processMetadataValues>
-                <name>dataType</name>
-                <value>
-                    <stringValue>String</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>isRequired</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideLabel</name>
-                <value>
-                    <stringValue>frmOrderId</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>maxOccurs</name>
-                <value>
-                    <numberValue>1.0</numberValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>objectType</name>
-                <value>
-                    <stringValue/>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideType</name>
-                <value>
-                    <stringValue>Reference</stringValue>
-                </value>
-            </processMetadataValues>
-            <name>frmOrderId</name>
-            <value>
-                <elementReference>myVariable_current.Id</elementReference>
-            </value>
-        </inputParameters>
-    </actionCalls>
-    <actionCalls>
-        <processMetadataValues>
-            <name>ActionCallType</name>
-            <value>
-                <stringValue>flow</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>flowSelection</name>
-            <value>
                 <stringValue>Order Item Set Reservations</stringValue>
             </value>
         </processMetadataValues>
-        <name>myRule_31_A1</name>
+        <name>myRule_28_A1</name>
         <label>Set Item Reservation Status</label>
-        <locationX>3100</locationX>
+        <locationX>2800</locationX>
         <locationY>200</locationY>
         <actionName>Order_Item_Set_Reservations</actionName>
         <actionType>flow</actionType>
         <connector>
-            <targetReference>myRule_31_A2</targetReference>
+            <targetReference>myRule_28_A2</targetReference>
         </connector>
         <inputParameters>
             <processMetadataValues>
@@ -1157,7 +1151,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>myDecision22</targetReference>
+            <targetReference>myDecision21</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
@@ -1417,16 +1411,16 @@
                 <numberValue>10.0</numberValue>
             </value>
         </processMetadataValues>
-        <name>myDecision22</name>
-        <label>myDecision22</label>
+        <name>myDecision21</name>
+        <label>myDecision21</label>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>myDecision25</targetReference>
+            <targetReference>myDecision23</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
-            <name>myRule_23</name>
+            <name>myRule_22</name>
             <conditionLogic>(1 AND 2 AND 3 AND 5) OR (1 AND 2 AND 4 AND 5)</conditionLogic>
             <conditions>
                 <processMetadataValues>
@@ -1584,7 +1578,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>myRule_23_A1</targetReference>
+                <targetReference>myRule_22_A1</targetReference>
             </connector>
             <label>Is Only Order</label>
         </rules>
@@ -1596,16 +1590,16 @@
                 <numberValue>11.0</numberValue>
             </value>
         </processMetadataValues>
-        <name>myDecision25</name>
-        <label>myDecision25</label>
+        <name>myDecision23</name>
+        <label>myDecision23</label>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>myDecision27</targetReference>
+            <targetReference>myDecision25</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
-            <name>myRule_26</name>
+            <name>myRule_24</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <processMetadataValues>
@@ -1701,7 +1695,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>myRule_26_A1</targetReference>
+                <targetReference>myRule_24_A1</targetReference>
             </connector>
             <label>Opportunity Reservation</label>
         </rules>
@@ -1713,16 +1707,16 @@
                 <numberValue>12.0</numberValue>
             </value>
         </processMetadataValues>
-        <name>myDecision27</name>
-        <label>myDecision27</label>
+        <name>myDecision25</name>
+        <label>myDecision25</label>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>myDecision30</targetReference>
+            <targetReference>myDecision27</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
-            <name>myRule_28</name>
+            <name>myRule_26</name>
             <conditionLogic>(2 AND 4) AND (1 OR 3)</conditionLogic>
             <conditions>
                 <processMetadataValues>
@@ -1849,7 +1843,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>myRule_28_A1</targetReference>
+                <targetReference>myRule_26_A1</targetReference>
             </connector>
             <label>Is Submitted AND Oppty to be processed</label>
         </rules>
@@ -1861,13 +1855,13 @@
                 <numberValue>13.0</numberValue>
             </value>
         </processMetadataValues>
-        <name>myDecision30</name>
-        <label>myDecision30</label>
+        <name>myDecision27</name>
+        <label>myDecision27</label>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
-            <name>myRule_31</name>
+            <name>myRule_28</name>
             <conditionLogic>(1 AND 4)  AND ( 2 OR 3) and 5</conditionLogic>
             <conditions>
                 <processMetadataValues>
@@ -2025,7 +2019,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>myRule_31_A1</targetReference>
+                <targetReference>myRule_28_A1</targetReference>
             </connector>
             <label>Is Submitted Oppty Not ready</label>
         </rules>
@@ -2382,43 +2376,7 @@
         </rules>
     </decisions>
     <description>Manages Order Status Changes - Add Return and Credit Decision - Stop Recursion</description>
-    <formulas>
-        <processMetadataValues>
-            <name>originalFormula</name>
-            <value>
-                <stringValue>[ccrz__E_Order__c].ccrz__Account__c.Open_Order_Amount__c + [ccrz__E_Order__c].ccrz__TotalAmount__c</stringValue>
-            </value>
-        </processMetadataValues>
-        <name>formula_21_myRule_20_A2_3599850065</name>
-        <dataType>Currency</dataType>
-        <expression>{!myVariable_current.ccrz__Account__r.Open_Order_Amount__c} + {!myVariable_current.ccrz__TotalAmount__c}</expression>
-        <scale>18</scale>
-    </formulas>
-    <formulas>
-        <processMetadataValues>
-            <name>originalFormula</name>
-            <value>
-                <stringValue>[ccrz__E_Order__c].ccrz__Account__c.Open_Order_Amount__c + [ccrz__E_Order__c].ccrz__TotalAmount__c</stringValue>
-            </value>
-        </processMetadataValues>
-        <name>formula_24_myRule_23_A3_4788286609</name>
-        <dataType>Currency</dataType>
-        <expression>{!myVariable_current.ccrz__Account__r.Open_Order_Amount__c} + {!myVariable_current.ccrz__TotalAmount__c}</expression>
-        <scale>18</scale>
-    </formulas>
-    <formulas>
-        <processMetadataValues>
-            <name>originalFormula</name>
-            <value>
-                <stringValue>[ccrz__E_Order__c].ccrz__Account__c.Open_Order_Amount__c + [ccrz__E_Order__c].ccrz__TotalAmount__c</stringValue>
-            </value>
-        </processMetadataValues>
-        <name>formula_29_myRule_28_A2_7200913764</name>
-        <dataType>Currency</dataType>
-        <expression>{!myVariable_current.ccrz__Account__r.Open_Order_Amount__c} + {!myVariable_current.ccrz__TotalAmount__c}</expression>
-        <scale>18</scale>
-    </formulas>
-    <interviewLabel>Order_Status_Controller-49_InterviewLabel</interviewLabel>
+    <interviewLabel>Order_Status_Controller-51_InterviewLabel</interviewLabel>
     <label>Order Status Controller</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -2813,179 +2771,16 @@
         <processMetadataValues>
             <name>reference</name>
             <value>
-                <stringValue>[ccrz__E_Order__c].Account</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>referenceTargetField</name>
-        </processMetadataValues>
-        <name>myRule_20_A2</name>
-        <label>Update Open Order</label>
-        <locationX>2000</locationX>
-        <locationY>300</locationY>
-        <filters>
-            <processMetadataValues>
-                <name>implicit</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </processMetadataValues>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>myVariable_current.ccrz__Account__c</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <processMetadataValues>
-                <name>dataType</name>
-                <value>
-                    <stringValue>Currency</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>isRequired</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideLabel</name>
-                <value>
-                    <stringValue>Open Order Amount</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideReferenceTo</name>
-                <value>
-                    <stringValue/>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideType</name>
-                <value>
-                    <stringValue>Formula</stringValue>
-                </value>
-            </processMetadataValues>
-            <field>Open_Order_Amount__c</field>
-            <value>
-                <elementReference>formula_21_myRule_20_A2_3599850065</elementReference>
-            </value>
-        </inputAssignments>
-        <object>Account</object>
-    </recordUpdates>
-    <recordUpdates>
-        <processMetadataValues>
-            <name>evaluationType</name>
-            <value>
-                <stringValue>always</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>extraTypeInfo</name>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>isChildRelationship</name>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>reference</name>
-            <value>
-                <stringValue>[ccrz__E_Order__c].Account</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>referenceTargetField</name>
-        </processMetadataValues>
-        <name>myRule_23_A3</name>
-        <label>Update Open Amount 1</label>
-        <locationX>2300</locationX>
-        <locationY>400</locationY>
-        <connector>
-            <targetReference>myRule_23_A4</targetReference>
-        </connector>
-        <filters>
-            <processMetadataValues>
-                <name>implicit</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </processMetadataValues>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>myVariable_current.ccrz__Account__c</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <processMetadataValues>
-                <name>dataType</name>
-                <value>
-                    <stringValue>Currency</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>isRequired</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideLabel</name>
-                <value>
-                    <stringValue>Open Order Amount</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideReferenceTo</name>
-                <value>
-                    <stringValue/>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideType</name>
-                <value>
-                    <stringValue>Formula</stringValue>
-                </value>
-            </processMetadataValues>
-            <field>Open_Order_Amount__c</field>
-            <value>
-                <elementReference>formula_24_myRule_23_A3_4788286609</elementReference>
-            </value>
-        </inputAssignments>
-        <object>Account</object>
-    </recordUpdates>
-    <recordUpdates>
-        <processMetadataValues>
-            <name>evaluationType</name>
-            <value>
-                <stringValue>always</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>extraTypeInfo</name>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>isChildRelationship</name>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>reference</name>
-            <value>
                 <stringValue>[ccrz__E_Order__c]</stringValue>
             </value>
         </processMetadataValues>
         <processMetadataValues>
             <name>referenceTargetField</name>
         </processMetadataValues>
-        <name>myRule_23_A4</name>
+        <name>myRule_22_A3</name>
         <label>CRE Flag</label>
-        <locationX>2300</locationX>
-        <locationY>500</locationY>
+        <locationX>2200</locationX>
+        <locationY>400</locationY>
         <filters>
             <processMetadataValues>
                 <name>implicit</name>
@@ -3056,98 +2851,18 @@
         <processMetadataValues>
             <name>reference</name>
             <value>
-                <stringValue>[ccrz__E_Order__c].Account</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>referenceTargetField</name>
-        </processMetadataValues>
-        <name>myRule_28_A2</name>
-        <label>Update Account Open Order 2</label>
-        <locationX>2800</locationX>
-        <locationY>300</locationY>
-        <filters>
-            <processMetadataValues>
-                <name>implicit</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </processMetadataValues>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>myVariable_current.ccrz__Account__c</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <processMetadataValues>
-                <name>dataType</name>
-                <value>
-                    <stringValue>Currency</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>isRequired</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideLabel</name>
-                <value>
-                    <stringValue>Open Order Amount</stringValue>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>leftHandSideReferenceTo</name>
-                <value>
-                    <stringValue/>
-                </value>
-            </processMetadataValues>
-            <processMetadataValues>
-                <name>rightHandSideType</name>
-                <value>
-                    <stringValue>Formula</stringValue>
-                </value>
-            </processMetadataValues>
-            <field>Open_Order_Amount__c</field>
-            <value>
-                <elementReference>formula_29_myRule_28_A2_7200913764</elementReference>
-            </value>
-        </inputAssignments>
-        <object>Account</object>
-    </recordUpdates>
-    <recordUpdates>
-        <processMetadataValues>
-            <name>evaluationType</name>
-            <value>
-                <stringValue>always</stringValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>extraTypeInfo</name>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>isChildRelationship</name>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </processMetadataValues>
-        <processMetadataValues>
-            <name>reference</name>
-            <value>
                 <stringValue>[ccrz__E_Order__c].Opportunity Order</stringValue>
             </value>
         </processMetadataValues>
         <processMetadataValues>
             <name>referenceTargetField</name>
         </processMetadataValues>
-        <name>myRule_31_A2</name>
+        <name>myRule_28_A2</name>
         <label>Update Oppty to Reservation</label>
-        <locationX>3100</locationX>
+        <locationX>2800</locationX>
         <locationY>300</locationY>
         <connector>
-            <targetReference>myRule_31_A3</targetReference>
+            <targetReference>myRule_28_A3</targetReference>
         </connector>
         <filters>
             <processMetadataValues>
@@ -3225,9 +2940,9 @@
         <processMetadataValues>
             <name>referenceTargetField</name>
         </processMetadataValues>
-        <name>myRule_31_A3</name>
+        <name>myRule_28_A3</name>
         <label>Set Highest Discount on Opportunity</label>
-        <locationX>3100</locationX>
+        <locationX>2800</locationX>
         <locationY>400</locationY>
         <filters>
             <processMetadataValues>

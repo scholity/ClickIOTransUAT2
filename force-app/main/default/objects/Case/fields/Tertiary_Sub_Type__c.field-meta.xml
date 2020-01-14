@@ -517,6 +517,7 @@
             <controllingFieldValue>Instructor Profile Update</controllingFieldValue>
             <controllingFieldValue>RedCross.org</controllingFieldValue>
             <controllingFieldValue>Learner Profile Update</controllingFieldValue>
+            <controllingFieldValue>Learning Center</controllingFieldValue>
             <valueName>Password Reset</valueName>
         </valueSettings>
         <valueSettings>
@@ -536,6 +537,7 @@
             <controllingFieldValue>Blended Learning</controllingFieldValue>
             <controllingFieldValue>Direct Links</controllingFieldValue>
             <controllingFieldValue>Register Deep Link</controllingFieldValue>
+            <controllingFieldValue>Learning Center</controllingFieldValue>
             <valueName>Log in Issue</valueName>
         </valueSettings>
         <valueSettings>
@@ -543,6 +545,7 @@
             <controllingFieldValue>Blended Learning</controllingFieldValue>
             <controllingFieldValue>Direct Links</controllingFieldValue>
             <controllingFieldValue>Register Deep Link</controllingFieldValue>
+            <controllingFieldValue>Learning Center</controllingFieldValue>
             <valueName>Launch Issue</valueName>
         </valueSettings>
         <valueSettings>
@@ -571,6 +574,7 @@
             <controllingFieldValue>Blended Learning</controllingFieldValue>
             <controllingFieldValue>Direct Links</controllingFieldValue>
             <controllingFieldValue>Register Deep Link</controllingFieldValue>
+            <controllingFieldValue>Learning Center</controllingFieldValue>
             <valueName>Progress not saved</valueName>
         </valueSettings>
         <valueSettings>
@@ -599,6 +603,7 @@
             <controllingFieldValue>Blended Learning</controllingFieldValue>
             <controllingFieldValue>Direct Links</controllingFieldValue>
             <controllingFieldValue>Register Deep Link</controllingFieldValue>
+            <controllingFieldValue>Learning Center</controllingFieldValue>
             <valueName>Performance</valueName>
         </valueSettings>
         <valueSettings>
@@ -615,6 +620,7 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>RedCross.org</controllingFieldValue>
+            <controllingFieldValue>Learning Center</controllingFieldValue>
             <valueName>Modify Account</valueName>
         </valueSettings>
         <valueSettings>
@@ -668,10 +674,12 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>New Instructors Corner</controllingFieldValue>
+            <controllingFieldValue>Learning Center</controllingFieldValue>
             <valueName>Navigation/Content</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>New Instructors Corner</controllingFieldValue>
+            <controllingFieldValue>Learning Center</controllingFieldValue>
             <valueName>Technical</valueName>
         </valueSettings>
         <valueSettings>

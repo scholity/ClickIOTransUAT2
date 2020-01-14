@@ -179,12 +179,13 @@
                     <div class="slds-col slds-size--1-of-6">
                         <lightning:input aura:id="payment_form" name="card_expiry_year" label="Exp YYYY"
                                          required="true"
-                                         pattern="([0-9]{4})" placeholder="YY" value="{!v.card_expiry_year}"
+                                         pattern="([0-9]{4})" placeholder="YYYY" value="{!v.card_expiry_year}"
                                          messageWhenPatternMismatch="Please enter a valid Year in the format YYYY."/>
                     </div>
                     <div class="slds-col slds-size--1-of-6" style="margin-left: 220px;">
-                        <lightning:input aura:id="payment_form" name="card_cvn" label="CVV" required="true" maxlength="4"
-                                         messageWhenTooLong="Enter up to 4 digits." value="{!v.card_cvn}"/>
+                        <lightning:input aura:id="payment_form" name="card_cvn" label="CVV" required="true" maxlength="4" pattern="[0-9]*"
+                                         messageWhenTooLong="Enter up to 4 digits." value="{!v.card_cvn}" messageWhenPatternMismatch = "Only Numbers are allowed."/>
+                        Three digits for Most Credit Cards, four digits for American Express
                     </div>
                 </div>
 
@@ -202,8 +203,8 @@
                                          required="true" value="{!v.bill_to_address_city}"/>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
-                        <lightning:input aura:id="payment_form" name="bill_to_address_state" label="State"
-                                         required="true" value="{!v.bill_to_address_state}"/>
+                        <lightning:input aura:id="payment_form" name="bill_to_address_state" label="State" pattern="([A-Z]{2})" 
+                                         required="true" value="{!v.bill_to_address_state}" messageWhenPatternMismatch="Please enter State Code in two-digit capitalized Format."/>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
 <!--                        <lightning:select aura:id="payment_form" value="{!v.bill_to_address_country}" label="Country" required = "true" >-->
@@ -212,12 +213,13 @@
                         <lightning:input aura:id="payment_form" name="bill_to_address_country"
                                          label="Country"
                                          required="true" value="{!v.bill_to_address_country}"
-                                         maxlength="2"/>
+                                         maxlength="2"
+                                         readonly = "true"/>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
                         <lightning:input aura:id="payment_form" name="bill_to_address_postal_code"
-                                         label="Zip Code" required="true"
-                                         value="{!v.bill_to_address_postal_code}"/>
+                                         label="Zip Code" required="true" pattern="([0-9]{5})" 
+                                         value="{!v.bill_to_address_postal_code}" messageWhenPatternMismatch="Please enter five digit Zip Code."/>
                     </div>
                 </div>
 
