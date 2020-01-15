@@ -170,16 +170,15 @@ public without sharing class PHSS_CpsController {
             
             //Get Order Item information
             if (cpsWrap.oppId != null && cpsWrap.ccProductId != null) {
-                for (ccrz__E_OrderItem__c theOrderItem : [Select Id, ccrz__Product__c, ccrz__Order__c From ccrz__E_OrderItem__c
-                                                          Where ccrz__Order__r.ccrz__OriginatedCart__r.Opportunity__c = :cpsWrap.oppId And ccrz__E_OrderItem__c.ccrz__Product__c = :cpsWrap.ccProductId]) {
-                            newClass.CPS_Order__c = theOrderItem.ccrz__Order__c;
-                            newClass.CPS_Order_Item__c = theOrderItem.Id;
+                ccrz__E_OrderItem__c theOrderItem = [Select Id, ccrz__Product__c, ccrz__Order__c From ccrz__E_OrderItem__c
+                                                          Where ccrz__Order__r.ccrz__OriginatedCart__r.Opportunity__c = :cpsWrap.oppId And ccrz__E_OrderItem__c.ccrz__Product__c = :cpsWrap.ccProductId];
+                newClass.CPS_Order__c = theOrderItem.ccrz__Order__c;
+                newClass.CPS_Order_Item__c = theOrderItem.Id;
 
-                            ccrz__E_Order__c newOrder = new ccrz__E_Order__c();
-                            newOrder.Id = theOrderItem.ccrz__Order__c;
-                            newOrder.CRE_Request_Processed__c = true;
-                            updatedOrders.add(newOrder);                                            
-                }
+                ccrz__E_Order__c newOrder = new ccrz__E_Order__c();
+                newOrder.Id = theOrderItem.ccrz__Order__c;
+                newOrder.CRE_Request_Processed__c = true;
+                updatedOrders.add(newOrder);                                            
             }
 
             
@@ -330,12 +329,14 @@ public without sharing class PHSS_CpsController {
     //Method to Skip payment page
     @AuraEnabled
     public static Boolean getDisplayPaymentInfo(String opportunityId) {
+        /*
     	User u = [Select id, ContactId, Name, Profile.Name, Profile.UserLicense.Name from user where id=: UserInfo.getUserId()];
         Opportunity opp = [Select Id,AccountId From Opportunity WHERE Id = :opportunityId];
         List<AccountContactRelation> accConRel = [SELECT AccountId, Display_Payment_Info__c FROM AccountContactRelation WHERE ContactId = : u.ContactId and AccountId =: opp.AccountId]; 
         if(!accConRel.isEmpty()) {
             return accConRel[0].Display_Payment_Info__c;
         }
+		*/
         return true;
     }
     
@@ -365,6 +366,7 @@ public without sharing class PHSS_CpsController {
         loc.redwing__Postal_Code__c = postcode;
         loc.redwing__State__c = state;
         loc.redwing__City__c = city;
+        loc.Skedulo_Type__c = 'CPS';
         loc.GeoLocation__Latitude__s = decimal.valueOf(lat);
         loc.GeoLocation__Longitude__s = decimal.valueOf(lng);
 

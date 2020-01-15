@@ -8,8 +8,9 @@
                     liveagentattrs.contactId = userProfile.Contact.Id;
                 }
                 var frameWindow = component.find("liveAgentProxyIframe").getElement().contentWindow;
-//                console.log('Posting message');
-//                console.log(frameWindow);
+                //debugger;
+               console.log('Posting message');
+                console.log(frameWindow);
                 frameWindow.postMessage({
                     'type': 'INIT_LIVEAGENT',
                     'attributes': liveagentattrs

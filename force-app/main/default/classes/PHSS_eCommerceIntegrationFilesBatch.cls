@@ -401,7 +401,9 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         theClassQuery += 'redwing__Location__r.redwing__Postal_Code__c, Price_Override__c, Available_Seats__c, Cloud_Craze_Product__c ';
         theClassQuery += 'From redwing__ILT_Class__c ';
         theClassQuery += 'Where ((Request_Type__c = \'Community\' And Skedulo_Job_Active__c = true) ';
-        theClassQuery += 'OR (Request_Type__c = \'Nurse Assistant Testing\' And Skedulo_Job_Active__c = true And ((Is_Stacked_Class__c = false) OR (Is_Stacked_Class__c = true And Is_Master_Class__c = true))) ';
+        // DExxxx - All NATesting courses need to migrate to eCommerce, not just those that are unstacked or stacked masters
+        theClassQuery += 'OR (Request_Type__c = \'Nurse Assistant Testing\' And Skedulo_Job_Active__c = true) ';
+        //theClassQuery += 'OR (Request_Type__c = \'Nurse Assistant Testing\' And Skedulo_Job_Active__c = true And ((Is_Stacked_Class__c = false) OR (Is_Stacked_Class__c = true And Is_Master_Class__c = true))) ';
         theClassQuery += 'OR (Request_Type__c = \'CPS\') ';
         // US1562 - Export community class if cancelled so DemandWare product can be updated appropriately
         theClassQuery += 'OR (Request_Type__c IN (\'Community\',\'Nurse Assistant Testing\') And Skedulo_Job_Status__c = \'Cancelled\')) ';

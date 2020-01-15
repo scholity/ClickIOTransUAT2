@@ -211,6 +211,7 @@
         {
             helper.requiredSchedule(component,event,helper);
             helper.formatTime(component,event,helper);
+            helper.updateGeoLatLong(component,event,helper);
             helper.validateFields(component,event,helper);
             helper.createIltLocation(component);
             
@@ -230,9 +231,8 @@
             
         	setTimeout(function(){
                 document.getElementById("Accspinner").style.display = "none";
-                //alert("Location ID " + component.get('v.cpsWrap.locationId'));
-				helper.updateGeoLatLong(component,event,helper);
-                
+                //alert("Location ID " + component.get('v.cpsWrap.locationId'));                
+
                 var vorgId 	= component.get("v.selectedLookUpRecord1").Id
                 if(vorgId === undefined){
                     component.set("v.orgError",true);
@@ -388,6 +388,7 @@
         	var timeOut = '3000';
             helper.requiredSchedule(component,event,helper);
             helper.formatTime(component,event,helper);
+        	helper.updateGeoLatLong(component,event,helper);
             helper.validateFields(component,event,helper);
             helper.createIltLocation(component);
         	
@@ -403,8 +404,7 @@
         	setTimeout(function(){
                 document.getElementById("Accspinner").style.display = "none";
                 //alert("Location ID " + component.get('v.cpsWrap.locationId'));
-                helper.updateGeoLatLong(component,event,helper);
-                
+        
                 var vorgId 	= component.get("v.selectedLookUpRecord1").Id
                 if(vorgId === undefined){
                     component.set("v.orgError",true);
@@ -500,9 +500,12 @@
     
 	accountSelected : function (component,event,helper){
         console.log("account Selected");
-        var orgId 	= component.get("v.selectedLookUpRecord1").Id
+        
+        var orgId 	= component.get("v.selectedLookUpRecord1").Id;
+        var orgName = component.get("v.selectedLookUpRecord1").Name;
         
         component.set("v.cpsWrap.accId",orgId);
+        component.set("v.cpsWrap.accName",orgName);
         
         console.log("***orgId***"+orgId);
         if(orgId != null || orgId != undefined){

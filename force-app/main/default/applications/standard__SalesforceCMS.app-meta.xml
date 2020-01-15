@@ -7,6 +7,9 @@
     <navType>Console</navType>
     <tabs>standard-CmsAuthorHome</tabs>
     <tabs>ccrz__E_TransactionPayment__c</tabs>
+    <tabs>standard-CmsChannel</tabs>
+    <tabs>standard-CmsWorkspaces</tabs>
+    <tabs>standard-CmsExperiences</tabs>
     <uiType>Lightning</uiType>
     <workspaceConfig>
         <mappings>
@@ -14,6 +17,15 @@
         </mappings>
         <mappings>
             <tab>standard-CmsAuthorHome</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-CmsChannel</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-CmsExperiences</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-CmsWorkspaces</tab>
         </mappings>
     </workspaceConfig>
 </CustomApplication>

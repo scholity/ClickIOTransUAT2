@@ -217,26 +217,14 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue>CASE([Fulfillment_Item__c].Order__c.FOCIS_Category__c, 
-&#39;42&#39;, &#39;FS&#39;, 
-&#39;43&#39;, &#39;AP/LTP&#39;, 
-&#39;45&#39;, &#39;CPS&#39;, 
-&#39;46&#39;, &#39;COM-RCO&#39;, 
-&#39;47&#39;, &#39;COM-ITM&#39;, 
-&#39;48&#39;, &#39;COM-RCO&#39;, 
-&#39;Other&#39;)</stringValue>
+                <stringValue>IF(Isblank([Fulfillment_Item__c].Fulfillment__c) , &quot;&quot;,
+[Fulfillment_Item__c].Fulfillment__c.Channel_Formula__c )</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_7595444006</name>
+        <name>formula_2_myRule_1_A1_4192041901</name>
         <dataType>String</dataType>
-        <expression>CASE({!myVariable_current.Order__r.FOCIS_Category__c}, 
-&#39;42&#39;, &#39;FS&#39;, 
-&#39;43&#39;, &#39;AP/LTP&#39;, 
-&#39;45&#39;, &#39;CPS&#39;, 
-&#39;46&#39;, &#39;COM-RCO&#39;, 
-&#39;47&#39;, &#39;COM-ITM&#39;, 
-&#39;48&#39;, &#39;COM-RCO&#39;, 
-&#39;Other&#39;)</expression>
+        <expression>IF(Isblank({!myVariable_current.Fulfillment__c}) , &quot;&quot;,
+{!myVariable_current.Fulfillment__r.Channel_Formula__c} )</expression>
     </formulas>
     <formulas>
         <processMetadataValues>
@@ -245,9 +233,20 @@
                 <stringValue>DATEVALUE( [Fulfillment_Item__c].Transaction_Date__c )</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_3_myRule_1_A1_5518412990</name>
+        <name>formula_3_myRule_1_A1_0523503944</name>
         <dataType>Date</dataType>
         <expression>DATEVALUE( {!myVariable_current.Transaction_Date__c} )</expression>
+    </formulas>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>IF(ISBLANK([Fulfillment_Item__c].Fulfillment__c.FOCIS_Category__c ),&quot;&quot;,[Fulfillment_Item__c].Fulfillment__c.FOCIS_Category__c )</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_4_myRule_1_A1_6675937402</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!myVariable_current.Fulfillment__r.FOCIS_Category__c} ),&quot;&quot;,{!myVariable_current.Fulfillment__r.FOCIS_Category__c} )</expression>
     </formulas>
     <formulas>
         <processMetadataValues>
@@ -269,7 +268,7 @@
 &#39;&#39;)</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_4_myRule_1_A1_5095515375</name>
+        <name>formula_5_myRule_1_A1_5060310629</name>
         <dataType>String</dataType>
         <expression>CASE(MONTH({!myVariable_current.Fulfillment_Date__c}), 
 1, &#39;JAN&#39;, 
@@ -290,12 +289,16 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue>IF(CONTAINS([Fulfillment_Item__c].Order__c.Opportunity_Order__c.Owner.Profile.Name, &#39;ARC BGST Sales User&#39;) , &#39;BGST&#39;, &#39;&#39;) </stringValue>
+                <stringValue>IF (NOT(ISBLANK([Fulfillment_Item__c].Order__c.ccrz__Account__c.SABA_LMS_Code__c)  ), 
+     [Fulfillment_Item__c].Order__c.ccrz__Account__c.SABA_LMS_Code__c,
+     &#39;&#39; )</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_5_myRule_1_A1_8450960250</name>
+        <name>formula_6_myRule_1_A1_3866276461</name>
         <dataType>String</dataType>
-        <expression>IF(CONTAINS({!myVariable_current.Order__r.Opportunity_Order__r.Owner.Profile.Name}, &#39;ARC BGST Sales User&#39;) , &#39;BGST&#39;, &#39;&#39;)</expression>
+        <expression>IF (NOT(ISBLANK({!myVariable_current.Order__r.ccrz__Account__r.SABA_LMS_Code__c})  ), 
+     {!myVariable_current.Order__r.ccrz__Account__r.SABA_LMS_Code__c},
+     &#39;&#39; )</expression>
     </formulas>
     <formulas>
         <processMetadataValues>
@@ -304,7 +307,7 @@
                 <stringValue>[Fulfillment_Item__c].Fulfillment_Item_Total__c </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_6_myRule_1_A1_8507314190</name>
+        <name>formula_7_myRule_1_A1_3576827933</name>
         <dataType>Number</dataType>
         <expression>{!myVariable_current.Fulfillment_Item_Total__c}</expression>
         <scale>18</scale>
@@ -335,7 +338,7 @@ IF(ISCHANGED([Fulfillment_Item__c].Status__c) &amp;&amp; ISPICKVAL([Fulfillment_
         <expression>IF(ISNEW() &amp;&amp; ISPICKVAL({!myVariable_old.Status__c}, &#39;Complete&#39;), TRUE, 
 IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.Status__c}, &#39;Complete&#39;), TRUE, FALSE) )</expression>
     </formulas>
-    <interviewLabel>Create_Training_Revenue_Record-11_InterviewLabel</interviewLabel>
+    <interviewLabel>Create_Training_Revenue_Record-17_InterviewLabel</interviewLabel>
     <label>Create Training Revenue Record</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -475,7 +478,7 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
             </processMetadataValues>
             <field>Channel__c</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_7595444006</elementReference>
+                <elementReference>formula_2_myRule_1_A1_4192041901</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -547,7 +550,7 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
             </processMetadataValues>
             <field>End_Date__c</field>
             <value>
-                <elementReference>formula_3_myRule_1_A1_5518412990</elementReference>
+                <elementReference>formula_3_myRule_1_A1_0523503944</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -578,12 +581,12 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
             <processMetadataValues>
                 <name>rightHandSideType</name>
                 <value>
-                    <stringValue>Reference</stringValue>
+                    <stringValue>Formula</stringValue>
                 </value>
             </processMetadataValues>
             <field>FOCIS_Category__c</field>
             <value>
-                <elementReference>myVariable_current.Order__r.FOCIS_Category__c</elementReference>
+                <elementReference>formula_4_myRule_1_A1_6675937402</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -655,7 +658,7 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
             </processMetadataValues>
             <field>Fiscal_Month_Abbr__c</field>
             <value>
-                <elementReference>formula_4_myRule_1_A1_5095515375</elementReference>
+                <elementReference>formula_5_myRule_1_A1_5060310629</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -686,12 +689,12 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
             <processMetadataValues>
                 <name>rightHandSideType</name>
                 <value>
-                    <stringValue>Formula</stringValue>
+                    <stringValue>Reference</stringValue>
                 </value>
             </processMetadataValues>
             <field>Focis_Location__c</field>
             <value>
-                <elementReference>formula_5_myRule_1_A1_8450960250</elementReference>
+                <elementReference>myVariable_current.Opportunity_Profile__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -794,12 +797,12 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
             <processMetadataValues>
                 <name>rightHandSideType</name>
                 <value>
-                    <stringValue>Reference</stringValue>
+                    <stringValue>Formula</stringValue>
                 </value>
             </processMetadataValues>
             <field>Org_Id__c</field>
             <value>
-                <elementReference>myVariable_current.Order__r.ccrz__Account__r.SABA_LMS_Code__c</elementReference>
+                <elementReference>formula_6_myRule_1_A1_3866276461</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1015,7 +1018,7 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
             </processMetadataValues>
             <field>Transaction_Amt__c</field>
             <value>
-                <elementReference>formula_6_myRule_1_A1_8507314190</elementReference>
+                <elementReference>formula_7_myRule_1_A1_3576827933</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1051,7 +1054,7 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
             </processMetadataValues>
             <field>User_Field__c</field>
             <value>
-                <elementReference>myVariable_current.Order__r.Opportunity_Order__r.Owner.Email</elementReference>
+                <elementReference>myVariable_current.Opportunity_Owner_Email__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

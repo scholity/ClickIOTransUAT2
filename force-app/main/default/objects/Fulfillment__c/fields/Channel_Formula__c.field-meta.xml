@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Channel_Formula__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(  FOCIS_Category__c  , 
+&#39;42&#39;, &#39;FS&#39;, 
+&#39;43&#39;, &#39;AP/LTP&#39;, 
+&#39;45&#39;, &#39;CPS&#39;, 
+&#39;46&#39;, &#39;COM-RCO&#39;, 
+&#39;47&#39;, &#39;COM-ITM&#39;, 
+&#39;48&#39;, &#39;COM-RCO&#39;, 
+&#39;Other&#39;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Channel Formula</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -210,6 +210,10 @@
                 <field>Order_Number__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Edit</behavior>
+                <field>CC_Order__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>CRS__c</field>
             </layoutItems>

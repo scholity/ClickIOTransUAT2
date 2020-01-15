@@ -333,6 +333,8 @@ public with sharing class phss_cc_OrderUtil {
         try {
             if (cyberSourcePaymentResponse != null) {
                 Map<String, Object> cyberSourceResponseMap = (Map<String, Object>) JSON.deserializeUntyped(cyberSourcePaymentResponse);
+                
+                system.debug('***cyberSourceResponseMap***'+cyberSourceResponseMap);
 
                 String ccPostalCode = (String) cyberSourceResponseMap.get(CYBER_SOURCE_RESPONSE_BILL_TO_POSTAL_CODE_KEY);
                 captureBillingDataForPayment(encryptedCartId, ccPostalCode);
@@ -757,9 +759,39 @@ public with sharing class phss_cc_OrderUtil {
         Map<String, Object> response;
         String message = '';
         try {
-            String failureCode = (String) cyberSourceResponseMap.get(CYBER_SOURCE_AUTH_RESPONSE_CODE_KEY);
+            //String failureCode = (String) cyberSourceResponseMap.get(CYBER_SOURCE_AUTH_RESPONSE_CODE_KEY);
+            
+            String failureCode = (String) cyberSourceResponseMap.get('reason_code');
+            
+            String failureField = (String) cyberSourceResponseMap.get('invalid_fields');
+            
+            String failureMessage = (String) cyberSourceResponseMap.get('message');
+            
             system.debug('***failureCode***'+failureCode);
-            if (failureCode == CYBER_SOURCE_ERROR_INSUFFICIENT_FUNDS) {
+            system.debug('***failureField***'+failureField);
+            system.debug('***failureMessage***'+failureMessage);
+            
+            List<CyberSourceErrorCodes__mdt > errorMdt = [SELECT Id,
+                                                          		 Error_Code__c,
+                                                          		 UI_Error_Message__c  
+                                                            FROM CyberSourceErrorCodes__mdt
+                                                           WHERE Error_Code__c =: failureCode LIMIT 1];
+            
+            
+            if(errorMdt.size() > 0)
+            {
+                message = errorMdt[0].UI_Error_Message__c;
+            }
+            else if(failureCode == '102')
+            {
+                message = 'Error Code: ' + failureCode + ' ' + '. Please check' + ' ' + failureField + '.';
+            }
+            else
+            {
+                message = 'Error Code: ' + failureCode + ' ' + failureField + ' ' + failureMessage;
+            }
+            
+            /*if (failureCode == CYBER_SOURCE_ERROR_INSUFFICIENT_FUNDS) {
                 message = ERROR_MESSAGE_INSUFFICIENT_FUNDS;
             } else if (failureCode == CYBER_SOURCE_ERROR_INVALID_ADDRESS) {
                 message = ERROR_MESSAGE_INVALID_BILLING_ADDRESS;
@@ -767,7 +799,8 @@ public with sharing class phss_cc_OrderUtil {
                 message = ERROR_MESSAGE_INVALID_CARD_DETAILS;
             } else {
                 message = ERROR_MESSAGE_CARD_DECLINED_UNKNOWN_REASON;
-            }
+            }*/
+            
             response = new Map<String, Object>{
                     SUCCESS_KEY => false,
                     RETURN_MESSAGE => message

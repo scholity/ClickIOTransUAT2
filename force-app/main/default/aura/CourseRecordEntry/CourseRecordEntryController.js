@@ -30,10 +30,9 @@
                     component.set("v.isExtUser", "false");
                 }
                  if(storeResponse.Profile.Name === "SB PHSS-Partner-Community Plus Login"){
-                    component.set("v.isPartner", true);
+                    component.set("v.isPartner", "true");
                 }
-
-               
+                
                 component.set("v.instructor", storeResponse);
             }
       
@@ -529,6 +528,7 @@
             }
             var intUsrId = component.get("v.selectedLookUpRecord4").Id;
             var usrBool	 = true;
+            
             if(intUsrId === undefined){
                 component.set("v.usrError",true);
                 usrBool	= false;
@@ -549,8 +549,13 @@
             allValid &= instructorHasPrerequisites;
 
             var extUser = component.get("v.isExtUser");
-            //var isParnter = component.get("v.isParnter")
-            if(extUser === true)
+            
+            var isParnterUser = component.get("v.isPartner");
+            
+            console.log("extUser+++"+extUser);
+            console.log("isParnterUser+++"+isParnterUser);
+            
+            if(extUser === true && isParnterUser === false)
             {
                 //if(allValid && orgBool && crsBool)
                 if(allValid && orgBool)

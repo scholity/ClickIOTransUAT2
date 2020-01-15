@@ -51,7 +51,7 @@ public without sharing class PHSS_skedJobtoILTClass {
         upsertILTClass(lstnewRecords, oldRecords);
 
         // DE1988
-        sendEmails();
+        // sendEmails();
     }
     
     public void afterUpdate(List<sked__Job__c> newRecords, Map<Id, sked__Job__c> oldRecords) {
@@ -124,7 +124,7 @@ public without sharing class PHSS_skedJobtoILTClass {
         }
 
         // DE1988
-        sendEmails();
+        // sendEmails();
     }
     
     public List<sked__Job__c> addDependentStackedClasses(List<sked__Job__c> jobList, Boolean bCancel) {
@@ -426,11 +426,11 @@ public without sharing class PHSS_skedJobtoILTClass {
             CCwithIds.put(cc.name, cc.Id);
         }
         //System.debug('Course catalog with Name and Id' +CCwithIds);
-                
-        for(sked__Job__c curJobRecord : newRecords){    
+
+        for(sked__Job__c curJobRecord : newRecords){
+            jobIds.add(curJobRecord.Id);
             if(curJobRecord.Is_Stacked_Class__c==true){   
-                if(CCwithIds.containsKey(curJobRecord.Course_Code__c)){ 
-                    jobIds.add(curJobRecord.Id);
+                if(CCwithIds.containsKey(curJobRecord.Course_Code__c)){
                     jobCatalogMap.put(curJobRecord.Id, CCwithIds.get(curJobRecord.Course_Code__c));//JobId with respective course catalog record - only stacked class
                     System.debug('*** Job:'+curJobRecord.Name+' is a valid stacked class with course code:'+curJobRecord.Course_Code__c);
                     System.debug('*** Job catalog Map stacked class:'+jobCatalogMap);
@@ -443,19 +443,12 @@ public without sharing class PHSS_skedJobtoILTClass {
                         masterJobIds.add(curJobRecord.sked__Parent__c);
                         System.debug('Adding masterJobId:'+curJobRecord.sked__Parent__c);
                     }
-                    if (curJobRecord.Is_Master_Class__c) {
-                        jobInstructorCountMap.put(curJobRecord.Id, (Integer) curJobRecord.Number_of_Instructors__c);
-                    }
-                    System.debug('**** Job: '+curJobRecord.Name+' Id:'+curJobRecord.Id+' jobInstructorCountMap='+jobInstructorCountMap);
                 }
             }
             else
             {
-                jobIds.add(curJobRecord.Id);                        
                 jobCatalogMap.put(curJobRecord.Id, curJobRecord.Course_Catalog__c); //JobId with respective course catalog record(Stacked class not included)
                 System.debug('*** Job:'+curJobRecord.name+' is a normal class:'+jobCatalogMap);
-
-                jobInstructorCountMap.put(curJobRecord.Id, (Integer) curJobRecord.Number_of_Instructors__c);
             }
 
             if(curJobRecord.sked__Location__c != null){
@@ -508,6 +501,11 @@ public without sharing class PHSS_skedJobtoILTClass {
             System.debug('resourceIds='+resourceIds);
             System.debug('jobAllocationMap='+jobAllocationMap);
             System.debug('scheduleAllocationMap='+scheduleAllocationMap);
+
+            for (Id theJobId : jobAllocationMap.keySet()) {
+                jobInstructorCountMap.put(theJobId, jobAllocationMap.get(theJobId).size());
+            }
+            System.debug(' jobInstructorCountMap=' + jobInstructorCountMap);
         }
 
         // *****
@@ -628,8 +626,6 @@ public without sharing class PHSS_skedJobtoILTClass {
                 
             }  
         }
-                
-                
         return jobLearningMap;
     }
     
@@ -893,6 +889,9 @@ public without sharing class PHSS_skedJobtoILTClass {
                     // Default instructor:student ratio to 1:12 
                     if (String.isBlank(instructorStudentRatio)) {
                         instructorStudentRatio = '1:12';
+                    }
+                    if (nRequiredInstructors == null || nRequiredInstructors <= 0) {
+                        nRequiredInstructors = 1;
                     }
                     system.debug('*** instructorStudentRatio=' + instructorStudentRatio);
                     system.debug('*** nRequiredInstructors=' + nRequiredInstructors);
@@ -1614,41 +1613,44 @@ public without sharing class PHSS_skedJobtoILTClass {
                 // Skip CEP class creation if not ready to publish
                 ((jobType == 'Nurse Assistant Testing') && !readyToPublish)) {
             return false; // Take no action on this job
-        } else if (jobType != null && jobType.contains('Full Service')) {
-            if (PHSS_TriggerSettings__c.getOrgDefaults().skedJobtoILTClassFullServiceDisabled__c) {
-                return false; // Ignore full service jobs if this custom setting disabled
-            } else {
-                // Check to see if this full service job has cloud craze order/order item numbers associated to it
-                if (jobRecord.Training_Event__c == null ||
-                        jobRecord.Training_Event__r.CC_Order__c == null ||
-                            jobRecord.Training_Event__r.CC_Order_Item__c == null) {
-                    String emailToAddress = emailAddressMap.get(jobRecord.LastModifiedById);
-
-                    //String emailToAddress = theUser[0].Email;
-                    if (String.isNotBlank(emailToAddress)) {                    
-                        // Send email to scheduler that full service job is being processed without a cloud craze order associated to it
-                        String emailBody = 'The full service job you have scheduled, Job ' + jobRecord.Name +
-                                ', resulted in a ILT Class which does not have a Cloud Craze order associated to it.';
-                        String emailSubject = 'ILT Class Created Without Cloud Craze Order - Job' + jobRecord.Name;
-                        // Create email
-                        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-                        email.setSubject(emailSubject);
-                        email.setToAddresses(new String[]{
-                                emailToAddress
-                        });
-                        email.setPlainTextBody(emailBody);
-                        system.debug('=======email:'+email);
-
-                        emailList.add(email);
-                    }
-                }
-                return true;  // Process this full service job
+            /*
             }
+            else if (jobType != null && jobType.contains('Full Service')) {
+                if (PHSS_TriggerSettings__c.getOrgDefaults().skedJobtoILTClassFullServiceDisabled__c) {
+                    return false; // Ignore full service jobs if this custom setting disabled
+                } else {
+                    // Check to see if this full service job has cloud craze order/order item numbers associated to it
+                    if (jobRecord.Training_Event__c == null ||
+                            jobRecord.Training_Event__r.CC_Order__c == null ||
+                                jobRecord.Training_Event__r.CC_Order_Item__c == null) {
+                        String emailToAddress = emailAddressMap.get(jobRecord.LastModifiedById);
+
+                        //String emailToAddress = theUser[0].Email;
+                        if (String.isNotBlank(emailToAddress)) {
+                            // Send email to scheduler that full service job is being processed without a cloud craze order associated to it
+                            String emailBody = 'The full service job you have scheduled, Job ' + jobRecord.Name +
+                                    ', resulted in a ILT Class which does not have a Cloud Craze order associated to it.';
+                            String emailSubject = 'ILT Class Created Without Cloud Craze Order - Job' + jobRecord.Name;
+                            // Create email
+                            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                            email.setSubject(emailSubject);
+                            email.setToAddresses(new String[]{
+                                    emailToAddress
+                            });
+                            email.setPlainTextBody(emailBody);
+                            system.debug('=======email:'+email);
+
+                            emailList.add(email);
+                        }
+                    }
+                    return true;  // Process this full service job
+                }
+            */
         } else {
             return true;  // Process this job
         }
     }
-
+    /*
     private void sendEmails() {
         if (!Test.isRunningTest()) {
             if (emailList.size() > 0) {
@@ -1656,7 +1658,7 @@ public without sharing class PHSS_skedJobtoILTClass {
             }
         }
     }
-
+    */
     private Map<Id, Decimal> checkGeographicSpecificPricing(List<sked__Job__c> newRecords, Map<Id, String> locationToILTLocationZip) {
 
         // *****
