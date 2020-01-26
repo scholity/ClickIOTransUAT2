@@ -114,7 +114,7 @@ public without sharing class PHSS_skedJobtoILTClass {
         }
         
         if(!mapCanceledJobs.isEmpty()) {   
-            List<sked__Job__c> lstCanceledJobs = MapCanceledJobs.values();  
+            List<sked__Job__c> lstCanceledJobs = mapCanceledJobs.values();
             for (sked__Job__c theJob : addDependentStackedClasses(lstCanceledJobs, true)) {
                 if (!mapCanceledJobs.containsKey(theJob.Id)) {
                     mapCanceledJobs.put(theJob.Id, theJob);
@@ -417,6 +417,12 @@ public without sharing class PHSS_skedJobtoILTClass {
             if (String.isNotBlank(theJob.Course_Code__c)) {
                 courseCodes.add(theJob.Course_Code__c);
             }
+            if (theJob.Number_of_Instructors__c != null && theJob.Number_of_Instructors__c > 0) {
+                jobInstructorCountMap.put(theJob.Id, (Integer)theJob.Number_of_Instructors__c);
+            } else {
+                // Default to zero if no data available
+                jobInstructorCountMap.put(theJob.Id, 0);
+            }
         }
 
         // Get a Map of all course catalog available to match it with course code in Stacked class
@@ -503,7 +509,23 @@ public without sharing class PHSS_skedJobtoILTClass {
             System.debug('scheduleAllocationMap='+scheduleAllocationMap);
 
             for (Id theJobId : jobAllocationMap.keySet()) {
-                jobInstructorCountMap.put(theJobId, jobAllocationMap.get(theJobId).size());
+                // DE2372 - If Number of Instructors field in Job record is blank, then use number
+                // of allocated resources to drive number of vouchers to create based on course catalog ratio
+                if (jobInstructorCountMap.containsKey(theJobId)) {
+                    if (jobInstructorCountMap.get(theJobId) == 0) {
+                        if (jobAllocationMap.get(theJobId).size() > 0) {
+                            jobInstructorCountMap.put(theJobId, jobAllocationMap.get(theJobId).size());
+                        } else {
+                            jobInstructorCountMap.put(theJobId, 1);
+                        }
+                    }
+                } else {
+                    if (jobAllocationMap.get(theJobId).size() > 0) {
+                        jobInstructorCountMap.put(theJobId, jobAllocationMap.get(theJobId).size());
+                    } else {
+                        jobInstructorCountMap.put(theJobId, 1);
+                    }
+                }
             }
             System.debug(' jobInstructorCountMap=' + jobInstructorCountMap);
         }
@@ -633,6 +655,7 @@ public without sharing class PHSS_skedJobtoILTClass {
         Map<Id, Id> jobLearningMap = fetchJobLearningMap(newRecords);
         Map<Id, String> suppInfoMap = new Map<Id, String>();
         Map<Id, Id> scheduleToParentJobIdMap = new Map<Id, Id>();
+        Map<Id, redwing__ILT_Class__c> scheduleToParentClassMap = new Map<Id,redwing__ILT_Class__c>();
         Map<String,redwing__Learning_Version__c> lVersions = new Map<String,redwing__Learning_Version__c>();
         Map<Id,Id> insertedclassId = new Map<Id,Id>();
         Map<Id, Id> JobIdOppIdMap = new Map<Id, Id>();
@@ -675,6 +698,24 @@ public without sharing class PHSS_skedJobtoILTClass {
         System.debug('Jobs retrieved in this schedule ' +SetJob);
         System.debug('$$$$'+SetSchedule);
 
+        // Build list of jobs for each recurring schedule (to be used for date range validation)
+        List <sked__Job__c> recurringJobList = [
+            SELECT Id, sked__Recurring_Schedule__c, sked__Start__c
+            FROM sked__Job__c
+            WHERE sked__Recurring_Schedule__c IN :SetSchedule
+            ORDER BY sked__Start__c ASC];
+        Map <String, List<sked__Job__c>> recurringJobMap = new Map<String, List<sked__Job__c>>();
+        for (sked__Job__c theJob : recurringJobList) {
+            List<sked__Job__c> theRecurringJobList;
+            if (recurringJobMap.containsKey(theJob.sked__Recurring_Schedule__c)) {
+                theRecurringJobList = recurringJobMap.get(theJob.sked__Recurring_Schedule__c);
+            } else {
+                theRecurringJobList = new List<sked__Job__c>();
+            }
+            theRecurringJobList.add(theJob);
+            recurringJobMap.put(theJob.sked__Recurring_Schedule__c, theRecurringJobList);
+        }
+
         // Determine if ILT Class currently exists for the job (typical for an updated Skedulo job
         // to result in creation of new ILT Class record since when they are created the location may not be confirmed)
 
@@ -689,8 +730,12 @@ public without sharing class PHSS_skedJobtoILTClass {
         // If the job being processed has the same recurring schedule as an existing ILT Class then 
         // process session only (skip ILT class, LActvity, LObject, and LVersion creation)
         if (SetSchedule.size() > 0) {
-            For (redwing__ILT_Class__c theILTClass : [Select Id, Skedulo_Job_Id__c, Skedulo_Job_Id__r.sked__Recurring_Schedule__c From redwing__ILT_Class__c Where Skedulo_Job_Id__r.sked__Recurring_Schedule__c In :SetSchedule]) {
+            For (redwing__ILT_Class__c theILTClass : [Select Id, Skedulo_Job_Id__c, Skedulo_Job_Id__r.sked__Recurring_Schedule__c,
+                    redwing__Start_Date__c, redwing__End_Date__c
+                From redwing__ILT_Class__c
+                Where Skedulo_Job_Id__r.sked__Recurring_Schedule__c In :SetSchedule]) {
                 scheduleToParentJobIdMap.put(theILTClass.Skedulo_Job_Id__r.sked__Recurring_Schedule__c, theILTClass.Skedulo_Job_Id__c);
+                scheduleToParentClassMap.put(theILTClass.Skedulo_Job_Id__r.sked__Recurring_Schedule__c, theILTClass);
             }
         }
 
@@ -989,13 +1034,26 @@ public without sharing class PHSS_skedJobtoILTClass {
                         System.debug('OverrIde='+jobPriceOverrideMap.get(curJobRecord.Id));
                         clsRecord.Price_Override__c = jobPriceOverrideMap.get(curJobRecord.Id);
                     } 
-                                    
-                    clsRecord.redwing__End_Date__c = (curJobRecord.sked__Finish__c != null) ?  
-                        date.newinstance(curJobRecord.sked__Finish__c.year(),curJobRecord.sked__Finish__c.month(),curJobRecord.sked__Finish__c.day()) : Date.Today();              
-                    clsRecord.redwing__Start_Date__c = (curJobRecord.sked__Start__c != null) ? 
-                        date.newinstance(curJobRecord.sked__Start__c.year(),curJobRecord.sked__Start__c.month(),curJobRecord.sked__Start__c.day()) : Date.Today();
+
+                    if (!classExists || (classExists && String.isBlank(curJobRecord.sked__Recurring_Schedule__c))) {
+                        clsRecord.redwing__End_Date__c = (curJobRecord.sked__Finish__c != null) ?
+                                date.newinstance(curJobRecord.sked__Finish__c.year(), curJobRecord.sked__Finish__c.month(), curJobRecord.sked__Finish__c.day()) : Date.Today();
+                        clsRecord.redwing__Start_Date__c = (curJobRecord.sked__Start__c != null) ?
+                                date.newinstance(curJobRecord.sked__Start__c.year(), curJobRecord.sked__Start__c.month(), curJobRecord.sked__Start__c.day()) : Date.Today();
+                    } else {
+                        if (recurringJobMap.containsKey(curJobRecord.sked__Recurring_Schedule__c)) {
+                            List <sked__Job__c> jobList = recurringJobMap.get(curJobRecord.sked__Recurring_Schedule__c);
+                            Integer jobCount = jobList.size();
+                            if (jobCount > 0) {
+                                DateTime jobFirstDateTime = jobList[0].sked__Start__c;
+                                DateTime jobLastDateTime = jobList[jobCount - 1].sked__Start__c;
+                                clsRecord.redwing__Start_Date__c = date.newinstance(jobFirstDateTime.year(), jobFirstDateTime.month(), jobFirstDateTime.day());
+                                clsRecord.redwing__End_Date__c = date.newinstance(jobLastDateTime.year(), jobLastDateTime.month(), jobLastDateTime.day());
+                            }
+                        }
+                    }
+
                     clsRecord.Skedulo_Training_Event__c = curJobRecord.Training_Event__c;
-                    
                     clsRecord.Skedulo_Job_Id__c = curJobRecord.Id; 
                     clsRecord.Skedulo_Job_Id_External__c = curJobRecord.Id;
                     clsRecord.Skedulo_Job_Number__c = curJobRecord.Name;
@@ -1017,7 +1075,6 @@ public without sharing class PHSS_skedJobtoILTClass {
                         scheduleToParentJobIdMap.put(curJobRecord.sked__Recurring_Schedule__c, curJobRecord.Id);
                     }   
                     lstILTClass.add(clsRecord);
-
                 }
                 System.debug('lstILTClass records' +lstILTClass);
 
@@ -1028,9 +1085,11 @@ public without sharing class PHSS_skedJobtoILTClass {
                 // **************************************************************************************************************  
                                 
                 Id jobRecordId = curJobRecord.Id;
+                redwing__ILT_Class__c scheduleParentClass = null;
                 if (recurringJob) {
                     if (scheduleToParentJobIdMap.containsKey(curJobRecord.sked__Recurring_Schedule__c)) {
-                        jobRecordId = scheduleToParentJobIdMap.get(curJobRecord.sked__Recurring_Schedule__c);  
+                        jobRecordId = scheduleToParentJobIdMap.get(curJobRecord.sked__Recurring_Schedule__c);
+                        scheduleParentClass = scheduleToParentClassMap.get(curJobRecord.sked__Recurring_Schedule__c);
                     }                                   
                 }
 
@@ -1049,15 +1108,35 @@ public without sharing class PHSS_skedJobtoILTClass {
                             for (Integer listIndex=0; listIndex < lstILTClass.size(); listIndex++) {
                                 redwing__ILT_Class__c theClass = lstILTClass.get(listIndex);
                                 if (theClass.Skedulo_Job_Id__c == jobRecordId) {
-                                    if (sessionRecord.redwing__Date__c < theClass.redwing__Start_Date__c) {
-                                        theClass.redwing__Start_Date__c = sessionRecord.redwing__Date__c;
-                                    } else if (sessionRecord.redwing__Date__c > theClass.redwing__End_Date__c) {
-                                        theClass.redwing__End_Date__c = sessionRecord.redwing__Date__c;
+                                    if (recurringJobMap.containsKey(curJobRecord.sked__Recurring_Schedule__c)) {
+                                        List <sked__Job__c> jobList = recurringJobMap.get(curJobRecord.sked__Recurring_Schedule__c);
+                                        Integer jobCount = jobList.size();
+                                        if (jobCount > 0) {
+                                            DateTime jobFirstDateTime = jobList[0].sked__Start__c;
+                                            DateTime jobLastDateTime = jobList[jobCount - 1].sked__Start__c;
+                                            theClass.redwing__Start_Date__c = date.newinstance(jobFirstDateTime.year(), jobFirstDateTime.month(), jobFirstDateTime.day());
+                                            theClass.redwing__End_Date__c = date.newinstance(jobLastDateTime.year(), jobLastDateTime.month(), jobLastDateTime.day());
+                                        }
                                     }
                                     lstILTClass.set(listIndex, theClass);
                                     break;
                                 }
                             }
+                        } else if (scheduleParentClass != null) {
+                            // If this schedule's parent class is not being created/updated in this batch,
+                            // then we must adjust the parent's start/end dates based upon this sessions
+                            // date to accommodate date changes in job records
+                            if (recurringJobMap.containsKey(curJobRecord.sked__Recurring_Schedule__c)) {
+                                List <sked__Job__c> jobList = recurringJobMap.get(curJobRecord.sked__Recurring_Schedule__c);
+                                Integer jobCount = jobList.size();
+                                if (jobCount > 0) {
+                                    DateTime jobFirstDateTime = jobList[0].sked__Start__c;
+                                    DateTime jobLastDateTime = jobList[jobCount - 1].sked__Start__c;
+                                    scheduleParentClass.redwing__Start_Date__c = date.newinstance(jobFirstDateTime.year(), jobFirstDateTime.month(), jobFirstDateTime.day());
+                                    scheduleParentClass.redwing__End_Date__c = date.newinstance(jobLastDateTime.year(), jobLastDateTime.month(), jobLastDateTime.day());
+                                }
+                            }
+                            lstILTClass.add(scheduleParentClass);
                         }
                     }
                     System.debug('Inside session creation');
@@ -1183,29 +1262,19 @@ public without sharing class PHSS_skedJobtoILTClass {
                 lv.redwing__Type__c = 'Published';
                 lv.redwing__Version_selection_behavior__c = null;
 
-                // This code has no function - insertedclassId not even populated at this point
-                /*
-                if(insertedclassId.containskey(l.Id)){
-                    lv.redwing__ILT__c = insertedclassId.get(l.Id);
-                }
-                else {
-                    //TODO: Handle custom record types here
-                }
-                */
-                
                 lVersions.put(l.Id,lv);
             }
-            
+
             if(lVersions.size() > 0){
                 insert lVersions.values();
             }
-            
+
             //Update header information
             for(redwing__Learning__c l : lstLearning){
                 l.redwing__Current_Published_Version__c = lVersions.get(l.Id).Id;
                 l.redwing__Published__c = true;
             }
-            
+
             if(lstLearning.size() > 0){
                 update lstLearning;
             }
@@ -1295,6 +1364,25 @@ public without sharing class PHSS_skedJobtoILTClass {
             }
         }
 
+        // Update Learning Versions now that ILT Class has been inserted/upserted
+        if (lstLearning.size() > 0 && lVersions.size() > 0) {
+            for (redwing__Learning__c l : lstLearning) {
+                redwing__Learning_Version__c lv = new redwing__Learning_Version__c();
+                if (lVersions.containsKey(l.Id)) {
+                    lv = lVersions.get(l.Id);
+
+                    // Associate to ILT Class with same external Id
+                    lv.redwing__ILT__r = new redwing__ILT_Class__c(Skedulo_Job_Id_External__c = l.Skedulo_Job_Id_External__c);
+
+                    lVersions.put(l.Id, lv);
+                }
+            }
+
+            if (lVersions.size() > 0) {
+                update lVersions.values();
+            }
+        }
+
         if (lstILTInstructor.size() > 0) {
             System.debug('lstILTInstructor='+lstILTInstructor);
             Schema.SObjectField f = redwing__ILT_Instructor__c.Fields.Skedulo_Job_Id_External__c;
@@ -1360,16 +1448,19 @@ public without sharing class PHSS_skedJobtoILTClass {
 
         List<redwing__ILT_Session__c> updSessionRecords = new List<redwing__ILT_Session__c>();
         //Update Session with job Active field if students are registered
+        // Eliminate update of session records to avoid Job cancellation errors
+        /*
         for(redwing__ILT_Session__c sesRec : [Select Id, Skedulo_Job_Status__c, Skedulo_Job_Id_External__c, Skedulo_Job_Active__c
             From redwing__ILT_Session__c Where Skedulo_Job_Id_External__c IN: MapCanceledJobs.keySet()]){
             sesRec.Skedulo_Job_Active__c = false;
             sesRec.Skedulo_Job_Status__c = 'Cancelled';
             updSessionRecords.add(sesRec); 
         }
+
         if(updSessionRecords.size() > 0){
             update updSessionRecords;
         }
-        
+        */
         Set<Id> SetIds = new Set<Id>();
         Set<Id> SetjobIds = new Set<Id>();
         for(sked__Job__c job : MapCanceledJobs.values()){
@@ -1407,7 +1498,9 @@ public without sharing class PHSS_skedJobtoILTClass {
         // *** US1562 - Change status of outstanding rosters (status = 'Cancelled')
 
         // Generate List of both claimed and unused vouchers for this class
-        String claimedStatuses = 'Reserved, Claimed';
+        // DE2620 - SJC - Added Pending Cancellation to list of statuses, as for some reason another process is setting these
+        // and without this filter added a Pending Cancellation would be incorrectly reset to Void
+        String claimedStatuses = 'Reserved, Claimed, Pending Cancellation';
         //List<String> ClaimedStatuses = System.label.ClaimedVoucherTypes.split(';');
 
         List<Voucher__c> lstVouchersToUpdate = new List<Voucher__c>();
@@ -1481,7 +1574,9 @@ public without sharing class PHSS_skedJobtoILTClass {
                     List<redwing__Achievement_Assignment__c> lstRosterAchievementAssignments = [
                             Select Id, redwing__User__c
                             From redwing__Achievement_Assignment__c
-                            Where redwing__User__c In :lstRosterUsers And redwing__Status__c Not In ('Acquired', 'Expired')
+                            Where ILT_Class__c In :clsRecIds
+                            AND redwing__User__c In :lstRosterUsers
+                            And redwing__Status__c Not In ('Acquired', 'Expired')
                             And redwing__Training_Plan_Achievement__c IN :lstLearningPlanAchievements
                     ];
 
@@ -1552,7 +1647,8 @@ public without sharing class PHSS_skedJobtoILTClass {
     */
     
     private Boolean checkSessionJobFields(sked__Job__c newJob, sked__Job__c oldJob) {
-        Boolean sessionFieldChange = false; // true = at least one field value has changed between old and new records
+        Boolean sessionFieldChange = true; // force true for now
+        //Boolean sessionFieldChange = false; // true = at least one field value has changed between old and new records
 
         if (oldJob != null) {
             Map<String, Object>

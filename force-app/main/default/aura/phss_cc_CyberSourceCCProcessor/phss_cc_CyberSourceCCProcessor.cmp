@@ -14,6 +14,8 @@
     <aura:attribute name="showForm" type="Boolean" default="false"/>
     <aura:attribute name="allowPaymentSubmission" type="Boolean" default="true"/>
     
+    <aura:attribute name="showError" type="Boolean" default="false"/>
+    
     <!--Hack-->
     <aura:attribute name="requiresClickHack" type="Boolean" default="false"/>
     <aura:attribute name="showPaymentProgress" type="Boolean" default="false"/>
@@ -222,6 +224,11 @@
                                          value="{!v.bill_to_address_postal_code}" messageWhenPatternMismatch="Please enter five digit Zip Code."/>
                     </div>
                 </div>
+                
+                
+                <aura:if isTrue="{!v.showError}">
+                    Please look for all the error on the page.
+                </aura:if>
 
                 <!--Make Payment-->
                 <aura:if isTrue="{! v.allowPaymentSubmission }">
@@ -232,7 +239,7 @@
                         <div class="slds-align_absolute-center slds-m-top_large">
 
                             <!--disabled button-->
-                            <lightning:button variant="success" label="Make Payment" disabled="true"/>
+                            <lightning:button variant="success" label="Make Payment1" disabled="true"/>
 
                             <!--popover-->
                             <div class="approvalWarning">

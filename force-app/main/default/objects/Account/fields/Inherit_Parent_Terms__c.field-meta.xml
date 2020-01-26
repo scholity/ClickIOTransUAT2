@@ -3,10 +3,7 @@
     <fullName>Inherit_Parent_Terms__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <inlineHelpText>Select if you want the Account to Inherit the 
-- Available Credit 
-- Payment Terms
-from Parent Account</inlineHelpText>
+    <inlineHelpText>Select if new Account should inherit Contract Terms, Payment Terms and Credit Limit from Parent Account.</inlineHelpText>
     <label>Inherit Parent Terms</label>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>

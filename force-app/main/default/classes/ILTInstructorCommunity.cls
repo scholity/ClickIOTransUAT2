@@ -47,7 +47,7 @@ public without sharing class ILTInstructorCommunity{
     Public static List<account> accList;
     Public Static List<contact> conList;
     Public static List<User> lstUser;
-    Public static List<id> uidlist; 
+    //Public static List<id> uidlist;
     Public static list<redwing__Training_Plan_Section__c> trpsclist;
     Public Static list<redwing__Training_Plan_Section_Assignment__c> lpsAssignmentList;
     Public Static list<redwing__Training_Plan_Section_Assignment__c> lpssecAsslist;
@@ -1150,15 +1150,20 @@ public without sharing class ILTInstructorCommunity{
 
             try {
                 if(lstUser.size() > 0 && errmsgvc!=true ){
-                    uidlist = new list<id>();
-                    System.debug('PROFILE id'+lstUser);
+                    //uidlist = new list<id>();
+                    //System.debug('PROFILE id'+lstUser);
                     insert lstUser;
                     system.debug('inserted user'+lstUser);
+
+                    // Hot Fix - avoid assigning permission sets to user here, this is handled by Appinium trigger
+                    // on profiles which is configured in LearnTrac, Start Here, LMS Permission Rules, Assign Learner Profile Addtl Perms
+                    /*
                     for(user u:lstuser)
                     {
                         uidlist.add(u.id);
                     }
                     assignUserPermission(uidlist);
+                    */
                 }
             }
             catch(Exception e){

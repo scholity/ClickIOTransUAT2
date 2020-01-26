@@ -110,18 +110,42 @@ public class PHSS_VoucherTriggerHandler {
     ** Author: Salesforce Services
     ** Description: This method to block the issued vouchers for load balancing and vice versa
     ************************************************************************************************************************************/
-    public void BlockIssuedVouchersAndIssueBlockedVouchers(list<Voucher__c> newVouchers, List<Voucher__c> oldVouchers, Map<ID,Voucher__c> newVoucherMap , Map<ID,Voucher__c> oldVoucherMap){
-        set<id> setUpdatedVoucherClassIds = new set<id>();
+    public void BlockIssuedVouchersAndIssueBlockedVouchers(List<Voucher__c> newVouchers, List<Voucher__c> oldVouchers, Map<Id,Voucher__c> newVoucherMap , Map<ID,Voucher__c> oldVoucherMap){
+        Set<Id> setUpdatedVoucherClassIds = new Set<Id>();
+        Set<Id> setNewVouchers = new Set<Id>();
+
+        // DE2407 - Exclude vouchers for classes that have been cancelled (SJC - 01-20-2020)
+
+        // Determine which vouchers have a change in status and are assigned to active ILT Classes
+        for (Voucher__c vcr : newVouchers) {
+            // Check the status in old map and new map to identify a change in voucher status
+            // Vouchers for ILT Classes will have ILT_Class__c lookup populated (online vouchers will not)
+            if ((vcr.status__c != oldVoucherMap.get(vcr.id).status__c)
+                && (vcr.ILT_Class__c != null)) {
+                setNewVouchers.add(vcr.Id);
+            }
+        }
+        for (Voucher__c theVoucher : [SELECT Id, ILT_Class__c, ILT_Class__r.Skedulo_Job_Status__c,
+                ILT_Class__r.Is_Master_Class__c, ILT_Class__r.Is_Stacked_Class__c,
+                ILT_Class__r.Skedulo_Parent_Job__r.sked__Job_Status__c
+            FROM Voucher__c
+            WHERE Id IN :setNewVouchers
+            AND ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled']) {
+
+            setUpdatedVoucherClassIds.add(theVoucher.ILT_Class__c);
+        }
+
+        /*
         // Determine which vouchers have a change in status
         for(Voucher__c vcr : newVouchers){
             // Check the status in old map and new map to identify the change in voucher status
-            if(newVoucherMap.get(vcr.id).status__c != oldVoucherMap.get(vcr.id).status__c){
+            if((newVoucherMap.get(vcr.id).status__c != oldVoucherMap.get(vcr.id).status__c)) {
                 // Vouchers for ILT Classes will have ILT_Class__c lookup populated (online vouchers will not)
                 if (vcr.ILT_Class__c != null) setUpdatedVoucherClassIds.add(vcr.ILT_Class__c);   
             }
-            
         } 
-        
+        */
+
         // Continue with the trigger if is any change in voucher status
         if(!setUpdatedVoucherClassIds.isEmpty()){
             list<redwing__ILT_Class__c> lstStackedClasses = new list<redwing__ILT_Class__c>();

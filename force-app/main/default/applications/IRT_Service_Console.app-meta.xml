@@ -1046,6 +1046,8 @@
     <tabs>standard-report</tabs>
     <tabs>Fulfillment_Item__c</tabs>
     <tabs>ccrz__E_TransactionPayment__c</tabs>
+    <tabs>ccrz__E_OrderItem__c</tabs>
+    <tabs>redwing__Task__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>IRT_Service_Console_UtilityBar</utilityBar>
     <workspaceConfig>
@@ -1053,7 +1055,13 @@
             <tab>Fulfillment_Item__c</tab>
         </mappings>
         <mappings>
+            <tab>ccrz__E_OrderItem__c</tab>
+        </mappings>
+        <mappings>
             <tab>ccrz__E_TransactionPayment__c</tab>
+        </mappings>
+        <mappings>
+            <tab>redwing__Task__c</tab>
         </mappings>
         <mappings>
             <tab>standard-Account</tab>

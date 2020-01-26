@@ -79,7 +79,10 @@ global without sharing class LightningSelfRegisterController {
             if (String.isNotBlank(ownerId)) {
                 Account acc = new Account();
                 acc.Id = accountId;
-                acc.Name = firstname + ' ' + lastname;
+                // DE2315 - Modify name of new individual account created and specify default payment type
+                acc.Name = 'The ' + firstname + ' ' + lastname + ' Account';
+                acc.Preferred_Payment_type__c = 'Credit/Debit Card';
+                //acc.Name = firstname + ' ' + lastname;
                 acc.OwnerId = ownerId;
                 acc.DM_External_Id__c = firstname + lastname + email;
                 acc.RecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Individual Account').getRecordTypeId();
@@ -96,7 +99,7 @@ global without sharing class LightningSelfRegisterController {
                 upsert con;
 
                 User u = new User();
-//            u.Username = firstname + lastname + email;
+                //u.Username = firstname + lastname + email;
                 u.Username = email; // changed on 5th June as rep US1470
                 u.put('Email', email);
                 u.FirstName = firstname;
@@ -141,9 +144,13 @@ global without sharing class LightningSelfRegisterController {
                 List<Id> userList = new List<Id>();
                 userList.add(userId);
 
+                // Hot Fix - avoid assigning permission sets to user here, this is handled by Appinium trigger
+                // on profiles which is configured in LearnTrac, Start Here, LMS Permission Rules, Assign Learner Profile Addtl Perms
+                /*
                 if (!Test.isRunningTest()) {
                     ILTInstructorCommunity.assignUserPermission(userList);
                 }
+                */
 
                 // create a fake userId for test.
                 if (Test.isRunningTest()) {

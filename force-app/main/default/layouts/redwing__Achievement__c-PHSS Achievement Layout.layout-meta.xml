@@ -40,6 +40,10 @@
                 <behavior>Edit</behavior>
                 <field>Learning_Plan__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Contact_Hours__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

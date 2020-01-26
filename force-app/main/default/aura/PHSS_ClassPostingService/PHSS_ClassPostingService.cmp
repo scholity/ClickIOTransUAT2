@@ -508,7 +508,11 @@
                             </div>
                             <div >
                                 <b style="margin-right:3rem">
-                                    <lightning:button  label="EDIT" value="{!offering.offeringId}" variant="base" class = "customButtonRed" onclick="{!c.editOffering }"/>
+                                    <!-- <lightning:button  label="EDIT" value="{!offering.offeringId}" variant="base" class = "customButtonRed" onclick="{!c.editOffering }" /> -->
+                                    <lightning:button  label="EDIT" disabled="true" value="{!offering.offeringId}" variant="base" class = "customButtonGrey" onclick="{!c.editOffering }" />
+                                    <lightning:helptext content="The Edit feature has been disabled. We are fixing an issue and should have the Edit funcationality working soon." />
+
+                                    
                                 </b>
                                 <b>
                                     <lightning:button  label="DELETE" value="{!offering.offeringId}" variant="base" class = "customButtonRed" onclick="{!c.deleteOffering }"/>

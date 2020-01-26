@@ -21,4 +21,6 @@
     <tabs>sked__Availability__c</tabs>
     <tabs>Resource_Activity_Report</tabs>
     <tabs>ccrz__E_TransactionPayment__c</tabs>
+    <tabs>ccrz__E_OrderItem__c</tabs>
+    <tabs>redwing__Task__c</tabs>
 </CustomApplication>
