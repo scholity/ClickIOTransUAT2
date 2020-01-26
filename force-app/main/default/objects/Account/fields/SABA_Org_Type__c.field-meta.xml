@@ -11,16 +11,11 @@
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
             <value>
                 <fullName>AP</fullName>
                 <default>false</default>
                 <label>AP</label>
-            </value>
-            <value>
-                <fullName>AP NAN</fullName>
-                <default>false</default>
-                <label>AP NAN</label>
             </value>
             <value>
                 <fullName>AP/BC</fullName>
@@ -36,6 +31,11 @@
                 <fullName>AP/FS</fullName>
                 <default>false</default>
                 <label>AP/FS</label>
+            </value>
+            <value>
+                <fullName>AP NAN</fullName>
+                <default>false</default>
+                <label>AP NAN</label>
             </value>
             <value>
                 <fullName>AQ</fullName>
@@ -68,6 +68,11 @@
                 <label>CEPA</label>
             </value>
             <value>
+                <fullName>CEPFS</fullName>
+                <default>false</default>
+                <label>CEPFS</label>
+            </value>
+            <value>
                 <fullName>Community Branch</fullName>
                 <default>false</default>
                 <label>Community Branch</label>
@@ -88,24 +93,24 @@
                 <label>FS</label>
             </value>
             <value>
-                <fullName>FS NAN</fullName>
-                <default>false</default>
-                <label>FS NAN</label>
-            </value>
-            <value>
                 <fullName>FS/APNAN</fullName>
                 <default>false</default>
                 <label>FS/APNAN</label>
             </value>
             <value>
-                <fullName>House AQ</fullName>
+                <fullName>FS NAN</fullName>
                 <default>false</default>
-                <label>House AQ</label>
+                <label>FS NAN</label>
             </value>
             <value>
                 <fullName>House AP</fullName>
                 <default>false</default>
                 <label>House AP</label>
+            </value>
+            <value>
+                <fullName>House AQ</fullName>
+                <default>false</default>
+                <label>House AQ</label>
             </value>
             <value>
                 <fullName>House FS</fullName>
@@ -126,6 +131,16 @@
                 <fullName>NATA</fullName>
                 <default>false</default>
                 <label>NATA</label>
+            </value>
+            <value>
+                <fullName>NATAP/LTP</fullName>
+                <default>false</default>
+                <label>NATAP/LTP</label>
+            </value>
+            <value>
+                <fullName>NATFS</fullName>
+                <default>false</default>
+                <label>NATFS</label>
             </value>
             <value>
                 <fullName>NATI</fullName>

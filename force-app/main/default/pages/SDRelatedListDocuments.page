@@ -4,7 +4,8 @@
         &lt;&lt; <apex:commandLink action="{!returnToParentRecord}">Return to record</apex:commandLink>
         <br />
         <br />
-        <apex:actionPoller action="{!redirectIfComplete}" interval="5" reRender="job_table" oncomplete="finishRedirect();" />
+        <!-- SJC 01-21-2020 Modified refresh interval to 20 seconds from 5 to reduce system overhead -->
+        <apex:actionPoller action="{!redirectIfComplete}" interval="20" reRender="job_table" oncomplete="finishRedirect();" />
         <apex:actionFunction action="{!finishRedirect}" name="finishRedirect" reRender="job_table" />
         <div style="width: 700px;">
             <apex:pageBlock id="job_table" >
@@ -25,6 +26,9 @@
                     <apex:column headerValue="Status" value="{!ow['job.SDOC__Status_Link__c']}"
                     style="width: 150px;" />
                 </apex:pageBlockTable>
+                <apex:outputText rendered="{!blockRequest}">No further requests allowed until your current jobs have finished</apex:outputText>
+                <br/>
+                <apex:outputText rendered="{!blockRequest}">{!openRequests}</apex:outputText>
             </apex:pageBlock>
         </div>
     </apex:form>

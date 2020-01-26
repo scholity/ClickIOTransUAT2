@@ -43,10 +43,10 @@
                            Confirm Submit Order Credit
                            
                            <br/><br/>
-                           
+                           <!-- 
                            <aura:if isTrue="{!v.showCreditOnAccount}">
                            		<lightning:input type="checkbox" label="Save Credit On Account" name="options" checked = "{!v.CreditOnAccount}"/>
-                           </aura:if>
+                           </aura:if>-->
                                 
                             
                        </div>

@@ -23,6 +23,7 @@ public with sharing class phss_cc_ProductUtil {
     public static final String ONLINE_SPEC_VALUE = 'ONLINE';
 
     private static final String FAILED_TO_PERFORM_SEARCH_REQUEST = 'Failed to perform search request.';
+    private static final String FAILED_TO_FETCH_PRODUCT_FOR_SKU = 'Failed to fetch product for SKU';
     private static final String FAILED_TO_GET_PRODUCT_DETAILS = 'Failed to get Product Details.';
     private static final String FAILED_TO_PERFORM_SEARCH = 'Failed to perform search.';
     private static final String FAILED_TO_PERFORM_FILTERED_PRODUCT_SEARCH = 'Failed to perform filtered product search.';
@@ -345,5 +346,39 @@ public with sharing class phss_cc_ProductUtil {
             throw new phss_cc_Exception(FAILED_TO_PERFORM_SEARCH);
         }
         return productsById;
+    }
+
+
+    /**
+     * @description Fetches the product identified by its SKU
+     *
+     * @param sku
+     *
+     * @return
+     */
+    public static ccrz__E_Product__c fetchProductForSKU(String sku) {
+        ccrz__E_Product__c product;
+
+        try {
+            List<ccrz__E_Product__c> products = [
+                    SELECT
+                            Id,
+                            Course_Catalog__r.Ratio_to_Instructor__c,
+                            LMS_Learning_Plan__c,
+                            LMS_Learning_Plan__r.Name
+                    FROM
+                            ccrz__E_Product__c
+                    WHERE
+                            ccrz__SKU__c = :sku
+            ];
+            if (products != null && products.size() > 0) {
+                product = products[0];
+            }
+
+        } catch (Exception e) {
+            throw new phss_cc_Exception(FAILED_TO_FETCH_PRODUCT_FOR_SKU + ': ' + sku, e);
+        }
+
+        return product;
     }
 }

@@ -353,8 +353,15 @@ public without sharing class PHSS_PublishCertificatesBatch implements Database.B
 
             // completion_dt (format MM/DD/YYYY 00:00:00)
             if(a.redwing__Acquisition_Date__c != null) {
-                DateTime dtAcqDate = a.redwing__Acquisition_Date__c;
-                String formattedAcqDate = dtAcqDate.format('MM/dd/yyyy')+' 00:00:00';
+                String dtMonth = String.valueOf(a.redwing__Acquisition_Date__c.month());
+                String dtDay = String.valueOf(a.redwing__Acquisition_Date__c.day());
+                String dtYear = String.valueOf(a.redwing__Acquisition_Date__c.year());
+                if (dtMonth.length()<2) dtMonth = '0'+dtMonth;
+                if (dtDay.length()<2) dtDay = '0'+dtDay;
+                String formattedAcqDate = dtMonth+'/'+dtDay+'/'+dtYear+' 00:00:00';
+                //DateTime dtAcqDate = a.redwing__Acquisition_Date__c;
+                //String formattedAcqDate = dtAcqDate.format('MM/dd/yyyy')+' 00:00:00';
+
                 dataList.add('\"'+ formattedAcqDate +'\"');
             }
             else {

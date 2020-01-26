@@ -325,6 +325,8 @@
                 else if (state === "ERROR") {
                     var errors = response.getError();
                     //component.set("v.offeringsPosted", false);
+                    alert("Error " + state + "\n" + errors[0].message);
+                    
                     if (errors) {
                         if (errors[0] && errors[0].message) {
                             console.log("Error message: " + errors[0].message);

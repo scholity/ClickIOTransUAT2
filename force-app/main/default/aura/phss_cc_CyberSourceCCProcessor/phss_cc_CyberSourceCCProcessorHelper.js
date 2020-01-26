@@ -118,6 +118,8 @@
     POSTFormData: function (component, helper) {
         var isFormDataValid = helper.validateFormData(component);
         if (!isFormDataValid) {
+            console.log("NOT VALID");
+            component.set("v.showError",true);
             return;
         }
 

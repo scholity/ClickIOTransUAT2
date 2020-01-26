@@ -745,6 +745,27 @@ Select a voucher(s) with a status of &#39;Issued&#39;. Copy and paste the self-r
         <value>ARC Service Delivery; SB ARC Service Delivery; ARC NAT Team; SB ARC NAT Team; System Administrator</value>
     </labels>
     <labels>
+        <fullName>SDocsDoclistId</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SDocsDoclistId</shortDescription>
+        <value>a2u210000016nsWAAQ,a2u210000016nsXAAQ,a2u210000016SuAAAU</value>
+    </labels>
+    <labels>
+        <fullName>SDocsDoclistIdForTP</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SDocsDoclistIdForTP</shortDescription>
+        <value>a2u210000016q9tAAA</value>
+    </labels>
+    <labels>
+        <fullName>SDocsRunAsUserName</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SDocsRunAsUserName</shortDescription>
+        <value>implementationadmin@salesforce.com.transuat</value>
+    </labels>
+    <labels>
         <fullName>Search_by</fullName>
         <categories>Smart Account Search</categories>
         <language>en_US</language>

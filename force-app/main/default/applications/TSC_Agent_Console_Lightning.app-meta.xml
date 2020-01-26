@@ -132,14 +132,22 @@
     <tabs>standard-LightningQuickText</tabs>
     <tabs>redwing__Achievement_Assignment__c</tabs>
     <tabs>ccrz__E_TransactionPayment__c</tabs>
+    <tabs>ccrz__E_OrderItem__c</tabs>
+    <tabs>redwing__Task__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>TSC_Agent_Console_Lightning_UtilityBar</utilityBar>
     <workspaceConfig>
+        <mappings>
+            <tab>ccrz__E_OrderItem__c</tab>
+        </mappings>
         <mappings>
             <tab>ccrz__E_TransactionPayment__c</tab>
         </mappings>
         <mappings>
             <tab>redwing__Achievement_Assignment__c</tab>
+        </mappings>
+        <mappings>
+            <tab>redwing__Task__c</tab>
         </mappings>
         <mappings>
             <tab>standard-Account</tab>

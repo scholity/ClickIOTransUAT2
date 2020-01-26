@@ -10,6 +10,9 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
     public Integer PricebookXMLSequenceNumber = 0;
     public Integer SiteCatalogXMLSequenceNumber = 0;
 
+    // Toggle new Learning Plan Id On/Off (in lieu of Learning Plan Record Id)
+    public Boolean LEARNING_PLAN_ID = true;
+
     public PHSS_eCommerceIntegrationFilesBatch(Boolean exportOption, String flags) {
         exportAllClasses = exportOption;
         processFlags = flags;
@@ -156,6 +159,9 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
         Map<String, String> customAttributeValueMap;
 
+        // Toggle new Learning Plan Id On/Off (in lieu of Learning Plan Record Id)
+        public Boolean LEARNING_PLAN_ID = true;
+
         CustomAttributes(Boolean CPS, Long classOnlineToEpoch, redwing__Training_Plan__c theLearningPlan, redwing__ILT_Class__c theClass, List<redwing__ILT_Session__c> theSessionList, redwing__ILT_Session__c theFirstSession) {
             String sessionDateList = '';
             String sessionDayOfWeekList = '';
@@ -197,7 +203,11 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             //String firstDateTimeString = String.valueOf(theFirstSession.redwing__Date__c) + ' ' + theFirstSession.redwing__Start_Time__c + ':00';
             //Long firstSessionDateEpochTime = DateTime.valueOf(firstDateTimeString).getTime();
 
-            CourseID        = theLearningPlan.Id;
+            if (LEARNING_PLAN_ID) {
+                CourseID = theLearningPlan.Learning_Plan_Id__c;
+            } else {
+                CourseID = theLearningPlan.Id;
+            }
             // Note: NAT and other multi-session classes can be delivered at multiple locations
             // We are selecting the location of the first session for this class
             FacilityID      = theFirstSession.redwing__Location__c;
@@ -244,7 +254,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             }
 
             customAttributeValueMap = new Map<String, String>{
-                    'CourseID'=>String.valueOf(CourseID).subString(0,15),
+                    'CourseID'=>(LEARNING_PLAN_ID) ? CourseID : String.valueOf(CourseID).subString(0,15),
                     'FacilityID'=>(FacilityId != null) ? String.valueOf(FacilityID).subString(0,15) : '',
                     'SabaOfferingId'=>String.valueOf(SabaOfferingId).subString(0,15),
                     'CourseFormat'=>CourseFormat,
@@ -296,6 +306,9 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
         Map<String, String> customAttributeValueMap;
 
+        // Toggle new Learning Plan Id On/Off (in lieu of Learning Plan Record Id)
+        public Boolean LEARNING_PLAN_ID = true;
+
         OnlineCustomAttributes(redwing__Training_Plan__c theLearningPlan, redwing__Learning__c theLearningObject, Long classOnlineToEpoch) {
             String courseDateList = '';
             String attachmentCategoryList = '';
@@ -303,7 +316,11 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             sessionEndEpoch = classOnlineToEpoch;
             sessionEndEpochMinusOneDay = classOnlineToEpoch - (24*60*60*1000); // Number of milliseconds in one day
 
-            CourseID         = theLearningPlan.Id;
+            if (LEARNING_PLAN_ID) {
+                CourseID = theLearningPlan.Learning_Plan_Id__c;
+            } else {
+                CourseID = theLearningPlan.Id;
+            }
             FacilityID       = 'online';
             SabaOfferingId   = theLearningObject.Id;
             // Trim whitespace to be compatible with DemandWare values
@@ -328,7 +345,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
                     'ChapterName'=>ChapterName,
                     'CourseDates'=>String.valueOf(CourseDates),
                     'CourseFormat'=>CourseFormat,
-                    'CourseID'=>String.valueOf(CourseID).subString(0,15),
+                    'CourseID'=>(LEARNING_PLAN_ID) ? CourseID : String.valueOf(CourseID).subString(0,15),
                     'CourseLanguage'=>CourseLanguage,
                     'CourseSortDate'=>String.valueOf(CourseSortDate),
                     'FacilityID'=>FacilityID,
@@ -373,6 +390,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         // complemented later with an incremental refresh)
 
         String theLPQuery = 'Select Id, Name, CreatedDate, redwing__About_RTA__c, redwing__Description__c, ';
+        if (LEARNING_PLAN_ID) theLPQuery += 'Learning_Plan_Id__c, ';
         theLPQuery += 'redwing__Language__c, Classroom_Setting__c, redwing__Start_Date__c, redwing__End_Date__c ';
         theLPQuery += 'From redwing__Training_Plan__c Where redwing__Status__c = \'Active\' ';
         theLPQuery += 'And redwing__Start_Date__c <= Today And redwing__End_Date__c >= Today ';
@@ -385,13 +403,18 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
         for (redwing__Training_Plan__c theLearningPlan : activeLearningPlans) {
             courseXMLMap.put(theLearningPlan.Id, getCourseXml(theLearningPlan));
-            siteCatalogXMLMap.put(theLearningPlan.Id, getSiteCatalogXml(theLearningPlan));
+            if (LEARNING_PLAN_ID) {
+                siteCatalogXMLMap.put(theLearningPlan.Id, getSiteCatalogXmlUsingString(theLearningPlan.Learning_Plan_Id__c));
+            } else {
+                siteCatalogXMLMap.put(theLearningPlan.Id, getSiteCatalogXml(theLearningPlan));
+            }
         }
 
         // Build list of active community classes and CPS requests to be displayed on eCommerce site
         // US1562 - Include cancelled community classes in export to DemandWare (to enable visibility flags to be reset)
 
         String theClassQuery = 'Select Id, CreatedDate, redwing__Learning__c, Learning_Plan__r.Id, Learning_Plan__r.Name, ';
+        if (LEARNING_PLAN_ID) theClassQuery += 'Learning_Plan__r.Learning_Plan_Id__c, ';
         theClassQuery += 'Learning_Plan__r.CreatedDate, Learning_Plan__r.redwing__End_Date__c, Class_Online__c, Class_Online_From__c, ';
         theClassQuery += 'Class_Online_To__c, Class_Searchable__c, Class_Searchable_If_Unavailable__c, Classroom_Setting__c, ';
         theClassQuery += 'Request_Type__c, Registration_Fee__c, CPS_Registration_Phone__c, redwing__Location__c, ';
@@ -506,11 +529,20 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         }
         //System.debug('locationXMLMap='+locationXMLMap);
 
-        trainingPlanList = [
-                Select Id, Name, redwing__About_RTA__c, redwing__Description__c,
-                        redwing__Language__c, Classroom_Setting__c, CreatedDate, redwing__End_Date__c
-                From redwing__Training_Plan__c Where Id In :LearningPlanIds
-        ];
+        if (LEARNING_PLAN_ID) {
+            trainingPlanList = [
+                    Select Id, Name, Learning_Plan_Id__c, redwing__About_RTA__c, redwing__Description__c,
+                            redwing__Language__c, Classroom_Setting__c, CreatedDate, redwing__End_Date__c
+                    From redwing__Training_Plan__c Where Id In :LearningPlanIds
+            ];
+        } else {
+            trainingPlanList = [
+                    Select Id, Name, redwing__About_RTA__c, redwing__Description__c,
+                            redwing__Language__c, Classroom_Setting__c, CreatedDate, redwing__End_Date__c
+                    From redwing__Training_Plan__c
+                    Where Id In :LearningPlanIds
+            ];
+        }
         for (redwing__Training_Plan__c theTrainingPlan : trainingPlanList) {
             trainingPlanMap.put(theTrainingPlan.Id, theTrainingPlan);
         }
@@ -605,7 +637,11 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             if (!courseXMLMap.containsKey(theLearningPlan.Id)) {
                 courseXMLMap.put(theLearningPlan.Id, getCourseXml(theLearningPlan));
                 if (!siteCatalogXMLMap.containsKey(theLearningPlan.Id)) {
-                    siteCatalogXMLMap.put(theLearningPlan.Id, getSiteCatalogXml(theLearningPlan));
+                    if (LEARNING_PLAN_ID) {
+                        siteCatalogXMLMap.put(theLearningPlan.Id, getSiteCatalogXmlUsingString(theLearningPlan.Learning_Plan_Id__c));
+                    } else {
+                        siteCatalogXMLMap.put(theLearningPlan.Id, getSiteCatalogXml(theLearningPlan));
+                    }
                 }
             }
             System.debug('Here I am line 609');
@@ -662,6 +698,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         Id recordTypeId = theRecordTypeList[0].Id;
 
         String theOnlineQuery = 'Select Id, CreatedDate, redwing__Learning__c, ';
+        if (LEARNING_PLAN_ID) theOnlineQuery += 'redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Learning_Plan_Id__c, ';
         theOnlineQuery += 'redwing__Training_Plan_Section__r.redwing__Training_Plan__c, ';
         theOnlineQuery += 'redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Classroom_Setting__c, ';
         theOnlineQuery += 'redwing__Training_Plan_Section__r.redwing__Training_Plan__r.redwing__Status__c ';
@@ -689,9 +726,25 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             onlineLearningIds.add(theTPSI.redwing__Learning__c);
             onlineLearningPlanIds.add(theTPSI.redwing__Training_Plan_Section__r.redwing__Training_Plan__c);
         }
-        List<redwing__Training_Plan__c> onlineLearningPlanList = [Select Id, Name, redwing__About_RTA__c,
-                redwing__Description__c, redwing__Language__c, Classroom_Setting__c, CreatedDate,
-                redwing__Start_Date__c, redwing__End_Date__c From redwing__Training_Plan__c Where Id in :onlineLearningPlanIds];
+
+        List<redwing__Training_Plan__c> onlineLearningPlanList;
+        if (LEARNING_PLAN_ID) {
+            onlineLearningPlanList = [
+                    Select Id, Name, Learning_Plan_Id__c, redwing__About_RTA__c,
+                            redwing__Description__c, redwing__Language__c, Classroom_Setting__c, CreatedDate,
+                            redwing__Start_Date__c, redwing__End_Date__c
+                    From redwing__Training_Plan__c
+                    Where Id in :onlineLearningPlanIds
+            ];
+        } else {
+            onlineLearningPlanList = [
+                    Select Id, Name, redwing__About_RTA__c,
+                            redwing__Description__c, redwing__Language__c, Classroom_Setting__c, CreatedDate,
+                            redwing__Start_Date__c, redwing__End_Date__c
+                    From redwing__Training_Plan__c
+                    Where Id in :onlineLearningPlanIds
+            ];
+        }
         List<redwing__Learning__c> onlineLearningList = [Select Id, Name From redwing__Learning__c Where Id in :onlineLearningIds];
 
         for (redwing__Training_Plan__c theLearningPlan : onlineLearningPlanList) {
@@ -712,7 +765,11 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
                 courseXMLMap.put(theLearningPlanId, getCourseXml(theLearningPlan));
                 if (!siteCatalogXMLMap.containsKey(theLearningPlanId)) {
-                    siteCatalogXMLMap.put(theLearningPlanId, getSiteCatalogXml(theLearningPlan));
+                    if (LEARNING_PLAN_ID) {
+                        siteCatalogXMLMap.put(theLearningPlan.Id, getSiteCatalogXmlUsingString(theLearningPlan.Learning_Plan_Id__c));
+                    } else {
+                        siteCatalogXMLMap.put(theLearningPlanId, getSiteCatalogXml(theLearningPlan));
+                    }
                 }
 
             }
@@ -1461,414 +1518,423 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         return;
     }
 
-             // XML for Course/Class and CPS Catalog File Header
+     // XML for Course/Class and CPS Catalog File Header
 
-             private String getCourseXmlHeader(Boolean CPS) {
-                 XmlStreamWriter xmlW = new XmlStreamWriter();
-                 xmlW.writeStartDocument('UTF-8','1.0');
-                 // if (CPS) xmlW.writeAttribute(null,null,'standalone','yes');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'catalog', null);
-                 xmlW.writeAttribute(null,null,'catalog-id','CourseMaster');
-                 xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/catalog/2006-10-31');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'header',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'image-settings',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'internal-location',null);
-                 xmlW.writeAttribute(null,null,'base-path','/');
-                 xmlW.writeEndElement(); // Close internal-location
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-types',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-type',null);
-                 xmlW.writeCharacters('large');
-                 xmlW.writeEndElement(); // Close view-type large
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-type',null);
-                 xmlW.writeCharacters('medium');
-                 xmlW.writeEndElement(); // Close view-type medium
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-type',null);
-                 xmlW.writeCharacters('small');
-                 xmlW.writeEndElement(); // Close view-type small
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-type',null);
-                 xmlW.writeCharacters('swatch');
-                 xmlW.writeEndElement(); // Close view-type swatch
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close view-types
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'alt-pattern',null);
-                 xmlW.writeCharacters('${productname}');
-                 xmlW.writeEndElement(); // Close alt-pattern
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'title-pattern',null);
-                 xmlW.writeCharacters('${productname}');
-                 xmlW.writeEndElement(); // Close title-pattern
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close image-settings
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close header
-                 xmlW.writeCharacters('\n');
+     private String getCourseXmlHeader(Boolean CPS) {
+         XmlStreamWriter xmlW = new XmlStreamWriter();
+         xmlW.writeStartDocument('UTF-8','1.0');
+         // if (CPS) xmlW.writeAttribute(null,null,'standalone','yes');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'catalog', null);
+         xmlW.writeAttribute(null,null,'catalog-id','CourseMaster');
+         xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/catalog/2006-10-31');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'header',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'image-settings',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'internal-location',null);
+         xmlW.writeAttribute(null,null,'base-path','/');
+         xmlW.writeEndElement(); // Close internal-location
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-types',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-type',null);
+         xmlW.writeCharacters('large');
+         xmlW.writeEndElement(); // Close view-type large
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-type',null);
+         xmlW.writeCharacters('medium');
+         xmlW.writeEndElement(); // Close view-type medium
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-type',null);
+         xmlW.writeCharacters('small');
+         xmlW.writeEndElement(); // Close view-type small
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-type',null);
+         xmlW.writeCharacters('swatch');
+         xmlW.writeEndElement(); // Close view-type swatch
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close view-types
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'alt-pattern',null);
+         xmlW.writeCharacters('${productname}');
+         xmlW.writeEndElement(); // Close alt-pattern
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'title-pattern',null);
+         xmlW.writeCharacters('${productname}');
+         xmlW.writeEndElement(); // Close title-pattern
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close image-settings
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close header
+         xmlW.writeCharacters('\n');
 
-                 // System.debug(xmlW.getXmlString());
+         // System.debug(xmlW.getXmlString());
 
-                 String xmlString = xmlW.getXmlString();
+         String xmlString = xmlW.getXmlString();
 
-                 return xmlString;
+         return xmlString;
+     }
+
+     // XML for Location File Header
+
+     private String getLocationXmlHeader() {
+         XmlStreamWriter xmlW = new XmlStreamWriter();
+         xmlW.writeStartDocument('UTF-8','1.0');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'stores', null);
+         xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/store/2007-04-30');
+         xmlW.writeCharacters('\n');
+
+         // System.debug(xmlW.getXmlString());
+
+         String xmlString = xmlW.getXmlString();
+
+         return xmlString;
+     }
+
+     // XML for Site Catalog File Header
+
+     private String getSiteCatalogXmlHeader() {
+         XmlStreamWriter xmlW = new XmlStreamWriter();
+         xmlW.writeStartDocument('UTF-8','1.0');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'catalog', null);
+         xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/catalog/2006-10-31');
+         xmlW.writeAttribute(null,null,'catalog-id','arc-site-catalog');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'header',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'image-settings',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'internal-location',null);
+         xmlW.writeAttribute(null,null,'base-path','/');
+         xmlW.writeEndElement(); // Close internal-location
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-types',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-type',null);
+         xmlW.writeCharacters('large');
+         xmlW.writeEndElement(); // Close view-type large
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-type',null);
+         xmlW.writeCharacters('medium');
+         xmlW.writeEndElement(); // Close view-type medium
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-type',null);
+         xmlW.writeCharacters('small');
+         xmlW.writeEndElement(); // Close view-type small
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'view-type',null);
+         xmlW.writeCharacters('swatch');
+         xmlW.writeEndElement(); // Close view-type swatch
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close view-types
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'alt-pattern',null);
+         xmlW.writeCharacters('${productname}');
+         xmlW.writeEndElement(); // Close alt-pattern
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'title-pattern',null);
+         xmlW.writeCharacters('${productname}');
+         xmlW.writeEndElement(); // Close title-pattern
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close image-settings
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close header
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'category',null);
+         xmlW.writeAttribute(null,null,'category-id','root');
+         xmlW.writeEndElement(); // Close category
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'category',null);
+         xmlW.writeAttribute(null,null,'category-id','take-a-class');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'display-name',null);
+         xmlW.writeCharacters('Training + Certification');
+         xmlW.writeEndElement(); // Close display-name
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'online-flag',null);
+         xmlW.writeCharacters('true');
+         xmlW.writeEndElement(); // Close online-flag
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'parent',null);
+         xmlW.writeCharacters('root');
+         xmlW.writeEndElement(); // Close parent
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'custom-attributes',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'custom-attribute',null);
+         xmlW.writeAttribute(null,null,'xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance');
+         xmlW.writeAttribute(null,null,'xsi:type','sharedType.SiteSpecificCustomAttribute');
+         xmlW.writeAttribute(null,null,'attribute-id','showInMenu');
+         xmlW.writeCharacters('true');
+         xmlW.writeEndElement(); // Close custom-attribute
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'custom-attribute',null);
+         xmlW.writeAttribute(null,null,'xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance');
+         xmlW.writeAttribute(null,null,'xsi:type','sharedType.SiteSpecificCustomAttribute');
+         xmlW.writeAttribute(null,null,'attribute-id','enableCompare');
+         xmlW.writeCharacters('false');
+         xmlW.writeEndElement(); // Close custom-attribute
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close custom-attributes
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close category
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'category',null);
+         xmlW.writeAttribute(null,null,'category-id','hidden');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'display-name',null);
+         xmlW.writeCharacters('Hidden');
+         xmlW.writeEndElement(); // Close display-name
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'online-flag',null);
+         xmlW.writeCharacters('true');
+         xmlW.writeEndElement(); // Close online-flag
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'parent',null);
+         xmlW.writeCharacters('take-a-class');
+         xmlW.writeEndElement(); // Close parent
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close category
+         xmlW.writeCharacters('\n');
+
+         // System.debug(xmlW.getXmlString());
+
+         String xmlString = xmlW.getXmlString();
+
+         return xmlString;
+     }
+
+     // XML for Inventory File Header
+
+     private String getInventoryXmlHeader() {
+         XmlStreamWriter xmlW = new XmlStreamWriter();
+         xmlW.writeStartDocument('UTF-8','1.0');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'inventory', null);
+         xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/inventory/2007-05-31');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'inventory-list',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'header',null);
+         xmlW.writeAttribute(null,null,'list-id','ARC-US-inventory');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'default-instock',null);
+         xmlW.writeCharacters('false');
+         xmlW.writeEndElement(); // Close default-instock
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'description',null);
+         xmlW.writeCharacters('ARC inventory List');
+         xmlW.writeEndElement(); // Close description
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'use-bundle-inventory-only',null);
+         xmlW.writeCharacters('false');
+         xmlW.writeEndElement(); // Close use-bundle-inventory-only
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'on-order',null);
+         xmlW.writeCharacters('false');
+         xmlW.writeEndElement(); // Close on-order
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close header
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'records',null);
+         xmlW.writeCharacters('\n');
+
+         // System.debug(xmlW.getXmlString());
+
+         String xmlString = xmlW.getXmlString();
+
+         return xmlString;
+     }
+
+     // XML for Pricebook File Header
+
+     private String getPricebookXmlHeader() {
+         XmlStreamWriter xmlW = new XmlStreamWriter();
+         xmlW.writeStartDocument('UTF-8','1.0');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'pricebooks', null);
+         xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/pricebook/2006-10-31');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'pricebook',null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'header',null);
+         xmlW.writeAttribute(null,null,'pricebook-id','Course-Price-Book');
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'currency',null);
+         xmlW.writeCharacters('USD');
+         xmlW.writeEndElement(); // Close currency
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'display-name',null);
+         xmlW.writeCharacters('Course Price Book');
+         xmlW.writeEndElement(); // Close display-name
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'online-flag',null);
+         xmlW.writeCharacters('true');
+         xmlW.writeEndElement(); // Close online-flag
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close header
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'price-tables',null);
+         xmlW.writeCharacters('\n');
+
+         // System.debug(xmlW.getXmlString());
+
+         String xmlString = xmlW.getXmlString();
+
+         return xmlString;
+     }
+
+
+     // XML Definition for Course Descriptions (Learning Plans)
+
+     private String getCourseXml(redwing__Training_Plan__c theLearningPlan) {
+         // Unmapped attributes hard-coded for now
+         String   taxClass = 'baseTax';  // The following four fields are static (values as per sample files)
+         Boolean  forcePriceFlag = true;
+         Boolean  nonInventoryFlag = true;
+         Boolean  nonDiscountableFlag = true;
+
+         XmlStreamWriter xmlW = new XmlStreamWriter();
+         xmlW.writeStartElement(null,'product', null);
+         // Enhancement - use new Learning Plan Numbers rather than IDs as unique identifiers in Demandware
+         if (LEARNING_PLAN_ID) {
+             xmlW.writeAttribute(null, null, 'product-id', theLearningPlan.Learning_Plan_Id__c);
+         } else {
+             xmlW.writeAttribute(null,null,'product-id',String.valueOf(theLearningPlan.Id).subString(0,15));
+         }
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'display-name', null);
+         xmlW.writeCharacters(theLearningPlan.Name);
+         xmlW.writeEndElement(); // Close display-name
+         xmlW.writeCharacters('\n');
+         String longDescription = (theLearningPlan.redwing__About_RTA__c != null) ?
+                 theLearningPlan.redwing__About_RTA__c.replaceAll('<[^>]+>','').replaceAll('[^\\x00-\\x7f]', '') : '';
+         if (String.isNotEmpty(longDescription)) {
+             xmlW.writeStartElement(null,'long-description', null);
+             xmlW.writeCharacters(longDescription);
+             xmlW.writeEndElement(); // Close long-description
+             xmlW.writeCharacters('\n');
+         }
+         xmlW.writeStartElement(null,'online-flag', null);
+         Boolean classOnline = true;
+         xmlW.writeCharacters(String.valueOf(classOnline));
+         xmlW.writeEndElement(); // Close online-flag
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'searchable-flag', null);
+         Boolean classSearchable = true;
+         xmlW.writeCharacters(String.valueOf(classSearchable));
+         xmlW.writeEndElement(); // Close searchable-flag
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'custom-attributes', null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'custom-attribute', null);
+         xmlW.writeAttribute(null,null,'attribute-id', 'CourseID');
+         if (LEARNING_PLAN_ID) {
+             xmlW.writeCharacters(theLearningPlan.Learning_Plan_Id__c);
+         } else {
+             xmlW.writeCharacters(String.valueOf(theLearningPlan.Id).subString(0, 15));
+         }
+         xmlW.writeEndElement(); // Close custom-attribute
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'custom-attribute', null);
+         xmlW.writeAttribute(null,null,'attribute-id', 'productType');
+         xmlW.writeCharacters('course');
+         xmlW.writeEndElement(); // Close custom-attribute
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'custom-attribute', null);
+         xmlW.writeAttribute(null,null,'attribute-id', 'IsCourse');
+         xmlW.writeCharacters('true');
+         xmlW.writeEndElement(); // Close custom-attribute
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close custom-attributes
+         xmlW.writeCharacters('\n');
+
+         xmlW.writeStartElement(null,'store-attributes', null);
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'tax-class', null);
+         xmlW.writeCharacters(taxClass);
+         xmlW.writeEndElement(); // Close tax-class
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'force-price-flag', null);
+         xmlW.writeCharacters(String.valueOf(forcePriceFlag));
+         xmlW.writeEndElement(); // Close force-price-flag
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'non-inventory-flag', null);
+         xmlW.writeCharacters(String.valueOf(nonInventoryFlag));
+         xmlW.writeEndElement(); // Close non-inventory-flag
+         xmlW.writeCharacters('\n');
+         xmlW.writeStartElement(null,'non-discountable-flag', null);
+         xmlW.writeCharacters(String.valueOf(nonDiscountableFlag));
+         xmlW.writeEndElement(); // Close non-discountable-flag
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // store-attributes
+         xmlW.writeCharacters('\n');
+         xmlW.writeEndElement(); // Close product
+         xmlW.writeCharacters('\n');
+
+         //System.debug(xmlW.getXmlString());
+
+         String xmlString = xmlW.getXmlString();
+
+         return xmlString;
+     }
+
+     // XML Definition for Class Listings (Community Classes and CPS Listings)
+
+     private String getClassXml(Boolean CPS, redwing__Training_Plan__c theLearningPlan, redwing__ILT_Class__c theClass, List<redwing__ILT_Session__c> theSessionList, redwing__ILT_Session__c theFirstSession) {
+         // Unmapped attributes hard-coded for now
+         String   siteMapIncludedFlag = 'None'; // Removing the attribute from the generated XML file forces this value to none
+         String   taxClass = 'baseTax';  // The following four fields are static (values as per sample files)
+         Boolean  forcePriceFlag = true;
+         Boolean  nonInventoryFlag = true;
+         Boolean  nonDiscountableFlag = true;
+
+         //String classStartTime;
+         String classOnlineFromTime;
+         String classOnlineToTime;
+         Date classOnlineFrom;
+         Date classOnlineTo;
+         Long epochOnlineFrom;
+         Long epochOnlineTo;
+         String onlineFromTimeZone;
+         String onlineToTimeZone;
+
+         // DE1676 - Implement new business rules for defining online from/to dates
+         // The online from date is in *system* time zone
+         if (theClass.Class_Online_From__c != null) {
+             classOnlineFrom = theClass.Class_Online_From__c;
+             classOnlineFromTime = '00:00';
+             onlineFromTimeZone = 'America/New_York';
+         } else {
+             classOnlineFrom = Date.valueOf(theClass.CreatedDate);
+             classOnlineFromTime = theClass.CreatedDate.format('HH:mm');
+             onlineFromTimeZone = 'America/New_York';
+         }
+         if (theClass.Class_Online_To__c != null) {
+             classOnlineTo = theClass.Class_Online_To__c;
+             classOnlineToTime = '00:00';
+             onlineToTimeZone = 'America/New_York';
+         } else {
+             classOnlineTo = theFirstSession.redwing__Date__c;
+             classOnlineToTime = theFirstSession.redwing__Start_Time__c;
+             // DE1677 - Correct formula to calculate online to (epoch value) for blended learning classes
+             // Adjust online to field back by one calendar day if this is a blended class
+             // Retracted - SJC - 9-23-2019
+             /*
+             if (theClass.Classroom_Setting__c == 'Online + Classroom') {
+                 classOnlineTo = classOnlineTo.addDays(-1); // Subtract one day if blended class and no explicit end date supplied
              }
-
-             // XML for Location File Header
-
-             private String getLocationXmlHeader() {
-                 XmlStreamWriter xmlW = new XmlStreamWriter();
-                 xmlW.writeStartDocument('UTF-8','1.0');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'stores', null);
-                 xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/store/2007-04-30');
-                 xmlW.writeCharacters('\n');
-
-                 // System.debug(xmlW.getXmlString());
-
-                 String xmlString = xmlW.getXmlString();
-
-                 return xmlString;
-             }
-
-             // XML for Site Catalog File Header
-
-             private String getSiteCatalogXmlHeader() {
-                 XmlStreamWriter xmlW = new XmlStreamWriter();
-                 xmlW.writeStartDocument('UTF-8','1.0');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'catalog', null);
-                 xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/catalog/2006-10-31');
-                 xmlW.writeAttribute(null,null,'catalog-id','arc-site-catalog');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'header',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'image-settings',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'internal-location',null);
-                 xmlW.writeAttribute(null,null,'base-path','/');
-                 xmlW.writeEndElement(); // Close internal-location
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-types',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-type',null);
-                 xmlW.writeCharacters('large');
-                 xmlW.writeEndElement(); // Close view-type large
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-type',null);
-                 xmlW.writeCharacters('medium');
-                 xmlW.writeEndElement(); // Close view-type medium
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-type',null);
-                 xmlW.writeCharacters('small');
-                 xmlW.writeEndElement(); // Close view-type small
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'view-type',null);
-                 xmlW.writeCharacters('swatch');
-                 xmlW.writeEndElement(); // Close view-type swatch
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close view-types
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'alt-pattern',null);
-                 xmlW.writeCharacters('${productname}');
-                 xmlW.writeEndElement(); // Close alt-pattern
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'title-pattern',null);
-                 xmlW.writeCharacters('${productname}');
-                 xmlW.writeEndElement(); // Close title-pattern
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close image-settings
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close header
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'category',null);
-                 xmlW.writeAttribute(null,null,'category-id','root');
-                 xmlW.writeEndElement(); // Close category
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'category',null);
-                 xmlW.writeAttribute(null,null,'category-id','take-a-class');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'display-name',null);
-                 xmlW.writeCharacters('Training + Certification');
-                 xmlW.writeEndElement(); // Close display-name
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'online-flag',null);
-                 xmlW.writeCharacters('true');
-                 xmlW.writeEndElement(); // Close online-flag
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'parent',null);
-                 xmlW.writeCharacters('root');
-                 xmlW.writeEndElement(); // Close parent
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'custom-attributes',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'custom-attribute',null);
-                 xmlW.writeAttribute(null,null,'xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance');
-                 xmlW.writeAttribute(null,null,'xsi:type','sharedType.SiteSpecificCustomAttribute');
-                 xmlW.writeAttribute(null,null,'attribute-id','showInMenu');
-                 xmlW.writeCharacters('true');
-                 xmlW.writeEndElement(); // Close custom-attribute
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'custom-attribute',null);
-                 xmlW.writeAttribute(null,null,'xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance');
-                 xmlW.writeAttribute(null,null,'xsi:type','sharedType.SiteSpecificCustomAttribute');
-                 xmlW.writeAttribute(null,null,'attribute-id','enableCompare');
-                 xmlW.writeCharacters('false');
-                 xmlW.writeEndElement(); // Close custom-attribute
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close custom-attributes
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close category
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'category',null);
-                 xmlW.writeAttribute(null,null,'category-id','hidden');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'display-name',null);
-                 xmlW.writeCharacters('Hidden');
-                 xmlW.writeEndElement(); // Close display-name
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'online-flag',null);
-                 xmlW.writeCharacters('true');
-                 xmlW.writeEndElement(); // Close online-flag
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'parent',null);
-                 xmlW.writeCharacters('take-a-class');
-                 xmlW.writeEndElement(); // Close parent
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close category
-                 xmlW.writeCharacters('\n');
-
-                 // System.debug(xmlW.getXmlString());
-
-                 String xmlString = xmlW.getXmlString();
-
-                 return xmlString;
-             }
-
-             // XML for Inventory File Header
-
-             private String getInventoryXmlHeader() {
-                 XmlStreamWriter xmlW = new XmlStreamWriter();
-                 xmlW.writeStartDocument('UTF-8','1.0');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'inventory', null);
-                 xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/inventory/2007-05-31');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'inventory-list',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'header',null);
-                 xmlW.writeAttribute(null,null,'list-id','ARC-US-inventory');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'default-instock',null);
-                 xmlW.writeCharacters('false');
-                 xmlW.writeEndElement(); // Close default-instock
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'description',null);
-                 xmlW.writeCharacters('ARC inventory List');
-                 xmlW.writeEndElement(); // Close description
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'use-bundle-inventory-only',null);
-                 xmlW.writeCharacters('false');
-                 xmlW.writeEndElement(); // Close use-bundle-inventory-only
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'on-order',null);
-                 xmlW.writeCharacters('false');
-                 xmlW.writeEndElement(); // Close on-order
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close header
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'records',null);
-                 xmlW.writeCharacters('\n');
-
-                 // System.debug(xmlW.getXmlString());
-
-                 String xmlString = xmlW.getXmlString();
-
-                 return xmlString;
-             }
-
-             // XML for Pricebook File Header
-
-             private String getPricebookXmlHeader() {
-                 XmlStreamWriter xmlW = new XmlStreamWriter();
-                 xmlW.writeStartDocument('UTF-8','1.0');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'pricebooks', null);
-                 xmlW.writeAttribute(null,null,'xmlns','http://www.demandware.com/xml/impex/pricebook/2006-10-31');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'pricebook',null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'header',null);
-                 xmlW.writeAttribute(null,null,'pricebook-id','Course-Price-Book');
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'currency',null);
-                 xmlW.writeCharacters('USD');
-                 xmlW.writeEndElement(); // Close currency
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'display-name',null);
-                 xmlW.writeCharacters('Course Price Book');
-                 xmlW.writeEndElement(); // Close display-name
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'online-flag',null);
-                 xmlW.writeCharacters('true');
-                 xmlW.writeEndElement(); // Close online-flag
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close header
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'price-tables',null);
-                 xmlW.writeCharacters('\n');
-
-                 // System.debug(xmlW.getXmlString());
-
-                 String xmlString = xmlW.getXmlString();
-
-                 return xmlString;
-             }
-
-
-             // XML Definition for Course Descriptions (Learning Plans)
-
-             private String getCourseXml(redwing__Training_Plan__c theLearningPlan) {
-                 // Unmapped attributes hard-coded for now
-                 String   taxClass = 'baseTax';  // The following four fields are static (values as per sample files)
-                 Boolean  forcePriceFlag = true;
-                 Boolean  nonInventoryFlag = true;
-                 Boolean  nonDiscountableFlag = true;
-
-                 XmlStreamWriter xmlW = new XmlStreamWriter();
-                 xmlW.writeStartElement(null,'product', null);
-                 xmlW.writeAttribute(null,null,'product-id',String.valueOf(theLearningPlan.Id).subString(0,15));
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'display-name', null);
-                 xmlW.writeCharacters(theLearningPlan.Name);
-                 xmlW.writeEndElement(); // Close display-name
-                 xmlW.writeCharacters('\n');
-                 String longDescription = (theLearningPlan.redwing__About_RTA__c != null) ?
-                         theLearningPlan.redwing__About_RTA__c.replaceAll('<[^>]+>','').replaceAll('[^\\x00-\\x7f]', '') : '';
-                 if (String.isNotEmpty(longDescription)) {
-                     xmlW.writeStartElement(null,'long-description', null);
-                     xmlW.writeCharacters(longDescription);
-                     xmlW.writeEndElement(); // Close long-description
-                     xmlW.writeCharacters('\n');
-                 }
-                 xmlW.writeStartElement(null,'online-flag', null);
-                 Boolean classOnline = true;
-                 xmlW.writeCharacters(String.valueOf(classOnline));
-                 xmlW.writeEndElement(); // Close online-flag
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'searchable-flag', null);
-                 Boolean classSearchable = true;
-                 xmlW.writeCharacters(String.valueOf(classSearchable));
-                 xmlW.writeEndElement(); // Close searchable-flag
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'custom-attributes', null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'custom-attribute', null);
-                 xmlW.writeAttribute(null,null,'attribute-id', 'CourseID');
-                 xmlW.writeCharacters(String.valueOf(theLearningPlan.Id).subString(0,15));
-                 xmlW.writeEndElement(); // Close custom-attribute
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'custom-attribute', null);
-                 xmlW.writeAttribute(null,null,'attribute-id', 'productType');
-                 xmlW.writeCharacters('course');
-                 xmlW.writeEndElement(); // Close custom-attribute
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'custom-attribute', null);
-                 xmlW.writeAttribute(null,null,'attribute-id', 'IsCourse');
-                 xmlW.writeCharacters('true');
-                 xmlW.writeEndElement(); // Close custom-attribute
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close custom-attributes
-                 xmlW.writeCharacters('\n');
-
-                 xmlW.writeStartElement(null,'store-attributes', null);
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'tax-class', null);
-                 xmlW.writeCharacters(taxClass);
-                 xmlW.writeEndElement(); // Close tax-class
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'force-price-flag', null);
-                 xmlW.writeCharacters(String.valueOf(forcePriceFlag));
-                 xmlW.writeEndElement(); // Close force-price-flag
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'non-inventory-flag', null);
-                 xmlW.writeCharacters(String.valueOf(nonInventoryFlag));
-                 xmlW.writeEndElement(); // Close non-inventory-flag
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeStartElement(null,'non-discountable-flag', null);
-                 xmlW.writeCharacters(String.valueOf(nonDiscountableFlag));
-                 xmlW.writeEndElement(); // Close non-discountable-flag
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // store-attributes
-                 xmlW.writeCharacters('\n');
-                 xmlW.writeEndElement(); // Close product
-                 xmlW.writeCharacters('\n');
-
-                 //System.debug(xmlW.getXmlString());
-
-                 String xmlString = xmlW.getXmlString();
-
-                 return xmlString;
-             }
-
-             // XML Definition for Class Listings (Community Classes and CPS Listings)
-
-             private String getClassXml(Boolean CPS, redwing__Training_Plan__c theLearningPlan, redwing__ILT_Class__c theClass, List<redwing__ILT_Session__c> theSessionList, redwing__ILT_Session__c theFirstSession) {
-                 // Unmapped attributes hard-coded for now
-                 String   siteMapIncludedFlag = 'None'; // Removing the attribute from the generated XML file forces this value to none
-                 String   taxClass = 'baseTax';  // The following four fields are static (values as per sample files)
-                 Boolean  forcePriceFlag = true;
-                 Boolean  nonInventoryFlag = true;
-                 Boolean  nonDiscountableFlag = true;
-
-                 //String classStartTime;
-                 String classOnlineFromTime;
-                 String classOnlineToTime;
-                 Date classOnlineFrom;
-                 Date classOnlineTo;
-                 Long epochOnlineFrom;
-                 Long epochOnlineTo;
-                 String onlineFromTimeZone;
-                 String onlineToTimeZone;
-
-                 // DE1676 - Implement new business rules for defining online from/to dates
-                 // The online from date is in *system* time zone
-                 if (theClass.Class_Online_From__c != null) {
-                     classOnlineFrom = theClass.Class_Online_From__c;
-                     classOnlineFromTime = '00:00';
-                     onlineFromTimeZone = 'America/New_York';
-                 } else {
-                     classOnlineFrom = Date.valueOf(theClass.CreatedDate);
-                     classOnlineFromTime = theClass.CreatedDate.format('HH:mm');
-                     onlineFromTimeZone = 'America/New_York';
-                 }
-                 if (theClass.Class_Online_To__c != null) {
-                     classOnlineTo = theClass.Class_Online_To__c;
-                     classOnlineToTime = '00:00';
-                     onlineToTimeZone = 'America/New_York';
-                 } else {
-                     classOnlineTo = theFirstSession.redwing__Date__c;
-                     classOnlineToTime = theFirstSession.redwing__Start_Time__c;
-                     // DE1677 - Correct formula to calculate online to (epoch value) for blended learning classes
-                     // Adjust online to field back by one calendar day if this is a blended class
-                     // Retracted - SJC - 9-23-2019
-                     /*
-                     if (theClass.Classroom_Setting__c == 'Online + Classroom') {
-                         classOnlineTo = classOnlineTo.addDays(-1); // Subtract one day if blended class and no explicit end date supplied
-                     }
-                     */
+             */
             if (String.isNotBlank(theClass.redwing__Timezone__c)) {
                 onlineToTimeZone = theClass.redwing__Timezone__c;
             } else {
                 onlineToTimeZone = 'America/New_York';
             }
-        }
+         }
 
         /*
         if (String.isNotBlank(theFirstSession.redwing__Start_Time__c)) {
@@ -2362,6 +2428,21 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         xmlW.writeEndElement(); // Close custom-attributes
         xmlW.writeCharacters('\n');
         xmlW.writeEndElement(); // Close store
+        xmlW.writeCharacters('\n');
+
+        //System.debug(xmlW.getXmlString());
+
+        String xmlString = xmlW.getXmlString();
+
+        return xmlString;
+    }
+
+    private String getSiteCatalogXmlUsingString(String theRecordId) { // Supports both ILT Class and Learning Plan objects
+        XmlStreamWriter xmlW = new XmlStreamWriter();
+        xmlW.writeStartElement(null,'category-assignment', null);
+        xmlW.writeAttribute(null,null,'category-id','hidden');
+        xmlW.writeAttribute(null,null,'product-id',theRecordId);
+        xmlW.writeEndElement(); // Close category-assignment
         xmlW.writeCharacters('\n');
 
         //System.debug(xmlW.getXmlString());

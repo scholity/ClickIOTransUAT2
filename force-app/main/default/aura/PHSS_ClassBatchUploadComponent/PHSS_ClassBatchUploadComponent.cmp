@@ -1,0 +1,20 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId"
+                controller="PHSS_ClassBatchComponentController"
+                access="global" >
+
+    <div>
+        <input type="file" class="file" aura:id="file" />
+        <ui:button label="Upload file" press="{!c.handlePressUploadButton}"/>
+    </div>
+    
+    <hr/>
+                    
+    <lightning:fileUpload label="Add attachment"
+                          multiple="false" 
+                          accept="['.jpg', '.jpeg', '.csv', '.txt']"
+                          recordId="0015B00000VxPT5QAN" 
+                          onuploadfinished="{!c.handleUploadFinished}"
+                          />
+
+    
+</aura:component>

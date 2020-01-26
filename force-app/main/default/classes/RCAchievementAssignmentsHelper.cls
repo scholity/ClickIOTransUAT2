@@ -38,6 +38,108 @@ public with sharing class RCAchievementAssignmentsHelper {
     public static void processBeforeUpdateAchievementAssignment(Map<Id, redwing__Achievement_Assignment__c> oldAssignmentsMap, List<redwing__Achievement_Assignment__c> newAchievementAssignments) {
         setAcquiredDate(newAchievementAssignments, oldAssignmentsMap);
         setExpDate(newAchievementAssignments, oldAssignmentsMap);
+        setAchievementStatus(newAchievementAssignments, oldAssignmentsMap);
+        sendEmail(newAchievementAssignments, oldAssignmentsMap);
+    }
+
+    private static void sendEmail(List<redwing__Achievement_Assignment__c> newAchievementAssignments, Map<Id, redwing__Achievement_Assignment__c> oldAchievementAssignmentById)
+    {
+        List<SDOC__SDJob__c> jobList = new List<SDOC__SDJob__c> ();
+
+        for(redwing__Achievement_Assignment__c aa : newAchievementAssignments)
+        {
+            redwing__Achievement_Assignment__c oldAA = oldAchievementAssignmentById.get(aa.id);
+
+
+            String oldAAstatus 	 = oldAA.redwing__Status__c;
+            String newAAstatus 	 = aa.redwing__Status__c;
+            
+            system.debug('newAAstatus***'+newAAstatus);
+            system.debug('oldAAstatus***'+oldAAstatus);
+
+            if(oldAAstatus != newAAstatus &&
+               aa.redwing__Status__c == 'Acquired' && aa.Evaluation_Result__c == 'Successful' && aa.Achievement_Type__c == 'Certifications'  &&
+			   aa.Email_Sent__c  == false && aa.Email__c != null)
+            {
+                system.debug('aa.redwing__Status__c***'+aa.redwing__Status__c);
+
+                SDOC__SDJob__c job = new SDOC__SDJob__c();
+
+                job.SDOC__Start__c      = true;
+                job.SDOC__Oid__c        = aa.Id;
+                job.SDOC__ObjApiName__c = 'redwing__Achievement_Assignment__c';
+                job.SDOC__SendEmail__c  = '1';
+                job.SDOC__Doclist__c    = System.Label.SDocsDoclistId;
+                job.SDOC__RunAs__c      = System.Label.SDocsRunAsUserName;
+
+                jobList.add(job);
+                
+                aa.Email_Sent__c  = true;
+            }
+        }
+        
+        if(jobList.size() > 0)
+        {
+            insert jobList;
+        }
+        
+    }
+
+    private static void setAchievementStatus(List<redwing__Achievement_Assignment__c> newAchievementAssignments, Map<Id, redwing__Achievement_Assignment__c> oldAchievementAssignmentById)
+    {
+        for(redwing__Achievement_Assignment__c aa : newAchievementAssignments)
+        {
+            redwing__Achievement_Assignment__c oldAA = oldAchievementAssignmentById.get(aa.id);
+
+
+            String oldAAEvaluationResults = oldAA.Evaluation_Result__c;
+            String newAAEvaluationResults = aa.Evaluation_Result__c;
+
+            system.debug('oldAAEvaluationResults***'+oldAAEvaluationResults);
+            system.debug('newAAEvaluationResults***'+newAAEvaluationResults);
+
+            if(oldAAEvaluationResults != newAAEvaluationResults)
+            {
+                system.debug('aa.redwing__Status__c***'+aa.redwing__Status__c);
+
+                if(aa.Request_Type__c == 'Community' && aa.redwing__Status__c == 'Pending Assignment')
+                {
+                    if(aa.Evaluation_Result__c == 'Successful')
+                    {
+                        aa.redwing__Status__c = 'Acquired';
+                    }
+                    else if (aa.Evaluation_Result__c != 'Successful')
+                    {
+                        aa.redwing__Status__c = 'Eligible';
+                    }
+                }
+
+                else if(aa.Evaluation_Result__c != null && aa.redwing__Status__c == 'Pending Assignment')
+                {
+                    if(aa.Evaluation_Result__c == 'Successful' && aa.Online_Class__c != null)
+                    {
+                        aa.redwing__Status__c = 'Acquired';
+                    }
+                    
+                    else if(aa.Evaluation_Result__c != 'Successful' && aa.Online_Class__c != null)
+                    {
+                        aa.redwing__Status__c = 'Eligible';
+                    }
+                
+                    else if(aa.Evaluation_Result__c == 'Successful' && aa.Online_Class__c == null)
+                    {
+                        aa.redwing__Status__c = 'On Hold';
+                    }
+
+                    else if(aa.Evaluation_Result__c != 'Successful' && aa.Online_Class__c == null)
+                    {
+                        aa.redwing__Status__c = 'Eligible';
+                    }
+                }
+            }
+
+        }
+
     }
 
     //without crud\fls validation, because user can not update fields directly

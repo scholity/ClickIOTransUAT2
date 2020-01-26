@@ -217,6 +217,8 @@ rc.shopstaywell.com</whitelistedDomains>
     <tabs>Resource_Activity_Report</tabs>
     <tabs>redwing__Achievement_Assignment__c</tabs>
     <tabs>ccrz__E_TransactionPayment__c</tabs>
+    <tabs>ccrz__E_OrderItem__c</tabs>
+    <tabs>redwing__Task__c</tabs>
     <workspaceConfig>
         <mappings>
             <tab>Attendee__c</tab>
@@ -228,6 +230,9 @@ rc.shopstaywell.com</whitelistedDomains>
             <tab>Resource_Activity_Report</tab>
         </mappings>
         <mappings>
+            <tab>ccrz__E_OrderItem__c</tab>
+        </mappings>
+        <mappings>
             <tab>ccrz__E_TransactionPayment__c</tab>
         </mappings>
         <mappings>
@@ -235,6 +240,9 @@ rc.shopstaywell.com</whitelistedDomains>
         </mappings>
         <mappings>
             <tab>redwing__Achievement_Assignment__c</tab>
+        </mappings>
+        <mappings>
+            <tab>redwing__Task__c</tab>
         </mappings>
         <mappings>
             <tab>sked__Availability__c</tab>

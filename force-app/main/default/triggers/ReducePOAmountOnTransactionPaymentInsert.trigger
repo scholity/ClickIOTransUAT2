@@ -1,6 +1,8 @@
 trigger ReducePOAmountOnTransactionPaymentInsert on ccrz__E_TransactionPayment__c (after insert) {
-    for (ccrz__E_TransactionPayment__c transactionPayment : Trigger.new) {
-        if (transactionPayment.ccrz__AccountType__c == 'po' && String.isNotBlank(transactionPayment.ccrz__StoredPayment__c)) {
+    for (ccrz__E_TransactionPayment__c transactionPayment : Trigger.new)
+    {
+        if (transactionPayment.ccrz__AccountType__c == 'po' && String.isNotBlank(transactionPayment.ccrz__StoredPayment__c))
+        {
             ccrz__E_StoredPayment__c storedPayment = [
                 SELECT Id, Remaining_PO_Amount__c
                 FROM ccrz__E_StoredPayment__c
@@ -11,4 +13,13 @@ trigger ReducePOAmountOnTransactionPaymentInsert on ccrz__E_TransactionPayment__
             update storedPayment;
         }
     }
+    
+    if(!PHSS_TriggerSettings__c.getOrgDefaults().TransactionPaymentTriggerHelperDisable__c)
+    {
+        if(Trigger.isInsert && Trigger.isAfter)
+        {
+            TransactionPaymentTriggerHelper.OnAfterInsert(Trigger.New);
+        }
+    }
+        
 }

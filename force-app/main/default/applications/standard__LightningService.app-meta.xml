@@ -43,6 +43,8 @@
     <tabs>redwing__Achievement_Assignment__c</tabs>
     <tabs>Long_Article__kav</tabs>
     <tabs>ccrz__E_TransactionPayment__c</tabs>
+    <tabs>ccrz__E_OrderItem__c</tabs>
+    <tabs>redwing__Task__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningService_UtilityBar</utilityBar>
     <workspaceConfig>
@@ -56,10 +58,16 @@
             <tab>Resource_Activity_Report</tab>
         </mappings>
         <mappings>
+            <tab>ccrz__E_OrderItem__c</tab>
+        </mappings>
+        <mappings>
             <tab>ccrz__E_TransactionPayment__c</tab>
         </mappings>
         <mappings>
             <tab>redwing__Achievement_Assignment__c</tab>
+        </mappings>
+        <mappings>
+            <tab>redwing__Task__c</tab>
         </mappings>
         <mappings>
             <tab>sked__Availability__c</tab>

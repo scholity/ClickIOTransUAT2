@@ -3,8 +3,8 @@
     <assignments>
         <name>Add_OrderFulfillment_Collection</name>
         <label>Add OrderFulfillment Collection</label>
-        <locationX>568</locationX>
-        <locationY>1259</locationY>
+        <locationX>554</locationX>
+        <locationY>1254</locationY>
         <assignmentItems>
             <assignToReference>colFulfillmentItems</assignToReference>
             <operator>Add</operator>
@@ -210,8 +210,8 @@
     <assignments>
         <name>Over_Credit_Limit</name>
         <label>Over Credit Limit</label>
-        <locationX>842</locationX>
-        <locationY>640</locationY>
+        <locationX>865</locationX>
+        <locationY>663</locationY>
         <assignmentItems>
             <assignToReference>ErrorMessage</assignToReference>
             <operator>Assign</operator>
@@ -1011,7 +1011,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Assign_Order_Fulfillment_Item</targetReference>
+                <targetReference>Set_Order_Item_Status</targetReference>
             </connector>
             <label>Is fee for Shipped Course - Kit</label>
         </rules>
@@ -1459,7 +1459,7 @@
             <label>IfReserved</label>
         </rules>
     </decisions>
-    <description>Added Individual Account Record Type Check - added additional fields to sOrder to allow for reducing SOQLs in On Hold Check - Changed Online Order Flow</description>
+    <description>Added Individual Account Record Type Check - added additional fields to sOrder to allow for reducing SOQLs in On Hold Check - Changed Online Order Flow - Updated for Delivery Fee</description>
     <formulas>
         <name>AddtoCourse</name>
         <dataType>Number</dataType>
@@ -2065,7 +2065,7 @@
             <targetReference>Lookup_Order2</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>ActiveContract</name>
         <dataType>Boolean</dataType>

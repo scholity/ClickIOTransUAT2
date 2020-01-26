@@ -1070,12 +1070,12 @@
                 <stringValue>[ccrz__E_TransactionPayment__c].ccrz__Account__c.Open_Order_Amount__c + [ccrz__E_TransactionPayment__c].ccrz__Amount__c </stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_8_myRule_7_A1_1758732517</name>
+        <name>formula_8_myRule_7_A1_1960509862</name>
         <dataType>Currency</dataType>
         <expression>{!myVariable_current.ccrz__Account__r.Open_Order_Amount__c} + {!myVariable_current.ccrz__Amount__c}</expression>
         <scale>18</scale>
     </formulas>
-    <interviewLabel>Transaction_Payment_Controller-25_InterviewLabel</interviewLabel>
+    <interviewLabel>Transaction_Payment_Controller-26_InterviewLabel</interviewLabel>
     <label>Transaction Payment Controller</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -1560,13 +1560,13 @@
             </processMetadataValues>
             <field>Open_Order_Amount__c</field>
             <value>
-                <elementReference>formula_8_myRule_7_A1_1758732517</elementReference>
+                <elementReference>formula_8_myRule_7_A1_1960509862</elementReference>
             </value>
         </inputAssignments>
         <object>Account</object>
     </recordUpdates>
     <startElementReference>myPreWaitDecision_myWait_myRule_7</startElementReference>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>cancelWaits</name>
         <dataType>String</dataType>

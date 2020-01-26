@@ -1290,6 +1290,8 @@
     <tabs>ccrz__E_Order__c</tabs>
     <tabs>ccrz__E_TransactionPayment__c</tabs>
     <tabs>Student_Bulk_Upload__c</tabs>
+    <tabs>ccrz__E_OrderItem__c</tabs>
+    <tabs>redwing__Task__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>ARC_Service_Console_UtilityBar</utilityBar>
     <workspaceConfig>
@@ -1298,6 +1300,9 @@
         </mappings>
         <mappings>
             <tab>Student_Bulk_Upload__c</tab>
+        </mappings>
+        <mappings>
+            <tab>ccrz__E_OrderItem__c</tab>
         </mappings>
         <mappings>
             <tab>ccrz__E_Order__c</tab>
@@ -1310,6 +1315,9 @@
         </mappings>
         <mappings>
             <tab>redwing__ILT_Class__c</tab>
+        </mappings>
+        <mappings>
+            <tab>redwing__Task__c</tab>
         </mappings>
         <mappings>
             <tab>standard-Account</tab>

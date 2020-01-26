@@ -84,6 +84,7 @@ global without sharing class PHSS_FetchCompletionRestService {
             String keyPrefixILTClass;
 
             Id theLearningPlanId;
+            Id theUserId;
             String theClassroomSetting = '';
             Boolean learningPlanFound = false;
 
@@ -98,27 +99,36 @@ global without sharing class PHSS_FetchCompletionRestService {
             if (classId.substring(0,3) == keyPrefixILTClass) {
                 lst_vouchers = [
                         SELECT Id, RCO_Order_Id__c, ILT_Class__c, ILT_Class__r.Learning_Plan__c,
-                                ILT_Class__r.Learning_Plan__r.Classroom_Setting__c
+                                ILT_Class__r.Learning_Plan__r.Classroom_Setting__c, User__c
                         FROM Voucher__c
                         WHERE RCO_Order_Id__c = :orderId AND ILT_Class__c = :classId
                 ];
                 // grab learning plan Id from voucher (should be only one record)
                 if (lst_vouchers.size() > 0 && lst_vouchers[0].ILT_Class__r.Learning_Plan__c != null) {
+                    theUserId = lst_vouchers[0].User__c;
                     theLearningPlanId = lst_vouchers[0].ILT_Class__r.Learning_Plan__c;
                     theClassroomSetting = lst_vouchers[0].ILT_Class__r.Learning_Plan__r.Classroom_Setting__c;
                     learningPlanFound = true;
                 }
             } else if (classId.substring(0,3) == keyPrefixOnline) {
-                lst_tpsi = [
-                        SELECT Id, redwing__Training_Plan_Section__r.redwing__Training_Plan__c,
-                                redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Classroom_Setting__c
-                        FROM redwing__Training_Plan_Section_Item__c
-                        WHERE redwing__Learning__c = :classId
+                lst_vouchers = [
+                        SELECT Id, RCO_Order_Id__c, Online_Class__c, User__c
+                        FROM Voucher__c
+                        WHERE RCO_Order_Id__c = :orderId AND Online_Class__c = :classId
                 ];
-                if (lst_tpsi.size() > 0 && lst_tpsi[0].redwing__Training_Plan_Section__r.redwing__Training_Plan__c != null) {
-                    theLearningPlanId = lst_tpsi[0].redwing__Training_Plan_Section__r.redwing__Training_Plan__c;
-                    theClassroomSetting = lst_tpsi[0].redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Classroom_Setting__c;
-                    learningPlanFound = true;
+                if (lst_vouchers.size() > 0) {
+                    theUserId = lst_vouchers[0].User__c;
+                    lst_tpsi = [
+                            SELECT Id, redwing__Training_Plan_Section__r.redwing__Training_Plan__c,
+                                    redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Classroom_Setting__c
+                            FROM redwing__Training_Plan_Section_Item__c
+                            WHERE redwing__Learning__c = :classId
+                    ];
+                    if (lst_tpsi.size() > 0 && lst_tpsi[0].redwing__Training_Plan_Section__r.redwing__Training_Plan__c != null) {
+                        theLearningPlanId = lst_tpsi[0].redwing__Training_Plan_Section__r.redwing__Training_Plan__c;
+                        theClassroomSetting = lst_tpsi[0].redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Classroom_Setting__c;
+                        learningPlanFound = true;
+                    }
                 }
             }
 
@@ -130,8 +140,9 @@ global without sharing class PHSS_FetchCompletionRestService {
                                 Grade_Reason__c, Grade_Additional_Info__c, redwing__Progress__c,
                                 redwing__Progress_Percentage__c, redwing__Completed_On__c, Learning_Record_Type__c
                         FROM redwing__Learning_Assignment__c
-                        WHERE RCO_Order_Id__c = :orderId AND redwing__Training_Plan__c = :theLearningPlanId AND
-                        (Learning_Record_Type__c = 'ILT Class' OR Learning_Record_Type__c = 'Media')];
+                        WHERE RCO_Order_Id__c = :orderId AND redwing__Training_Plan__c = :theLearningPlanId
+                        AND redwing__User__c = :theUserId
+                        AND (Learning_Record_Type__c = 'ILT Class' OR Learning_Record_Type__c = 'Media')];
 
                 // If no learning assignment records found
                 if (lst_la.size() == 0) {
