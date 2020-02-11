@@ -39,6 +39,7 @@
     <aura:attribute name = "StudentInstructorRatio" type = "Integer"  	default = ""/>
     <aura:attribute name = "Vouchers" 				type = "Integer"  	default = "0"/>
     <aura:attribute name = "instructorHasPrerequisites" type="Boolean" default="true"/>
+    <aura:attribute name = "dupInsError" 			type = "Boolean" 	default = "false"/>
     
     <aura:attribute name = "MaxDate" 				type = "String"  	default = ""/>
 	<aura:attribute name = "SupplementInfo"			type = "String"  	default = ""/>
@@ -352,6 +353,11 @@
                             
                             
                             <div class = "slds-box slds-theme_shade">Instructors</div><br/>
+                            <aura:if isTrue="{!v.dupInsError}" >
+                                <div class="slds-text-heading_Large slds-text-title_bold" style = "color:red;"> 
+                                    You are not allowed to enter the same instructor multiple times. Please check for duplicate instructors below.
+                                </div>
+                            </aura:if>
                             <div class = "slds-size_4-of-8">
                                 <aura:if isTrue="{!and(v.isExtUser == true,v.isPartner == false)}">
                                  <div>
@@ -451,24 +457,24 @@
                                     </div>
 
                                     <div class = "slds-m-around_x-small">
-                                        <lightning:input value="{!v.SiteName}" label="Site Name"  required	= "true" aura:id	=	"field"/>
+                                        <lightning:input value="{!v.SiteName}" label="Site Name" readonly="{!v.selectedLookUpRecord5.Name != null}"  required	= "true" aura:id	=	"field"/>
                                     </div>
                                     <div class = "slds-m-around_x-small">
-                                        <lightning:input value="{!v.Address1}" label="Address Line 1"  required	= "true" aura:id	=	"field"/>
+                                        <lightning:input value="{!v.Address1}" label="Address Line 1" readonly="{!v.selectedLookUpRecord5.Name != null}"  required	= "true" aura:id	=	"field"/>
                                     </div>
                                     <div class = "slds-m-around_x-small">
-                                        <lightning:input value="{!v.Address2}" label="Address Line 2"/>
+                                        <lightning:input value="{!v.Address2}" label="Address Line 2" readonly="{!v.selectedLookUpRecord5.Name != null}"/>
                                     </div>
                                     <div class = "slds-grid slds-wrap">
                                         <div class = "slds-col slds-m-around_x-small">
-                                            <lightning:input value="{!v.City}" label="City"  required	=	"true"  aura:id	=	"field"/>
+                                            <lightning:input value="{!v.City}" label="City" readonly="{!v.selectedLookUpRecord5.Name != null}"  required	=	"true"  aura:id	=	"field"/>
                                         </div>
                                         <div class = "slds-col slds-m-around_x-small">
                                             
-                                            <lightning:input value="{!v.State}" label="State"  required	=	"true" aura:id	=	"field" pattern="[A-Z]{2}" messageWhenPatternMismatch= "Enter State in ## and all caps format"/>
+                                            <lightning:input value="{!v.State}" label="State" readonly="{!v.selectedLookUpRecord5.Name != null}"  required	=	"true" aura:id	=	"field" pattern="[A-Z]{2}" messageWhenPatternMismatch= "Enter State in ## and all caps format"/>
                                         </div>
                                         <div class = "slds-col slds-m-around_x-small">
-                                            <lightning:input value="{!v.Zip}" label="Zip" pattern="[0-9]{5}" messageWhenPatternMismatch= "Enter State in all caps format"  required	=	"true" aura:id	=	"field"/>
+                                            <lightning:input value="{!v.Zip}" label="Zip" readonly="{!v.selectedLookUpRecord5.Name != null}" pattern="[0-9]{5}" messageWhenPatternMismatch= "Enter State in all caps format"  required	=	"true" aura:id	=	"field"/>
                                         </div>
                                     </div>
                                 </div>

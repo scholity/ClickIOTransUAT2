@@ -188,20 +188,76 @@ public with sharing class PHSS_ClassCompletionBatch {
         }
 
         CCS_Batch_Class__c batchClass = new CCS_Batch_Class__c(
-                Account__c = values[SENDER_FIELD_INDEX],
-                Name = values[BATCH_FIELD_INDEX],
-                ILT_Class__c = values[CLASS_FIELD_INDEX],
-                PO_Number__c = values[PO_NUMBER_FIELD_INDEX],
-                Course_Code__c = values[COURSE_CODE_FIELD_INDEX],
-                Course_Start_Date__c = Date.parse(values[COURSE_START_DATE_FIELD_INDEX]),
-                Course_End_Date__c = Date.parse(values[COURSE_END_DATE_FIELD_INDEX]),
-                Number_of_Students__c = Integer.valueOf(values[TOTAL_STUDENTS_FIELD_INDEX]),
-                Training_Site_Name__c = values[TRAINING_SITE_NAME_FIELD_INDEX],
-                Training_Site_Address__c = values[TRAINING_SITE_ADDRESS_FIELD_INDEX],
-                Training_Site_City__c = values[TRAINING_SITE_CITY_FIELD_INDEX],
-                Training_Site_State__c = values[TRAINING_SITE_STATE_FIELD_INDEX],
-                Training_Site_Zip_Code__c = values[TRAINING_SITE_ZIP_CODE_FIELD_INDEX]
+                Account__c                  = values[SENDER_FIELD_INDEX],
+                Name                        = values[BATCH_FIELD_INDEX],
+                ILT_Class__c                = values[CLASS_FIELD_INDEX],
+                PO_Number__c                = values[PO_NUMBER_FIELD_INDEX],
+                Course_Code__c              = values[COURSE_CODE_FIELD_INDEX],
+                Course_Start_Date__c        = Date.parse(values[COURSE_START_DATE_FIELD_INDEX]),
+                Course_End_Date__c          = Date.parse(values[COURSE_END_DATE_FIELD_INDEX]),
+                Number_of_Students__c       = Integer.valueOf(values[TOTAL_STUDENTS_FIELD_INDEX]),
+                Training_Site_Name__c       = values[TRAINING_SITE_NAME_FIELD_INDEX],
+                Training_Site_Address__c    = values[TRAINING_SITE_ADDRESS_FIELD_INDEX],
+                Training_Site_City__c       = values[TRAINING_SITE_CITY_FIELD_INDEX],
+                Training_Site_State__c      = values[TRAINING_SITE_STATE_FIELD_INDEX],
+                Training_Site_Zip_Code__c   = values[TRAINING_SITE_ZIP_CODE_FIELD_INDEX]
         );
+
+        Opportunity o = new Opportunity();
+        
+        o.Name              = 'Cardio Partner Opportunity';
+        o.AccountId         = values[SENDER_FIELD_INDEX];
+        o.StageName         = 'Approach';
+        o.CloseDate         = date.today();
+        o.Type              = 'New Business - FS';
+        o.RecordTypeId      = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Order Opportunity').getRecordTypeId();
+        o.Source_System__c  = 'CREStore';
+        
+        insert o;
+
+        String opportunitySfid  = o.Id;
+        String CCProductId      = values[COURSE_CODE_FIELD_INDEX];
+        String noOfStudents     = values[TOTAL_STUDENTS_FIELD_INDEX];
+
+        system.debug('***opportunitySfid***'+opportunitySfid);
+        system.debug('***CCProductId***'+CCProductId);
+        system.debug('***noOfStudents***'+noOfStudents);
+
+        List<ccrz__E_Product__c>  ccProduct = [SELECT Id, ccrz__ProductId__c FROM  ccrz__E_Product__c WHERE ccrz__ProductId__c =: CCProductId];
+
+        system.debug('***ccProduct***'+ccProduct);
+
+        Map<String, Object> addToCartResult;
+        Map<String, Object> productQuantityMap = new Map<String, Object> ();
+        productQuantityMap.put(ccProduct[0].Id,noOfStudents);
+            
+        Map<Id, Id> cartItemClassIdMap = new Map<Id, Id>();
+
+        system.debug('***productQuantityMap***'+productQuantityMap);
+            
+        try
+        {
+            phss_cc_Context.STOREFRONT_NAME = 'CREStore';
+            addToCartResult = phss_cc_CartUtil.addProductsToCart(opportunitySfid,productQuantityMap,false);
+        } catch (Exception e) {
+            addToCartResult = phss_cc_Exception.getErrorMessageMap(e.getMessage());
+        }
+
+        system.debug('***addToCartResult***'+addToCartResult.values());
+        system.debug('***addToCartResult***'+addToCartResult.keySet());
+        system.debug('***addToCartResult***'+addToCartResult.get('encryptedCartId'));
+
+        string encryptedCartId = String.valueOf(addToCartResult.get('encryptedCartId'));
+
+        Map<String, Object> placeOrderResult;
+        try
+        {
+            placeOrderResult = phss_cc_OrderUtil.placeOrderOnCartPO(opportunitySfid, encryptedCartId, null);
+        }
+        catch (Exception e)
+        {
+            placeOrderResult = phss_cc_Exception.getErrorMessageMap(e.getMessage());
+        }
 
         return batchClass;
     }

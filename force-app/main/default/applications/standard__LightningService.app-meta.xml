@@ -45,11 +45,23 @@
     <tabs>ccrz__E_TransactionPayment__c</tabs>
     <tabs>ccrz__E_OrderItem__c</tabs>
     <tabs>redwing__Task__c</tabs>
+    <tabs>CCS_Batch_Class__c</tabs>
+    <tabs>CCS_Batch_Instructor__c</tabs>
+    <tabs>CCS_Batch_Participant__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningService_UtilityBar</utilityBar>
     <workspaceConfig>
         <mappings>
             <tab>Attendee__c</tab>
+        </mappings>
+        <mappings>
+            <tab>CCS_Batch_Class__c</tab>
+        </mappings>
+        <mappings>
+            <tab>CCS_Batch_Instructor__c</tab>
+        </mappings>
+        <mappings>
+            <tab>CCS_Batch_Participant__c</tab>
         </mappings>
         <mappings>
             <tab>Long_Article__kav</tab>

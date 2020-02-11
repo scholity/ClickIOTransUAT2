@@ -29,6 +29,7 @@
      * @param helper
      */
     getFormData: function (component, event, helper) {
+        component.set('v.showSpinner', true);
         var action = component.get('c.getCybersourceHostedFormData');
         var currOpportunitySfid = component.get('v.currOpportunitySfid');
         action.setParams({currOpportunitySfid: currOpportunitySfid});
@@ -37,8 +38,9 @@
             var returnValue = response.getReturnValue();
             if (state === 'SUCCESS' && returnValue != null) {
                 if (returnValue.Error == null) {
+                    console.log("getFromData successfully returned...");
                     component.set('v.cybersourceHostedFormData', returnValue);
-                    helper.parseReceivedFormData(component, event, helper)
+                    helper.parseReceivedFormData(component, event, helper);
                 } else {
                     this.showToastMessage('Error Loading Credit Card Form', returnValue.Error, 'Error');
                 }
@@ -47,7 +49,6 @@
             }
             component.set('v.showSpinner', false);
         });
-        component.set('v.showSpinner', true);
         $A.enqueueAction(action);
     },
 
@@ -87,15 +88,18 @@
             component.set('v.bill_to_forename', cybersourceHostedFormData.firstName);
             component.set('v.bill_to_surname', cybersourceHostedFormData.lastName);
             component.set('v.bill_to_email', cybersourceHostedFormData.email);
-            component.set('v.bill_to_phone', cybersourceHostedFormData.phone);
+            //remove all special chars
+            let billToPhone = (cybersourceHostedFormData.phone ? cybersourceHostedFormData.phone.replace(/\D+/g, "") : cybersourceHostedFormData.phone);
+            component.set('v.bill_to_phone', billToPhone);
 
             // Creating key-value pairs to be used in lightning:select.
             var paymentTypesList = [];
             var paymentTypesMap = cybersourceHostedFormData.paymentTypes;
+            console.log('@@@paymentTypesMap:', paymentTypesMap);
             for (var key in paymentTypesMap) {
                 paymentTypesList.push({key: key, value: paymentTypesMap[key]});
             }
-
+            console.log('@@@paymentTypes:', paymentTypesList);
             component.set('v.paymentTypes', paymentTypesList);
 /* 
  * US1487 Commented out Billing Information per client request - SW 2/23/2018
@@ -107,6 +111,7 @@
 */        }
         // component.set('v.bill_to_address_country', cybersourceHostedFormData.country);
         component.set('v.showForm', true);
+        helper.validateFormData(component, false);
     },
 
     /**
@@ -116,13 +121,32 @@
      * @param helper
      */
     POSTFormData: function (component, helper) {
-        var isFormDataValid = helper.validateFormData(component);
+        console.log("@@@POSTFormData start...");
+        var isFormDataValid = helper.validateFormData(component, true);
         if (!isFormDataValid) {
             console.log("NOT VALID");
-            component.set("v.showError",true);
+            this.showToastMessage('Error', 'Unable to submit payment. Please check that all errors on the page have been resolved.', 'Error');
             return;
         }
-
+        console.log("@@@POSTFormData isFormDataValid is true...");
+        var cardTypeCode;
+        var card_type = component.get("v.card_type");
+        console.log("@@@POSTFormData card_type:", card_type);
+        var paymentTypesList = component.get("v.paymentTypes");
+        console.log("@@@POSTFormData paymentTypesList:", paymentTypesList);
+        for (var pmt of paymentTypesList) {
+            console.log("@@@POSTFormData pmt.value:", pmt.value);
+            if(pmt.value === card_type){
+                cardTypeCode = pmt.key.toString();
+                break;
+            }
+        }
+        console.log("@@@cardTypeCode:", cardTypeCode);
+        if(!cardTypeCode){
+            this.showToastMessage('Error', 'Unable to submit payment: Card Type invalid.', 'Error');
+            return;
+        }
+        console.log("@@@POSTFormData cardTypeCode has value...");
         // Map to send message.
         var message = {
             access_key: component.get("v.access_key"),
@@ -148,7 +172,7 @@
             bill_to_email: component.get("v.bill_to_email"),
             bill_to_phone: component.get("v.bill_to_phone"),
 
-            card_type: component.get("v.card_type"),
+            card_type: cardTypeCode,
             card_number: (component.get("v.card_number")).replace(/-/g, ''),
             card_expiry_date: component.get("v.card_expiry_month") + '-' + component.get("v.card_expiry_year"),
             card_cvn: component.get("v.card_cvn"),
@@ -220,11 +244,23 @@
         component.set('v.showPaymentProgress', true);
     },
 
-    validateFormData : function (component) {
-        var isValid = component.find('payment_form').reduce(function (validSoFar, inputCmp) {
-            inputCmp.showHelpMessageIfInvalid();
-            return validSoFar && inputCmp.get('v.validity').valid;
-        }, true);
+    validateFormData : function (component, finalValidation) {
+        finalValidation = finalValidation == null ? false : finalValidation;
+        var isValid = component.find('payment_form').reduce(
+            function (validSoFar, inputCmp) {
+                let inputValue = inputCmp.get("v.value");
+                let alwaysValidate = $A.util.hasClass(inputCmp, "always-validate");
+                if(finalValidation || alwaysValidate || (inputValue && inputValue.trim().length > 0) ){
+                    inputCmp.reportValidity();
+                    inputCmp.showHelpMessageIfInvalid();
+                }
+                let isValid = inputCmp.get('v.validity').valid;
+                return validSoFar && isValid;
+            }, 
+            true //default function value
+        );
+        console.log("validateFormData isValid:", isValid);
+        component.set("v.formInputValid", isValid);
         return isValid;
     }
 })

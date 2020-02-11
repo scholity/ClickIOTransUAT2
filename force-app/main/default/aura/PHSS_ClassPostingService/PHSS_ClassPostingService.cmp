@@ -30,6 +30,8 @@
     
     <aura:attribute name = "allValid"		type = "Boolean"	description="" default="true"/>
     <aura:attribute name = "isUrlValid"		type = "Boolean"	description="" default="true"/>
+    <aura:attribute name = "editMode"		type = "Boolean"	description="" default="false"/>
+    <aura:attribute name = "accountOpportunityCreated"		type = "Boolean"	description="" default="false"/>
     <aura:attribute name = "showError"		type = "Boolean"	required="true" description="" default="false"/>
     <aura:attribute name = "errorMessage" 	type = "String"		required="false" description="" default="" />
     <aura:attribute name = "courseError"    type = "Boolean"    default = "false"/>
@@ -126,10 +128,19 @@
                                 Organization
                             </label>
                             <lightning:helptext content="Select the course for whom the course will be offered. Only the organizations you are affiliated with will appear on this list." />
-                                    
-                            <c:CustomLookup objectAPIName   = "account"
-                                            selectedRecord	=  "{!v.selectedLookUpRecord1}"/>
-                            
+     						<aura:if isTrue="{!v.offeringId == 0}" >
+                                <div id="account_div" style="">
+                                    <c:CustomLookup objectAPIName   = "account"
+                                                    selectedRecord	=  "{!v.selectedLookUpRecord1}"/>
+                                </div>
+                            <aura:set attribute="else">
+                                <div id="account_name" style="">
+                                    <B>Account: </B> {!v.cpsWrap.accName}
+                                </div>
+                            </aura:set>
+
+                            </aura:if>
+
                             <aura:if isTrue="{!v.orgError}" >
                                 <div class="lookupError">Complete this field.</div>
                             </aura:if>
@@ -186,7 +197,12 @@
                                     <aura:if isTrue="{!v.cpsWrap.classDuration == 'NaN'}" >
                                 		<div class="lookupError">Class Duration is not configured correctly. Please contact TSC for support.</div>
                                     <aura:set attribute="else">
-                                        <div class="lookupError">You must Schedule session for minimum <b>{!v.cpsWrap.classDuration}</b> hours</div>
+                                        <aura:if isTrue="{!v.cpsWrap.classDuration > 60}" >
+                                        	<div class="lookupError">You must Schedule session for minimum <b>{!v.cpsWrap.classDuration}</b> hours</div>
+                                    	<aura:set attribute="else">
+                                        	<div class="lookupError">You must Schedule session for minimum <b>{!v.cpsWrap.classDuration}</b> Minutes</div>                                            
+                                    	</aura:set>
+                                    	</aura:if>
                                     </aura:set>
                                 	</aura:if>
                             	<aura:set attribute="else">
@@ -233,7 +249,7 @@
                                                             aura:id="field"
                                                             max="{!sess.endTime}"/>
                                        </div>
-                                       <div class="slds-col slds-size_1-of-5">
+                                       <div onchange="{!c.onZoneChange}" class="slds-col slds-size_1-of-5">
                                            <lightning:input value="{!sess.endTime}"
                                                             label="End Time"
                                                             required="true"
@@ -508,9 +524,9 @@
                             </div>
                             <div >
                                 <b style="margin-right:3rem">
-                                    <!-- <lightning:button  label="EDIT" value="{!offering.offeringId}" variant="base" class = "customButtonRed" onclick="{!c.editOffering }" /> -->
-                                    <lightning:button  label="EDIT" disabled="true" value="{!offering.offeringId}" variant="base" class = "customButtonGrey" onclick="{!c.editOffering }" />
-                                    <lightning:helptext content="The Edit feature has been disabled. We are fixing an issue and should have the Edit funcationality working soon." />
+                                    <lightning:button  label="EDIT" value="{!offering.offeringId}" variant="base" class = "customButtonRed" onclick="{!c.editOffering }" />
+                                    <!-- <lightning:button  label="EDIT" disabled="true" value="{!offering.offeringId}" variant="base" class = "customButtonGrey" onclick="{!c.editOffering }" />
+                                    <lightning:helptext content="The Edit feature has been disabled. We are fixing an issue and should have the Edit funcationality working soon." />  -->
 
                                     
                                 </b>
@@ -682,7 +698,7 @@
                             
                             <lightning:progressStep label="Step 1"
                                                     value="One"
-                                                    onclick="{!c.editOffering}"/>
+                                                    onclick="{!c.addOffering}"/>
                             
                             <lightning:progressStep label="Step 2"
                                                     value="Two"
@@ -718,12 +734,19 @@
                             
                                <aura:if isTrue="{!v.stepNumber == 'One'}">
                                     <div class="slds-col">
-                                        <!-- <button class="slds-button slds-button_neutral customButton"
-                                                onclick="{!c.onclickAddToCart}" disabled="true" style="background-color:#D3D3D3;" > -->
-                                        <button class="slds-button slds-button_neutral customButton"
+
+                                        <aura:if isTrue="{!v.editMode}">
+                                            <button class="slds-button slds-button_neutral customButton"
+                                                onclick="{!c.onclickAddToCart}" disabled="true" style="background-color:#D3D3D3;" >
+                                             Add To Cart
+                                        	 </button>
+                                        <aura:set attribute="else">
+                                            <button class="slds-button slds-button_neutral customButton"
                                                 onclick="{!c.onclickAddToCart}" >
-                                            Add To Cart
-                                        </button>
+                                             Add To Cart
+                                        	</button>
+                                        </aura:set>
+                            			</aura:if>
                                     </div>
                                     <div class="slds-col">
                                        <!-- <button class="slds-button slds-button_neutral customButton"
@@ -737,6 +760,12 @@
                                 <div class="slds-col">
                                     <!-- <button class="slds-button slds-button_neutral customButton"
                                             	onclick="{!c.onclickNext}" disabled="true" style="background-color:#D3D3D3;" >  -->
+                                    <aura:if isTrue="{!v.stepNumber == 'Two'}">
+                                        <button class="slds-button slds-button_neutral customButton"
+                                                onclick="{!c.addOffering}" >
+                                            Add More To Cart
+                                        </button>                                        
+                                    </aura:if>
                                     <button class="slds-button slds-button_neutral customButton"
                                             	onclick="{!c.onclickNext}" >
                                         	Submit

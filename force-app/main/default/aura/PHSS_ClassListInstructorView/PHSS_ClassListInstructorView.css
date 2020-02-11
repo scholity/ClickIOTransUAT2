@@ -1,2 +1,6 @@
-.THIS {
+.THIS .tabset-container {
+    height:100%;
+}
+.THIS iframe{
+    height: 100vh !important;
 }

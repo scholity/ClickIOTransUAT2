@@ -86,7 +86,7 @@
         <locationX>294</locationX>
         <locationY>63</locationY>
         <defaultConnector>
-            <targetReference>Supplemental_Information_Entry</targetReference>
+            <targetReference>No_Fulfillment_Item</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -100,7 +100,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>No_Fulfillment_Item</targetReference>
+                <targetReference>Supplemental_Information_Entry</targetReference>
             </connector>
             <label>Notfound</label>
         </rules>

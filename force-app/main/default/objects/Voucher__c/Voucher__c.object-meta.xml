@@ -159,7 +159,7 @@
     <externalSharingModel>ReadWrite</externalSharingModel>
     <label>Voucher</label>
     <nameField>
-        <displayFormat>VN {000000}</displayFormat>
+        <displayFormat>VN {000000000}</displayFormat>
         <label>Voucher Number</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>

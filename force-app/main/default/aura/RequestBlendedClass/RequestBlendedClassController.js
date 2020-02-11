@@ -328,20 +328,71 @@
             console.log('AfterPush-->');
             console.log(component.get("v.AdditionalInstructors"));*/
             
-            var extUser = component.get("v.isExtUser");
+            var extUser 	  = component.get("v.isExtUser");
+            var isParnterUser = component.get("v.isPartner");
+            
+            console.log("***extUser***"+extUser);
+            console.log("***isParnterUser***"+isParnterUser);
+            
+            var addInstr = [];
+            
+            if(typeof component.get("v.AdditionalInstructors") !== 'undefined' && component.get("v.AdditionalInstructors") != null)
+            {
+                for(var i=0;i<component.get("v.AdditionalInstructors").length;i++)
+                {
+                    if(component.get("v.AdditionalInstructors")[i] != null)
+                    {
+                        addInstr.push(component.get("v.AdditionalInstructors")[i].Id) ;
+                    }
+                }
+            }
+            console.log(addInstr.length);
+            
+            addInstr.push(intUsrId);
+            
+            console.log(addInstr.length);
+            
+            helper.removeDuplicate(component,addInstr);
+            
+            var instBool = component.get("v.dupInsError");
         
-            if(extUser === true)
+            if(extUser === true && isParnterUser === false)
             {
                 //if(allValid && orgBool && crsBool)
-                if(allValid && orgBool)
+                if(allValid && orgBool && !instBool)
                 {
                     helper.stepOne(component, event);
                 }
+                else
+                {
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        "title"		: "Error!",
+                        "mode"		: "pester",
+                        "duration"	: "10000",
+                        "type"		: "error",
+                        "message"	: $A.get("$Label.c.Error_Message_For_CRE_RBC")
+                    });
+                    toastEvent.fire();
+                }
             } else {
                 //if(allValid && orgBool && crsBool && usrBool)
-                if(allValid && orgBool && usrBool)
+                if(allValid && orgBool && usrBool && !instBool)
                 {
                     helper.stepOne(component, event);
+                }
+                else
+                {
+                    //alert("Please correct all errors on the page.");
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        "title"		: "Error!",
+                        "mode"		: "pester",
+                        "duration"	: "10000",
+                        "type"		: "error",
+                        "message"	: $A.get("$Label.c.Error_Message_For_CRE_RBC")
+                    });
+                    toastEvent.fire();
                 }
             }
             helper.createIltLocation(component);
@@ -360,13 +411,25 @@
             
             if(allValid)
             {
-                for(var i=0;i<component.get("v.AdditionalInstructors").length;i++){
+                component.set("v.stepNumber", "Three");
+                
+                for(var i=0;i<component.get("v.AdditionalInstructors").length;i++)
+                {
                     var val = component.get("v.AdditionalInstructors")[0];
-                    if(val) {
+                    
+                    console.log("***val***");
+                    console.log(+val);
+                    
+                    if(val)
+                    {
                         component.set("v.isAddInstructors",true);
                     }
+                    else
+                    {
+                        component.set("v.isAddInstructors",false);
+                    }
+                    
                 }
-                component.set("v.stepNumber", "Three");
             }
         }
         

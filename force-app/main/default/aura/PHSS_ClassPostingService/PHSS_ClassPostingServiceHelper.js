@@ -294,7 +294,7 @@
         //alert('***Offerings.. '+JSON.stringify(component.get("v.offeringsList")));
         var tempList = component.get("v.offeringsList");
         tempList.forEach(function(offering) {
-            //alert('Location ID '+offering.locationId);
+            //alert('Opportunity ID '+offering.oppId+ " CCProductID "+offering.ccProductId);
             //alert('***Offerings.. '+JSON.stringify((offering)));
             
             var action = component.get("c.postClass");
@@ -359,8 +359,14 @@
                     var courseName = getResponse.LMS_Learning_Plan__r.Name;
                     var courseFormat = getResponse.LMS_Learning_Plan__r.Classroom_Setting__c;
                     var courseDuration = getResponse.LMS_Learning_Plan__r.redwing__Duration__c;
-                    
- 					var hours = Math.floor(courseDuration / 60); 
+                    //alert("LP Defined CourseDuration " + courseDuration);
+                    var hours = 0;
+                    if(courseDuration < 60){
+                        hours = courseDuration; 
+                    } else {
+                        var hours = Math.floor(courseDuration / 60); 
+                    }
+ 					
                 	console.log("Hours: " + hours);
                     component.set("v.LPDuration", hours);
                     component.set("v.LPName", courseName);
@@ -381,6 +387,7 @@
                     component.set("v.cpsWrap.courseName", 'Not Found');
                     component.set("v.cpsWrap.classFormat", courseFormat); 
                     component.set("v.cpsWrap.classDuration", '');
+                    //alert("LP Not Defined CourseDuration " + courseDuration);
                 }
             //}
         });
@@ -390,6 +397,7 @@
 		component.set("v.cpsWrap.offeringId","0");
         //component.set("v.cpsWrap.accId","");
         //component.set("v.cpsWrap.accName","");
+        component.set("v.cpsWrap.oppId",component.get("v.oppIdParent"));
         component.set("v.showError","false");
         component.set("v.errorMessage","");
         component.set("v.productChange", false);
@@ -442,10 +450,14 @@
                 if(session.classDate && session.startTime && session.endTime){
                     var diff = Math.abs(new Date(session.classDate + " " + session.startTime) - new Date(session.classDate + " " + session.endTime)); 
                     var minutes = Math.floor(diff/60000);
-                    // console.log("Minutes: " + minutes);
+                    //alert("Minutes: " + minutes);
                     var hours = Math.floor(minutes / 60); 
-                    // console.log("Hours: " + hours);
+                    //alert("Hours: " + hours);
+                    if(required_time < 60){
+                        hours = minutes;
+                    }
                     var timeScheduled = (component.get('v.ScheduledTime') +  hours);
+                    //alert("timeScheduled: " + timeScheduled);
                     if(timeScheduled >= required_time && component.get('v.cpsWrap.classDuration') != 0){ 
                         component.set("v.scheduleError",false);
                     } else {

@@ -93,7 +93,7 @@ public class TransactionPaymentTriggerHelperTest
         
         ccrz__E_Order__c cco1 =new ccrz__E_Order__c();
         cco1.NSSCCConnector_SFCC_Order_Number__c ='3114227';
-        cco1.NSSCCConnector_from_SFCC__c=false;
+        cco1.NSSCCConnector_from_SFCC__c=true;
         cco1.Opportunity_Order__c = opp.Id;
         insert cco1;
         
@@ -152,12 +152,23 @@ public class TransactionPaymentTriggerHelperTest
     @isTest
     static void testTrigger1()
     {
-        List<ccrz__E_Order__c> ccorder = [SELECT Id FROM ccrz__E_Order__c WHERE NSSCCConnector_SFCC_Order_Number__c = null];
+        ccrz__E_StoredPayment__c sPayment = new ccrz__E_StoredPayment__c(Name 				 	= 'test',
+                                                                         ccrz__Enabled__c  		= true,
+                                                                         Original_PO_Amount__c 	= 10000.00);
+        insert sPayment;
+        
+        List<Account> acc = [SELECT Id, Open_Order_Amount__c FROM Account];
+        
+        List<ccrz__E_Order__c> ccorder = [SELECT Id FROM ccrz__E_Order__c];
         
         ccrz__E_TransactionPayment__c ctp= new ccrz__E_TransactionPayment__c();
         
-        ctp.ccrz__TransactionType__c = 'CAPTURE';
+        ctp.ccrz__AccountType__c	 = 'po';
         ctp.ccrz__CCOrder__c		 = ccorder[0].Id;
+        ctp.ccrz__StoredPayment__c	 = sPayment.Id;
+        ctp.ccrz__Amount__c			 = 100;
+        ctp.ccrz__Account__c		 = acc[0].Id;
+        
         insert ctp;
     }
     

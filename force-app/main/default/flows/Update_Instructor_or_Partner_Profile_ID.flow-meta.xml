@@ -185,7 +185,7 @@
         <inputReference>sUser</inputReference>
     </recordUpdates>
     <startElementReference>Get_Instructor_Profile_ID</startElementReference>
-    <status>Active</status>
+    <status>Obsolete</status>
     <variables>
         <name>cInstructorProfileID</name>
         <dataType>String</dataType>

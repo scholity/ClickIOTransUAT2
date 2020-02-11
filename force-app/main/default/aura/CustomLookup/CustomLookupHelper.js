@@ -32,14 +32,12 @@
                 ops.push(allValue);	
                 var ops2 =storeResponse;
                 var opsresult = ops.concat(ops2);
-                if(component.get("v.objectAPIName")=='Account'){
-                console.log('getting all response>>>'+JSON.stringify(opsresult));
-                component.set("v.listOfSearchRecords", opsresult);
+                if(component.get("v.objectAPIName").toLowerCase() == 'account'){
+                    console.log('getting all response>>>'+JSON.stringify(opsresult));
+                    component.set("v.listOfSearchRecords", opsresult);
                 }
-                else
-                {
-                component.set("v.listOfSearchRecords", storeResponse);
-  
+                else{
+                    component.set("v.listOfSearchRecords", storeResponse);
                 }
             } else if (state === "ERROR") {
                 var errors = response.getError();

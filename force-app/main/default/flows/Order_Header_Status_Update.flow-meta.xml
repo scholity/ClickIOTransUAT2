@@ -44,7 +44,7 @@
         <name>On_Hold_Count</name>
         <label>On Hold Count</label>
         <locationX>537</locationX>
-        <locationY>429</locationY>
+        <locationY>414</locationY>
         <assignmentItems>
             <assignToReference>cntOnHold</assignToReference>
             <operator>Assign</operator>
@@ -255,27 +255,12 @@
     <decisions>
         <name>Determine_Order_Status</name>
         <label>Determine Order Status</label>
-        <locationX>826</locationX>
+        <locationX>825</locationX>
         <locationY>221</locationY>
         <defaultConnector>
             <targetReference>Set_In_Process</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Is_On_Hold</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>cntOnHold</leftValueReference>
-                <operator>GreaterThan</operator>
-                <rightValue>
-                    <numberValue>0.0</numberValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Set_On_Hold</targetReference>
-            </connector>
-            <label>Is On Hold</label>
-        </rules>
         <rules>
             <name>Is_Shipped</name>
             <conditionLogic>and</conditionLogic>
@@ -329,6 +314,28 @@
             <label>Is Returned</label>
         </rules>
         <rules>
+            <name>Is_On_Hold</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>cntOnHold</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sOrder.ccrz__OrderStatus__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>In Process</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_On_Hold</targetReference>
+            </connector>
+            <label>Is On Hold</label>
+        </rules>
+        <rules>
             <name>Complete_Override</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
@@ -369,7 +376,7 @@
             <label>Is Return Submitted Status</label>
         </rules>
     </decisions>
-    <description>Updates the Order Header status based on the order item conditions</description>
+    <description>Updates the Order Header status based on the order item conditions - Added additional logic - if already IN PROGRESS do not set to ON HOLD</description>
     <formulas>
         <name>fCancelReturn</name>
         <dataType>Number</dataType>
@@ -499,7 +506,13 @@
         <locationY>527</locationY>
         <inputReference>sOrder</inputReference>
     </recordUpdates>
-    <startElementReference>Get_Order</startElementReference>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Get_Order</targetReference>
+        </connector>
+    </start>
     <status>Active</status>
     <variables>
         <name>cntCancel</name>

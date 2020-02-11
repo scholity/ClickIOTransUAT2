@@ -1,11 +1,19 @@
 .THIS.intialButton{
     width: 100% !important;
+    background-color : red !important;
+    height: 58px;
+    font-weight: bold;
+    font-size: 18px !important;
 }
+
 .THIS.slds-spinner_container {  
   z-index: 10000;
   position: fixed;   
 }
 .THIS.afterSubmitted{
-  width: 100% !important;
-  background-color : grey !important;
+  	width: 100% !important;
+  	background-color : grey !important;
+    height: 58px;
+    font-weight: bold;
+    font-size: 18px !important;
 }

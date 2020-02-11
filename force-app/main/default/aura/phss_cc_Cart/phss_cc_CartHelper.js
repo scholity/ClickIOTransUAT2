@@ -298,6 +298,10 @@
 
                 if (returnValue != null && returnValue.Error == null) {
                     var allowPaymentByInvoice = returnValue.allowPaymentByInvoice;
+                    
+                    console.log("allowPaymentByInvoice");
+                    console.log(allowPaymentByInvoice);
+                    
                     if (allowPaymentByInvoice != true) {
                         allowPaymentByInvoice = false;
                     }

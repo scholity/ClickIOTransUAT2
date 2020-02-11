@@ -12,16 +12,13 @@
     <aura:handler 	name = "init" 					value="{!this}" 				action = "{!c.doInit}"/>
     
     <aura:if isTrue="{!v.stepNumber == 'Zero'}" >
-        
-        <lightning:button label		= "Submit Order Credit"
-                          title		= "Submit Order Credit"
+        <div class = "slds-text-align_center slds-card slds-has-cushion ">
+            <b style="color: rgb(247, 10, 10); font-size: 18px;">Click below to complete the refund process.</b>
+        </div><br/>
+        <lightning:button label		= "Issue Refund or Credit Adjustment"
+                          title		= "Issue Refund or Credit Adjustment"
                           onclick	= "{!c.showStep1}"
                           class		= "slds-button_brand intialButton"/>
-        <!-- 
-        <lightning:button label		= "Submit Order Credit"
-                          title		= "Submit Order Credit"
-                          onclick	= "{!c.doNothing}"
-                          class		= "slds-button_brand intialButton"/> -->
         
     </aura:if>
     
@@ -79,8 +76,8 @@
     </aura:if>
     <aura:if isTrue="{!v.stepNumber == 'Two'}" >
         
-        <lightning:button label		= "Submit Order Credit"
-                          title		= "Submit Order Credit"
+        <lightning:button label		= "Refund Issued"
+                          title		= "Refund Issued"
                           class		= "slds-button_brand afterSubmitted"/>
         
     </aura:if>

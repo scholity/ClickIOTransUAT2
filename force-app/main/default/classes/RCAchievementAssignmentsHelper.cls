@@ -165,7 +165,9 @@ public with sharing class RCAchievementAssignmentsHelper {
                             newAchievementAssignment.redwing__Status__c == 'Acquired'
                     ) {
 
-                newAchievementAssignment.redwing__Acquisition_Date__c = System.Today();
+                //newAchievementAssignment.redwing__Acquisition_Date__c = System.Today();
+                
+                newAchievementAssignment.redwing__Acquisition_Date__c = Date.today(); //DE2442
 
                 if (!iltClasses.isEmpty()) {
                     for (redwing__ILT_Class__c iltClass : iltClasses) {
@@ -174,13 +176,15 @@ public with sharing class RCAchievementAssignmentsHelper {
                             break;
                         }
                     }
-                } else if (!tPlans.isEmpty()) {
+                }
+                //DE2442
+                /*else if (!tPlans.isEmpty()) {
                     for (redwing__Training_Plan__c tp : tPlans) {
                         if (tp.Classroom_Setting__c == 'Classroom' || tp.Classroom_Setting__c == 'Online + Classroom') {
                             newAchievementAssignment.redwing__Acquisition_Date__c = tp.redwing__End_Date__c;
                         }
                     }
-                }
+                }*/
             }
         }
     }
@@ -231,7 +235,8 @@ public with sharing class RCAchievementAssignmentsHelper {
                 String achievementExpirationTermBasis = achievements.get(newAchievementAssignment.redwing__Achievement__c).redwing__Expiration_Term_Basis__c;
                 Date achievementExpirationDate = achievements.get(newAchievementAssignment.redwing__Achievement__c).redwing__Expiration_Date__c;
 
-
+                //DE2442
+                /*
                 for (redwing__Training_Plan__c tp : tPlans) {
                     if (tp.Classroom_Setting__c == 'Classroom' || tp.Classroom_Setting__c == 'Online + Classroom') {
                         newAchievementAssignment.redwing__Acquisition_Date__c = tp.redwing__End_Date__c;
@@ -243,7 +248,7 @@ public with sharing class RCAchievementAssignmentsHelper {
                                 newAchievementAssignment.redwing__Acquisition_Date__c, achievementExpirationTerm, achievementExpirationTermBasis);
                         continue;
                     }
-                }
+                } */
 
                 for (redwing__ILT_Class__c iltClass : iltClasses) {
                     if (iltClass.Classroom_Setting__c == 'Classroom' || iltClass.Classroom_Setting__c == 'Online + Classroom') {

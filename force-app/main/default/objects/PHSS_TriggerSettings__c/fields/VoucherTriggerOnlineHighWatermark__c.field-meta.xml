@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VoucherTriggerOnlineHighWatermark__c</fullName>
+    <description>Maximum number of vouchers to create for online courses when low watermark is reached.  Default 150.</description>
+    <externalId>false</externalId>
+    <label>VoucherTriggerOnlineHighWatermark</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

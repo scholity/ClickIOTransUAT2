@@ -540,5 +540,33 @@
             });
             $A.enqueueAction(action);
         }
-    }
+    },
+    
+    removeDuplicate : function (component,addInstr)
+    {        
+            var c;        
+            var len = addInstr.length;        
+            var result = [];        
+            var obj = {};  
+
+            for (c = 0; c<len; c++)
+            {            
+               obj[addInstr[c]] = 0;        
+            }  
+            for (c in obj)
+            { 
+               result.push(c);        
+            }
+        console.log(addInstr);
+        console.log("result");
+        console.log(result.length);
+        if(result.length != addInstr.length)
+        {
+            component.set("v.dupInsError", true);
+		}
+        else
+        {
+            component.set("v.dupInsError", false);
+        }
+     }
 })

@@ -1096,7 +1096,7 @@ IF(ISCHANGED({!myVariable_old.Status__c}) &amp;&amp; ISPICKVAL({!myVariable_old.
         <object>Channel_Compensation__c</object>
     </recordCreates>
     <startElementReference>myPreWaitDecision_myWait_myRule_1</startElementReference>
-    <status>Active</status>
+    <status>Obsolete</status>
     <variables>
         <name>cancelWaits</name>
         <dataType>String</dataType>

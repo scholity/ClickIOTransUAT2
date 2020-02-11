@@ -129,7 +129,7 @@
             <label>MainLoop</label>
         </rules>
     </decisions>
-    <description>Updated to handle Stacked Classes</description>
+    <description>Updated to handle Stacked Classes - and cancelled class</description>
     <formulas>
         <name>DecrementLoop</name>
         <dataType>Number</dataType>
@@ -207,6 +207,13 @@
             <operator>EqualTo</operator>
             <value>
                 <elementReference>sTrainingEvent.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>sked__Job_Status__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Cancelled</stringValue>
             </value>
         </filters>
         <object>sked__Job__c</object>

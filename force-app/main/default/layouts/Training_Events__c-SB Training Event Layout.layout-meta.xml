@@ -228,6 +228,10 @@
                 <behavior>Edit</behavior>
                 <field>BL_Info_Sent_to_Customer__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>FS_Licensing_Customer__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

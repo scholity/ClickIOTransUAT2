@@ -1,43 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <assignments>
-        <description>Add to output collection of price list items</description>
-        <name>Add_to_oPriceGroupPriceLists</name>
-        <label>Add to oPriceGroupPriceLists</label>
-        <locationX>1433</locationX>
-        <locationY>217</locationY>
-        <assignmentItems>
-            <assignToReference>oColPriceGroupPriceLists</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>sPriceGroupPriceListLoop</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Set_End_Date_of_all_Price_Lists</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Add_to_Price_Group_Price_List</name>
-        <label>Add to Price Group Price List</label>
-        <locationX>670</locationX>
-        <locationY>860</locationY>
-        <assignmentItems>
-            <assignToReference>listPriceGroupPriceList</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>sPriceGroupPriceList</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Loop_through_Price_Lists_to_Add</targetReference>
-        </connector>
-    </assignments>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <assignments>
         <name>Assign_Price_Lists</name>
         <label>Assign Price Lists</label>
-        <locationX>914</locationX>
-        <locationY>860</locationY>
+        <locationX>1136</locationX>
+        <locationY>886</locationY>
         <assignmentItems>
             <assignToReference>sPriceGroupPriceList.ccrz__EffectiveEnd__c</assignToReference>
             <operator>Assign</operator>
@@ -77,11 +44,18 @@
             <assignToReference>sPriceGroupPriceList.ccrz__Storefront__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Storefront</elementReference>
+                <elementReference>selStorefront</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>vRecordsInLList</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Add_to_Price_Group_Price_List</targetReference>
+            <targetReference>Remove_Price_List_Price_Group_before_Add</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -113,6 +87,22 @@
         </assignmentItems>
         <connector>
             <targetReference>Upsell</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Remove_Price_List_Price_Group_before_Add</name>
+        <label>Remove Price List Price Group before Add</label>
+        <locationX>986</locationX>
+        <locationY>883</locationY>
+        <assignmentItems>
+            <assignToReference>oColPriceGroupPriceLists</assignToReference>
+            <operator>RemoveAll</operator>
+            <value>
+                <elementReference>sPriceGroupPriceList</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Set_Output_Price_Group_Price_List</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -150,8 +140,8 @@
     <assignments>
         <name>Set_Highest_Discount</name>
         <label>Set Highest Discount</label>
-        <locationX>1216</locationX>
-        <locationY>860</locationY>
+        <locationX>1267</locationX>
+        <locationY>884</locationY>
         <assignmentItems>
             <assignToReference>HighestDiscount</assignToReference>
             <operator>Assign</operator>
@@ -203,6 +193,22 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Set_Output_Price_Group_Price_List</name>
+        <label>Set Output Price Group Price List</label>
+        <locationX>985</locationX>
+        <locationY>665</locationY>
+        <assignmentItems>
+            <assignToReference>oColPriceGroupPriceLists</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>sPriceGroupPriceList</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_through_Price_Lists_to_Add</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <description>Found a Price Group Account - Set the Price Group ID to the found Price Group Account</description>
         <name>Set_Price_Group_ID</name>
         <label>Set Price Group ID</label>
@@ -241,23 +247,6 @@
         </connector>
     </assignments>
     <assignments>
-        <description>Set end date for the Price lists looping through</description>
-        <name>Set_Price_Group_Price_List_End_Date</name>
-        <label>Set Price Group Price List End Date</label>
-        <locationX>1436</locationX>
-        <locationY>62</locationY>
-        <assignmentItems>
-            <assignToReference>sPriceGroupPriceListLoop.ccrz__EffectiveEnd__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>fUpsellEndDate</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Add_to_oPriceGroupPriceLists</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Set_Sales_Director</name>
         <label>Set Sales Director</label>
         <locationX>716</locationX>
@@ -289,6 +278,27 @@
             <targetReference>Update_Oppurtunity_Approval</targetReference>
         </connector>
     </assignments>
+    <choices>
+        <name>choice_no</name>
+        <choiceText>No</choiceText>
+        <dataType>Boolean</dataType>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </choices>
+    <choices>
+        <name>choice_yes</name>
+        <choiceText>Yes</choiceText>
+        <dataType>Boolean</dataType>
+        <value>
+            <booleanValue>true</booleanValue>
+        </value>
+    </choices>
+    <choices>
+        <name>COM</name>
+        <choiceText>COM</choiceText>
+        <dataType>String</dataType>
+    </choices>
     <choices>
         <name>CPS</name>
         <choiceText>CPS</choiceText>
@@ -585,8 +595,8 @@
     <decisions>
         <name>CreatePriceGroupAccount</name>
         <label>CreatePriceGroupAccount</label>
-        <locationX>211</locationX>
-        <locationY>699</locationY>
+        <locationX>240</locationX>
+        <locationY>800</locationY>
         <defaultConnector>
             <targetReference>Create_Price_Group_Account</targetReference>
         </defaultConnector>
@@ -608,16 +618,41 @@
         </rules>
     </decisions>
     <decisions>
+        <name>decision_add_more_price_lists</name>
+        <label>Add More Price Lists Decision</label>
+        <locationX>660</locationX>
+        <locationY>717</locationY>
+        <defaultConnector>
+            <targetReference>Create_Price_Group_Price_List</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>add_more</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>pl_add_more_price_lists</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>choice_yes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Select_Price_List_Category</targetReference>
+            </connector>
+            <label>Add More</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Include_Price_List</name>
         <label>Include Price List</label>
-        <locationX>909</locationX>
-        <locationY>721</locationY>
+        <locationX>1251</locationX>
+        <locationY>589</locationY>
         <defaultConnector>
             <targetReference>Loop_through_Price_Lists_to_Add</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>[Default Outcome]</defaultConnectorLabel>
         <rules>
-            <name>Include</name>
+            <name>Include_Selected_Price_List</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Selected_Price_Lists</leftValueReference>
@@ -629,14 +664,14 @@
             <connector>
                 <targetReference>Is_Discount_Higher</targetReference>
             </connector>
-            <label>Include</label>
+            <label>Include Selected Price List</label>
         </rules>
     </decisions>
     <decisions>
         <name>Is_Discount_Higher</name>
         <label>Is Discount Higher</label>
-        <locationX>1171</locationX>
-        <locationY>725</locationY>
+        <locationX>1252</locationX>
+        <locationY>742</locationY>
         <defaultConnector>
             <targetReference>Assign_Price_Lists</targetReference>
         </defaultConnector>
@@ -785,7 +820,7 @@
             <label>SCC30</label>
         </rules>
     </decisions>
-    <description>Added Private Price List selection and verify that the Price Group Account exists</description>
+    <description>CVaughan - added framework for for filtering and selecting Price List records by category</description>
     <dynamicChoiceSets>
         <name>AvailablePriceLists</name>
         <dataType>String</dataType>
@@ -795,6 +830,13 @@
             <operator>EqualTo</operator>
             <value>
                 <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Price_List_Category__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>pPickListCategory</elementReference>
             </value>
         </filters>
         <filters>
@@ -808,7 +850,7 @@
             <field>ccrz__Storefront__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>GeneralStore</elementReference>
+                <elementReference>selStorefront</elementReference>
             </value>
         </filters>
         <object>ccrz__E_PriceList__c</object>
@@ -825,9 +867,33 @@
         <valueField>Id</valueField>
     </dynamicChoiceSets>
     <dynamicChoiceSets>
+        <name>Filtered_Price_Lists</name>
+        <dataType>String</dataType>
+        <displayField>Name</displayField>
+        <object>ccrz__E_PriceList__c</object>
+        <sortField>Name</sortField>
+        <sortOrder>Asc</sortOrder>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>pPickListCategory</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>Price_List_Category__c</picklistField>
+        <picklistObject>ccrz__E_PriceList__c</picklistObject>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
         <name>SelectedPriceLists</name>
         <dataType>String</dataType>
         <displayField>Name</displayField>
+        <filters>
+            <field>Price_List_Category__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>pPickListCategory</elementReference>
+            </value>
+        </filters>
         <filters>
             <field>Private__c</field>
             <operator>EqualTo</operator>
@@ -853,7 +919,7 @@
             <field>ccrz__Storefront__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Storefront</elementReference>
+                <elementReference>selStorefront</elementReference>
             </value>
         </filters>
         <object>ccrz__E_PriceList__c</object>
@@ -887,8 +953,8 @@
     <loops>
         <name>Loop_through_Price_Lists_to_Add</name>
         <label>Loop through Price Lists to Add</label>
-        <locationX>674</locationX>
-        <locationY>700</locationY>
+        <locationX>678</locationX>
+        <locationY>583</locationY>
         <assignNextValueToReference>sPriceLists</assignNextValueToReference>
         <collectionReference>colAvailablePriceLists</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -896,23 +962,7 @@
             <targetReference>Include_Price_List</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
-            <targetReference>Create_Price_Group_Price_List</targetReference>
-        </noMoreValuesConnector>
-    </loops>
-    <loops>
-        <description>Set end date of price lists associated to price group</description>
-        <name>Set_End_Date_of_all_Price_Lists</name>
-        <label>Set End Date of all Price Lists</label>
-        <locationX>1285</locationX>
-        <locationY>56</locationY>
-        <assignNextValueToReference>sPriceGroupPriceListLoop</assignNextValueToReference>
-        <collectionReference>colPriceGroupPriceLists</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Set_Price_Group_Price_List_End_Date</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Update_Price_Group_Price_Lists</targetReference>
+            <targetReference>scrn_add_more_price_lists</targetReference>
         </noMoreValuesConnector>
     </loops>
     <processMetadataValues>
@@ -948,7 +998,7 @@
         <name>Create_Price_Group</name>
         <label>Create Price Group</label>
         <locationX>812</locationX>
-        <locationY>490</locationY>
+        <locationY>477</locationY>
         <assignRecordIdToReference>sPriceGroupID</assignRecordIdToReference>
         <connector>
             <targetReference>Get_Available_Price_Lists</targetReference>
@@ -994,8 +1044,8 @@
     <recordCreates>
         <name>Create_Price_Group_Account</name>
         <label>Create Price Group Account</label>
-        <locationX>225</locationX>
-        <locationY>873</locationY>
+        <locationX>235</locationX>
+        <locationY>921</locationY>
         <connector>
             <targetReference>Get_Account_Settings</targetReference>
         </connector>
@@ -1044,7 +1094,7 @@
         <inputAssignments>
             <field>ccrz__Storefront__c</field>
             <value>
-                <elementReference>Storefront</elementReference>
+                <elementReference>selStorefront</elementReference>
             </value>
         </inputAssignments>
         <object>ccrz__E_PriceGroupAccount__c</object>
@@ -1052,18 +1102,18 @@
     <recordCreates>
         <name>Create_Price_Group_Price_List</name>
         <label>Create Price Group Price List</label>
-        <locationX>427</locationX>
-        <locationY>693</locationY>
+        <locationX>449</locationX>
+        <locationY>791</locationY>
         <connector>
             <targetReference>CreatePriceGroupAccount</targetReference>
         </connector>
-        <inputReference>listPriceGroupPriceList</inputReference>
+        <inputReference>oColPriceGroupPriceLists</inputReference>
     </recordCreates>
     <recordLookups>
         <name>Get_Account_Settings</name>
         <label>Get Account Settings</label>
-        <locationX>429</locationX>
-        <locationY>864</locationY>
+        <locationX>444</locationX>
+        <locationY>922</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Account_Setting_Record_Exists</targetReference>
@@ -1084,11 +1134,11 @@
     <recordLookups>
         <name>Get_Available_Price_Lists</name>
         <label>Get Available Price Lists</label>
-        <locationX>391</locationX>
-        <locationY>496</locationY>
+        <locationX>492</locationX>
+        <locationY>435</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Price_Lists</targetReference>
+            <targetReference>Select_Price_List_Category</targetReference>
         </connector>
         <filters>
             <field>Private__c</field>
@@ -1115,7 +1165,7 @@
             <field>ccrz__Storefront__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Storefront</elementReference>
+                <elementReference>selStorefront</elementReference>
             </value>
         </filters>
         <object>ccrz__E_PriceList__c</object>
@@ -1124,6 +1174,7 @@
         <queriedFields>Name</queriedFields>
         <queriedFields>ccrz__Storefront__c</queriedFields>
         <queriedFields>Discount__c</queriedFields>
+        <queriedFields>Price_List_Category__c</queriedFields>
         <sortField>Name</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
@@ -1219,7 +1270,7 @@
             <field>ccrz__Storefront__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Storefront</elementReference>
+                <elementReference>selStorefront</elementReference>
             </value>
         </filters>
         <object>ccrz__E_PriceGroupAccount__c</object>
@@ -1264,7 +1315,7 @@
             <field>ccrz__Storefront__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Storefront</elementReference>
+                <elementReference>selStorefront</elementReference>
             </value>
         </filters>
         <object>ccrz__E_PriceGroupAccount__c</object>
@@ -1313,46 +1364,11 @@
         </connector>
         <inputReference>sOppurtunity</inputReference>
     </recordUpdates>
-    <recordUpdates>
-        <description>Update Price Group Account End Date</description>
-        <name>Update_Price_Group_Account_End_Date</name>
-        <label>Update Price Group Account End Date</label>
-        <locationX>1157</locationX>
-        <locationY>222</locationY>
-        <connector>
-            <targetReference>Get_Price_Groups_Price_Lists</targetReference>
-        </connector>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>sPriceGroupAccount.Id</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>ccrz__EffectiveEnd__c</field>
-            <value>
-                <elementReference>fUpsellEndDate</elementReference>
-            </value>
-        </inputAssignments>
-        <object>ccrz__E_PriceGroupAccount__c</object>
-    </recordUpdates>
-    <recordUpdates>
-        <description>Update looped price group price lits</description>
-        <name>Update_Price_Group_Price_Lists</name>
-        <label>Update Price Group Price Lists</label>
-        <locationX>1271</locationX>
-        <locationY>480</locationY>
-        <connector>
-            <targetReference>Create_Price_Group</targetReference>
-        </connector>
-        <inputReference>oColPriceGroupPriceLists</inputReference>
-    </recordUpdates>
     <screens>
         <name>Establish_Price_Group</name>
         <label>Establish Price Group</label>
         <locationX>318</locationX>
-        <locationY>53</locationY>
+        <locationY>52</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1415,7 +1431,7 @@
             <isRequired>true</isRequired>
         </fields>
         <fields>
-            <name>Storefront</name>
+            <name>selStorefront</name>
             <choiceReferences>GeneralStore</choiceReferences>
             <choiceReferences>CREStore</choiceReferences>
             <choiceReferences>CPS</choiceReferences>
@@ -1451,10 +1467,11 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <description>Use the filtered_price_lists var to show only the price list records here that have been filtered by the category in the prior screen.</description>
         <name>Price_Lists</name>
         <label>Price Lists</label>
-        <locationX>670</locationX>
-        <locationY>578</locationY>
+        <locationX>557</locationX>
+        <locationY>581</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1463,7 +1480,7 @@
         </connector>
         <fields>
             <name>Selected_Price_Lists</name>
-            <choiceReferences>SelectedPriceLists</choiceReferences>
+            <choiceReferences>AvailablePriceLists</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Available Price Lists</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -1471,6 +1488,73 @@
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <description>If user selects &#39;Yes&#39;, they are redirected back to the category screen to then select more Price List records. If &#39;No&#39; proceed with selected items</description>
+        <name>scrn_add_more_price_lists</name>
+        <label>Add More Price List Screen</label>
+        <locationX>860</locationX>
+        <locationY>706</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>decision_add_more_price_lists</targetReference>
+        </connector>
+        <fields>
+            <name>txt_add_more_price_lists</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;Would you like to add additional Price List records?&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>pl_add_more_price_lists</name>
+            <choiceReferences>choice_no</choiceReferences>
+            <choiceReferences>choice_yes</choiceReferences>
+            <dataType>Boolean</dataType>
+            <defaultSelectedChoiceReference>choice_no</defaultSelectedChoiceReference>
+            <fieldText>Select</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>SelPriceListDisplay</name>
+            <fieldText>&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!colVerifyPriceGroupPriceList}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Select_Price_List_Category</name>
+        <label>Select Price List Category</label>
+        <locationX>336</locationX>
+        <locationY>589</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Price_Lists</targetReference>
+        </connector>
+        <fields>
+            <name>txt_select_pl_category</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;Select a Price List Category&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>CatMessage</name>
+            <fieldText>&lt;p&gt;Storefront: {!selStorefront}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>selCategory</name>
+            <choiceReferences>pPickListCategory</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Category</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
     </screens>
     <start>
         <locationX>50</locationX>
@@ -1508,6 +1592,14 @@
         <objectType>ccrz__E_PriceGroupPricelist__c</objectType>
     </variables>
     <variables>
+        <name>colVerifyPriceGroupPriceList</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>ccrz__E_PriceGroupPricelist__c</objectType>
+    </variables>
+    <variables>
         <name>frmAccount</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -1522,24 +1614,17 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
-        <name>frmPriceGroup</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
-    </variables>
-    <variables>
         <name>HighestDiscount</name>
         <dataType>Number</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
         <scale>2</scale>
     </variables>
     <variables>
-        <name>listPriceGroupPriceList</name>
+        <name>lPriceListCheck</name>
         <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
+        <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>ccrz__E_PriceGroupPricelist__c</objectType>
@@ -1597,8 +1682,8 @@
         <name>sPriceGroupID</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>sPriceGroupPriceList</name>
@@ -1626,11 +1711,19 @@
         <objectType>ccrz__E_PriceList__c</objectType>
     </variables>
     <variables>
+        <name>sVerifyPriceListPriceGroup</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>ccrz__E_PriceGroupPricelist__c</objectType>
+    </variables>
+    <variables>
         <name>varOPricingApprovalLevel</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <description>End Date</description>
@@ -1647,5 +1740,15 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vRecordsInLList</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
     </variables>
 </Flow>

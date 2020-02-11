@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Caregiving</fullName>
+        <default>false</default>
+        <label>Caregiving</label>
+    </customValue>
+    <customValue>
+        <fullName>First Aid</fullName>
+        <default>false</default>
+        <label>First Aid</label>
+    </customValue>
+    <customValue>
+        <fullName>Aquatics</fullName>
+        <default>false</default>
+        <label>Aquatics</label>
+    </customValue>
+    <customValue>
+        <fullName>NAT</fullName>
+        <default>false</default>
+        <label>NAT</label>
+    </customValue>
+    <customValue>
+        <fullName>CEP</fullName>
+        <default>false</default>
+        <label>CEP</label>
+    </customValue>
+    <customValue>
+        <fullName>Learn to Swim</fullName>
+        <default>false</default>
+        <label>Learn to Swim</label>
+    </customValue>
+    <customValue>
+        <fullName>Licenses and Subscriptions</fullName>
+        <default>false</default>
+        <label>Licenses and Subscriptions</label>
+    </customValue>
+    <customValue>
+        <fullName>Heathcare</fullName>
+        <default>false</default>
+        <label>Heathcare</label>
+    </customValue>
+    <customValue>
+        <fullName>Instructor Training</fullName>
+        <default>false</default>
+        <label>Instructor Training</label>
+    </customValue>
+    <customValue>
+        <fullName>CPS</fullName>
+        <default>false</default>
+        <label>CPS</label>
+    </customValue>
+    <masterLabel>Price List Category</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

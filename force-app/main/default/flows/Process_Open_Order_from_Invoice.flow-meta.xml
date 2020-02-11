@@ -296,7 +296,7 @@
             <targetReference>Get_Open_Order</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Obsolete</status>
     <variables>
         <name>frmOpenOrderID</name>
         <dataType>String</dataType>

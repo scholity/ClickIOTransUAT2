@@ -249,6 +249,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SDOC__SDJob__c.SDOC__ObjSortValFieldsForSDoc__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDJob__c.SDOC__ObjSortValNum__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SDOC__SDJob__c.SDOC__ObjSortVal__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -304,6 +314,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SDOC__SDJob__c.SDOC__SSign_Envelope_ID__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDJob__c.SDOC__SSign_First_Signer_URL__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SDOC__SDJob__c.SDOC__SendEmail__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -340,6 +360,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SDOC__SDJob__c.SDOC__Type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDRelationship__c.Achievement_Assignment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDRelationship__c.CC_Order_Item__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDRelationship__c.CC_Order__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -479,7 +514,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SDOC__SDTemplate__c.SDOC__Auto_Create_Attachment_On_Email__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SDOC__SDTemplate__c.SDOC__Base_Related_Object__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDTemplate__c.SDOC__Box_Enabled__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -548,6 +593,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>SDOC__SDTemplate__c.SDOC__E_Signature_Solution__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>SDOC__SDTemplate__c.SDOC__Email_From_OrgWideAddressId__c</field>
         <readable>true</readable>
@@ -610,6 +660,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SDOC__SDTemplate__c.SDOC__Email_SendTo__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDTemplate__c.SDOC__Email_Send_To_Long__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1148,6 +1203,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDoc__c.SDOC__Document_Format__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>SDOC__SDoc__c.SDOC__Document_Name__c</field>
         <readable>true</readable>
@@ -1180,6 +1240,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SDOC__SDoc__c.SDOC__GD_Link__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDoc__c.SDOC__GD_Status_Text__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1220,6 +1285,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SDOC__SDoc__c.SDOC__LineItemDataXML__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SDOC__SDoc__c.SDOC__ObjSortVal__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

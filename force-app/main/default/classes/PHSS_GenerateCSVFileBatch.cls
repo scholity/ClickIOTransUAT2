@@ -275,11 +275,11 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
                         street1 = street.left(40);
                         if(street.length()>80)
                         {
-                            street2 = street.substring(40, 80);
+                            street2 = street.substring(40, 80).trim();
                         }
                         else
                         {
-                            street2 = street.substring(40);
+                            street2 = street.substring(40).trim();
                         }                        
                     }                   
                 }
@@ -287,14 +287,14 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
                 {
                     if(!String.isEmpty(street) && street.length()>41)
                     {
-                        street1 = street.left(40);
+                        street1 = street.left(40).trim();
                     }
                     if(!String.isEmpty(stringList[1]))
                     {
                         street2 = stringList[1].replaceAll(regExp, '');
                         if(street2.length()>40)
                         {
-                            street2 = stringList[1].left(40);
+                            street2 = stringList[1].left(40).trim();
                         }
                     }
                 } 
@@ -303,7 +303,7 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
                 
                 if(street2!='')
                 {
-                    street2='"'+street2+'"'.trim();
+                    street2='"'+street2.trim()+'"'.trim();
                 }
                 else
                 {
@@ -732,7 +732,7 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
                     //DE1854
                     if(fi.CC_Category_Name__c == 'NAT Training' || fi.CC_Category_Name__c == 'NAT Testing')
                     {
-                        if(String.isNotBlank(fi.Supplemental_Information__c))
+                        if(String.isNotBlank(fi.Supplemental_Information__c) && fi.Supplemental_Information__c.length() < 49)
                         {
                             instructorName 	= '"' + fi.Supplemental_Information__c.replaceAll(regExp, '') + '"';
                             fullName	 	= instructorName;
@@ -751,9 +751,23 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
                     else
                     {
                         // DE1932
-                        if (fi.ILT_Class__c != null) {
-                            instructorName = getNameOfInstructor(iltCIMap.get(fi.ILT_Class__c));
-                            fullName = instructorName;
+                        if (fi.ILT_Class__c != null)
+                        {   
+                            if(getNameOfInstructor(iltCIMap.get(fi.ILT_Class__c)).length() < 49)
+                            {
+                                instructorName = getNameOfInstructor(iltCIMap.get(fi.ILT_Class__c));
+                                fullName = instructorName;
+                            }
+                            else
+                            {
+                                isError = true;
+                            
+                                if(errString!='')
+                                {
+                                    errString=errString+';';
+                                }
+                                errString = errString + 'Max Instructor Full Name';
+                            }
                         }
 
                         /*  // removed per DE1932
@@ -802,7 +816,20 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
             }
             else if (fi.ILT_Class__c!=null && iltCIMap.containsKey(fi.ILT_Class__c) && iltCIMap.get(fi.ILT_Class__c).redwing__Instructor__c!=null)
             {
-                instructorName = getNameOfInstructor(iltCIMap.get(fi.ILT_Class__c));
+                if(getNameOfInstructor(iltCIMap.get(fi.ILT_Class__c)).length() < 49)
+                {
+                    instructorName = getNameOfInstructor(iltCIMap.get(fi.ILT_Class__c));
+                }
+                else
+                {
+                    isError = true;
+                    
+                    if(errString!='')
+                    {
+                        errString=errString+';';
+                    }
+                    errString = errString + 'Max Instructor Full Name';
+                }
             }
             if ('COURSE'.equals(fi.CC_Product__r.ccrz__InventoryType__c) && 'KIT'.equals(fi.CC_Product__r.ccrz__ProductType__c))
             {
@@ -987,8 +1014,8 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
             Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
             email.setSubject( subject );
             //email.setToAddresses( new String[] {'snehra@salesforce.com'} );
-            email.setToAddresses( new String[] {'reportscoa@redcross.org'} );
-            //email.setToAddresses( new String[] {'jatinkumar.acharya@redcross.org'} );
+            //email.setToAddresses( new String[] {'reportscoa@redcross.org'} );
+            email.setToAddresses( new String[] {'jatinkumar.acharya@redcross.org'} );
             email.setPlainTextBody( body );
             email.setFileAttachments(emailAttList);
             if (!Test.isRunningTest())
