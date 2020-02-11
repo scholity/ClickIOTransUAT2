@@ -127,7 +127,7 @@
             <assignToReference>sTrainingEvent2.Training_Zip__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>sShipTo.ccrz__PostalCode__c</elementReference>
+                <elementReference>fTrainingZip</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -284,7 +284,12 @@
             <label>Closed Won</label>
         </rules>
     </decisions>
-    <description>Added Training Event Record Type</description>
+    <description>Added Training Event Record Type - Left Zip Code</description>
+    <formulas>
+        <name>fTrainingZip</name>
+        <dataType>String</dataType>
+        <expression>LEFT({!sShipTo.ccrz__PostalCode__c},5)</expression>
+    </formulas>
     <interviewLabel>Create Training Event {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Create Training Event from Opportunity</label>
     <loops>

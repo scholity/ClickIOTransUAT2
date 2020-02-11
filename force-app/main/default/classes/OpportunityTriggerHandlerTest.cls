@@ -138,8 +138,10 @@ public class OpportunityTriggerHandlerTest {
 														Sales_User__c 	= 'ARC BGST Sales User');
 		ProfilesList.add(indiv);
 		
-		insert ProfilesList;    
+		insert ProfilesList;  
         
+        Id standardRecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Standard').getRecordTypeId();
+
         List<Opportunity> opportunitiesList = new List<Opportunity>();
         
         for(Account act : accountList)
@@ -152,7 +154,8 @@ public class OpportunityTriggerHandlerTest {
                                                         Type                = 'New Business - FS',
                                                         CloseDate           = Date.Today(),
                                                         StageName           = 'Approach',
-                                                        Approval_Status__c  = 'Approved'));
+                                                        Approval_Status__c  = 'Approved',
+                                                        RecordTypeID		= standardRecordTypeId));
             }
         }
         

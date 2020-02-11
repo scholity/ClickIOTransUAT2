@@ -540,7 +540,8 @@ private without sharing class ILTInstructorCommunitytest {
             a2.OwnerId = runAsUser.Id;
             update a2;
 
-            Profile customerProfile = [SELECT Id FROM Profile WHERE Name = 'SB PHSS-IC-Community Plus Login' LIMIT 1];
+            Profile customerProfile = [SELECT Id FROM Profile WHERE Name = 'Learner Community Profile' LIMIT 1];
+            //Profile customerProfile = [SELECT Id FROM Profile WHERE Name = 'SB PHSS-IC-Community Plus Login' LIMIT 1];
             //Profile profileId2 = [SELECT Id FROM Profile WHERE Name = 'Learner Community Profile' LIMIT 1];
 
             User salesRep = new User(LastName = 'Pran',
@@ -762,7 +763,7 @@ private without sharing class ILTInstructorCommunitytest {
                 ILTInstructorCommunity.courseInfo(clsRecord2.id);
                 ILTInstructorCommunity.CourseInfo objcourse = ILTInstructorCommunity.courseInfo(clsRecord2.id);
                 System.assertEquals(1, objcourse.lstStudents.size()); //Assert to check course details are available to sent to close class
-                ILTInstructorCommunity.assignUserPermission(assp);
+                //ILTInstructorCommunity.assignUserPermission(assp);
                 ILTInstructorCommunity.isValidCourse(lPlan2.id);
                 Boolean b = ILTInstructorCommunity.isValidCourse(lPlan2.id);
                 ILTInstructorCommunity.IsCartActive(o.id);
@@ -1040,7 +1041,7 @@ private without sharing class ILTInstructorCommunitytest {
 
     static testMethod void test_saveChunk() {
 
-        String fileData = 'Name' + ',' + 'LastName' + ',' + 'Email' + ',' + 'Phonenumber' + '\n' + 'test1' + ',' + 't' + ',' + 'test1t@cfr.com' + ',' + '8888888888';
+        String fileData = 'Name' + ',' + 'LastName' + ',' + 'Email' + ',' + 'Phonenumber' + ',Grade' + ',FailReason' + ',AddtlInfo' + '\n' + 'test1' + ',' + 't' + ',' + 'test1t@cfr.com' + ',' + '8888888888' + ',Successful,Reason,Remarks';
         String fileDateBase64 = EncodingUtil.base64Encode(Blob.valueOf(fileData));
         String mimetype = 'text/csv;base64,';
         String fileName = 'SampleTest.csv';

@@ -19,9 +19,21 @@
     <tabs>Integration_Error_Log__c</tabs>
     <tabs>ccrz__E_OrderItem__c</tabs>
     <tabs>redwing__Task__c</tabs>
+    <tabs>CCS_Batch_Class__c</tabs>
+    <tabs>CCS_Batch_Instructor__c</tabs>
+    <tabs>CCS_Batch_Participant__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Integration_Management_UtilityBar</utilityBar>
     <workspaceConfig>
+        <mappings>
+            <tab>CCS_Batch_Class__c</tab>
+        </mappings>
+        <mappings>
+            <tab>CCS_Batch_Instructor__c</tab>
+        </mappings>
+        <mappings>
+            <tab>CCS_Batch_Participant__c</tab>
+        </mappings>
         <mappings>
             <tab>Fulfillment_Item__c</tab>
         </mappings>

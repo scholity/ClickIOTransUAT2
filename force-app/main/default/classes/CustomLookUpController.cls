@@ -73,10 +73,10 @@ public without sharing class CustomLookUpController {
 
         if (ObjectName == ACCOUNT_OBJECT) {
             if (u.Profile.UserLicense.Name.contains(CUSTOMER_COMMUNITY_USER_LICENSE) || u.Profile.Name == SB_ARC_INSTRUCTOR_PROFILE) {
-                sQuery = 'SELECT Id, Name, BillingAddress FROM Account WHERE Id IN (SELECT AccountId FROM AccountContactRelation WHERE ContactId = \'' + u.ContactId + '\') AND Name LIKE :searchKey ORDER BY Name ASC';
+                sQuery = 'SELECT Id, Name, BillingAddress FROM Account WHERE Id IN (SELECT AccountId FROM AccountContactRelation WHERE ContactId = \'' + u.ContactId + '\') AND Name LIKE :searchKey ORDER BY Name ASC LIMIT 10';
 
             } else {
-                sQuery = 'SELECT Id, Name, BillingAddress FROM Account WHERE Name LIKE :searchKey AND (Recordtype.Name = :ORG_ACCT_RECORDTYPE_NAME OR RecordType.Name = :SB_ORG_ACCT_RECORDTYPE_NAME) ORDER BY Name ASC LIMIT 20';
+                sQuery = 'SELECT Id, Name, BillingAddress FROM Account WHERE Name LIKE :searchKey AND (Recordtype.Name = :ORG_ACCT_RECORDTYPE_NAME OR RecordType.Name = :SB_ORG_ACCT_RECORDTYPE_NAME) ORDER BY Name ASC LIMIT 10';
             }
 
         } else if (ObjectName == USER_OBJECT) {

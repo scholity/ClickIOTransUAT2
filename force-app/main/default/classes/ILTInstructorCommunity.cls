@@ -59,11 +59,10 @@ public without sharing class ILTInstructorCommunity{
     public static final String FAILED_TO_IDENTIFY_LTS_CLASS = 'Failed to identify Learn-to-Swim class.';
     public static final String FAILED_TO_IDENTIFY_LTS_COURSE = 'Failed to identify Learn-to-Swim course.';
     public static final String FAILED_TO_POST_CLASS = 'Failed to post class.';
-    
-    
+
     @AuraEnabled
     public static Boolean UserExisting(String firstName, String LastName, String Email){
-        List<User> u = [select id FROM User where FirstName =:firstName and LastName =:LastName and Email =:Email];
+        List<User> u = [select id FROM User where FirstName =:firstName and LastName =:LastName and Email =:Email and IsActive = TRUE];
         if(!u.isEmpty()){
             return true;
         }
@@ -230,6 +229,23 @@ public without sharing class ILTInstructorCommunity{
     public static void invokeMethods(String JSON, String JSON1, RBCWrapper wrapper){
         Boolean boolState = true;
 
+        // CRE processing log
+        REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE';
+        processingLog.Request_Method__c = 'invokeMethods';
+        processingLog.Payload__c = 'invoke Methods: JSON='+JSON;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE';
+        processingLog.Request_Method__c = 'invokeMethods';
+        processingLog.Payload__c = 'invoke Methods: JSON1='+JSON1;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE';
+        processingLog.Request_Method__c = 'invokeMethods';
+        processingLog.Payload__c = 'invoke Methods: wrapper='+wrapper;
+        insert processingLog;
+
         System.debug('wrapper '+wrapper);
 
         if (blend) {
@@ -291,6 +307,24 @@ public without sharing class ILTInstructorCommunity{
     @AuraEnabled
     public static void invokeMethodswithboolean(String JSON, String JSON1, Boolean blend1, RBCWrapper wrapper){
         blend = true;
+
+        // RBC processing log
+        REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'RBC';
+        processingLog.Request_Method__c = 'invokeMethodswB';
+        processingLog.Payload__c = 'invoke Methods: JSON='+JSON;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'RBC';
+        processingLog.Request_Method__c = 'invokeMethodswB';
+        processingLog.Payload__c = 'invoke Methods: JSON1='+JSON1;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'RBC';
+        processingLog.Request_Method__c = 'invokeMethodswB';
+        processingLog.Payload__c = 'invoke Methods: wrapper='+wrapper;
+        insert processingLog;
+
         ILTInstructorCommunity.invokeMethods(JSON, JSON1, wrapper);
     }
     
@@ -312,7 +346,7 @@ public without sharing class ILTInstructorCommunity{
                 return 'Voucher already Claimed';
             }
             
-            list<User> u = [Select id from user where FirstName=: FirstName and lastName =: LastName];
+            list<User> u = [Select id from user where FirstName=: FirstName and lastName =: LastName and IsActive = TRUE];
             if(u != null && u.size() > 0){
                 return 'User Exists';
             }
@@ -540,12 +574,13 @@ public without sharing class ILTInstructorCommunity{
 
             if (!CRE) {
                 //User Map to check if the user already exists - Not required for CRE
-
+                // DE2476 - Search for and assign only active users to classes
                 for (User u : [
                         Select Id, FirstName, LastName, DM_External_Id__c, Email
                         From User
                         Where LastName IN :studentLastNames And FirstName IN :studentFirstNames
                         And (Email = Null Or Email = '' Or Email In :studentEmails)
+                        And IsActive = TRUE
                     ]) {
 
                     if (String.isNotBlank(u.Email)) {
@@ -1131,6 +1166,14 @@ public without sharing class ILTInstructorCommunity{
             }
             catch (Exception e) {
                 errmsgvc=true;
+
+                // Error processing log
+                REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+                processingLog.Name = 'CRE/RBC Error';
+                processingLog.Request_Method__c = 'Acc/Con Except';
+                processingLog.Payload__c = e.getMessage();
+                insert processingLog;
+
                 if (e.getMessage().contains('Insert failed. First exception on row 0; first error: FIELD_CUSTOM_VALIDATION_EXCEPTION, US Mobile numbers should be in this format: (999) 999-9999: [MobilePhone]'))
                 {
                     System.debug('phone number exception');
@@ -1168,6 +1211,14 @@ public without sharing class ILTInstructorCommunity{
             }
             catch(Exception e){
                 errmsgvc=true;
+
+                // Error processing log
+                REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+                processingLog.Name = 'CRE/RBC Error';
+                processingLog.Request_Method__c = 'User Exception';
+                processingLog.Payload__c = e.getMessage();
+                insert processingLog;
+
                 if(e.getMessage().contains('Insert failed. First exception on row 0; first error: INVALID_EMAIL_ADDRESS, Email: invalid email address:'))
                 {
                     System.debug('phone number exception');
@@ -1187,6 +1238,14 @@ public without sharing class ILTInstructorCommunity{
             }
             catch(Exception e){
                 errmsgvc=true;
+
+                // Error processing log
+                REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+                processingLog.Name = 'CRE/RBC Error';
+                processingLog.Request_Method__c = 'LPA Exception';
+                processingLog.Payload__c = e.getMessage();
+                insert processingLog;
+
                 if(e.getMessage().contains('Insert failed. First exception on row 0; first error: DUPLICATE_VALUE, duplicate value found: External_Id__c duplicates value on record with id:'))
                 {
                     System.debug('this exception');
@@ -1207,6 +1266,14 @@ public without sharing class ILTInstructorCommunity{
                 }
             }catch(Exception e){
                 errmsgvc=true;
+
+                // Error processing log
+                REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+                processingLog.Name = 'CRE/RBC Error';
+                processingLog.Request_Method__c = 'LPSA Exception';
+                processingLog.Payload__c = e.getMessage();
+                insert processingLog;
+
                 if(e.getMessage().contains('Insert failed. First exception on row 0; first error: DUPLICATE_VALUE, duplicate value found: External_Id__c duplicates value on record with id:'))
                 {
                     if (auraException) throw new AuraHandledException('You are already assigned to this class'); else throw new enrollException('You are already assigned to this class');
@@ -1231,6 +1298,14 @@ public without sharing class ILTInstructorCommunity{
                 }
             } catch(Exception e){
                 errmsgvc=true;
+
+                // Error processing log
+                REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+                processingLog.Name = 'CRE/RBC Error';
+                processingLog.Request_Method__c = 'LAA Exception';
+                processingLog.Payload__c = e.getMessage();
+                insert processingLog;
+
                 if(e.getMessage().contains('Insert failed. First exception on row 0; first error: DUPLICATE_VALUE, duplicate value found: External_Id__c duplicates value on record with id:'))
                 {
                     if (auraException) throw new AuraHandledException('You are already assigned to this class'); else throw new enrollException('You are already assigned to this class');
@@ -1251,6 +1326,14 @@ public without sharing class ILTInstructorCommunity{
             }catch(Exception e){
                 System.debug('Exception As>>>> ');
                 errmsgvc=true;
+
+                // Error processing log
+                REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+                processingLog.Name = 'CRE/RBC Error';
+                processingLog.Request_Method__c = 'AA Exception';
+                processingLog.Payload__c = e.getMessage();
+                insert processingLog;
+
                 if(e.getMessage().contains('Insert failed. First exception on row 0; first error: DUPLICATE_VALUE, duplicate value found: External_Id__c duplicates value on record with id:'))
                 {
                     if (auraException) throw new AuraHandledException('You are already assigned to this Achievement assignment'); else throw new enrollException('You are already assigned to this class');
@@ -1271,6 +1354,14 @@ public without sharing class ILTInstructorCommunity{
             catch(Exception e){
                 System.debug('Exception rosters>>>> ');
                 errmsgvc=true;
+
+                // Error processing log
+                REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+                processingLog.Name = 'CRE/RBC Error';
+                processingLog.Request_Method__c = 'Roster Exception';
+                processingLog.Payload__c = e.getMessage();
+                insert processingLog;
+
                 if(e.getMessage().contains('Insert failed. First exception on row 0; first error: DUPLICATE_VALUE, duplicate value found: External_Id__c duplicates value on record with id:'))
                 {
                     if (auraException) throw new AuraHandledException('You are already assigned to this class'); else throw new enrollException('You are already assigned to this class');
@@ -1292,6 +1383,14 @@ public without sharing class ILTInstructorCommunity{
             catch(Exception e){
                 System.debug('Exception vouchers>>>> ');
                 errmsgvc=true;
+
+                // Error processing log
+                REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+                processingLog.Name = 'CRE/RBC Error';
+                processingLog.Request_Method__c = 'Voucher Except';
+                processingLog.Payload__c = e.getMessage();
+                insert processingLog;
+
                 if(e.getMessage().contains('Insert failed. First exception on row 0; first error: DUPLICATE_VALUE, duplicate value found: External_Id__c duplicates value on record with id:'))
                 {
                     if (auraException) throw new AuraHandledException('You are already assigned to this class'); else throw new enrollException('You are already assigned to this class');
@@ -1311,7 +1410,24 @@ public without sharing class ILTInstructorCommunity{
     @AuraEnabled
     public static void assignGrades(String JSON, String SupInfo, Boolean closeclass){
         List<JSONWrapper.Students> studentGradeList = JSONWrapper.arrayOfStudents(System.JSON.createParser(json));
-        
+
+        // Error processing log
+        REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'Assign Grades';
+        processingLog.Payload__c = 'JSON='+JSON;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'Assign Grades';
+        processingLog.Payload__c = 'SupInfo='+SupInfo;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'Assign Grades';
+        processingLog.Payload__c = 'CloseClass='+closeclass;
+        insert processingLog;
+
         set<string> Rosterids= new set<string>();
         String grade;
         id learningplid;
@@ -1759,13 +1875,17 @@ public without sharing class ILTInstructorCommunity{
 
         return newUserName;
     }
-    
+
+    // Hot Fix - avoid assigning permission sets to user here, this is handled by Appinium trigger
+    // on profiles which is configured in LearnTrac, Start Here, LMS Permission Rules, Assign Learner Profile Addtl Perms
+    // This method (assignUserPermission) now deprecated - SJC - 01-25-2020
+    /*
     // Assign Permission sets to users
     @future
     public static void assignUserPermission(List<id> lstUsere)
     {  
         try{
-            /*********Get map of permission sets to assign to user*********/
+            //*********Get map of permission sets to assign to user*********
             Map<String,id> permissionSetMap = new Map<String,id>();
             permissionSetAssList = new list<PermissionSetAssignment>();
             set<string> myString = new Set<String>{'LMS_External_User', 'LMS_Player_User', 'Player_User', 'ViewTrac_Lightning_UI_User'};
@@ -1811,9 +1931,7 @@ public without sharing class ILTInstructorCommunity{
             throw new AuraHandledException(e.getMessage());
         }
     }
-    
-    
-    
+    */
     
     // Creating Account and Contact if student does not exist or return if its already existing
     public Static Contact fetchContact(JSONWrapper.Students student, Boolean ret){
@@ -1986,6 +2104,18 @@ public without sharing class ILTInstructorCommunity{
 
 //        System.debug('JSON: '+jsonStr);
 //        System.debug('cpsWrap: '+ JSON.serialize(wrapper));
+
+        // Error processing log
+        REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'postClass';
+        processingLog.Payload__c = 'jsonStr='+jsonStr;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'postClass';
+        processingLog.Payload__c = 'wrapper='+wrapper;
+        insert processingLog;
 
         CourseInfo objCourse = new CourseInfo();
         objcourse.lsgralist= new List<String>();
@@ -2484,6 +2614,8 @@ public without sharing class ILTInstructorCommunity{
             list<ccrz__E_Cart__c> lstCarts = new list<ccrz__E_Cart__c>();
             for(ccrz__E_Cart__c ccart : [select id,Opportunity__c from ccrz__E_Cart__c where Opportunity__c=:opptyId]){
                 ccart.Opportunity__c = o.id;
+                // DE2530 - Insure that account Id (as well as opportunity Id) is updated in cart when account is changed
+                ccart.ccrz__Account__c = o.AccountId;
                 lstCarts.add(ccart);
             }
             if(!lstCarts.isEmpty()){
@@ -2508,6 +2640,13 @@ public without sharing class ILTInstructorCommunity{
     @AuraEnabled
     public static boolean checkPrereq(String ccProdId)
     {
+        // CRE/RBC processing log
+        REST_Service_Calls__c activityLog = new REST_Service_Calls__c();
+        activityLog.Name = 'CRE/RBC';
+        activityLog.Request_Method__c = 'checkPrereq';
+        activityLog.Payload__c = 'ccProdId='+ccProdId;
+        insert activityLog;
+
         map<ID,set<ID>> mapuserach = new map<ID,set<ID>>();
         list<ID> Prereqid= new list<ID>();
         set<ID> PreachSet= new set<ID>();
@@ -2770,6 +2909,22 @@ System.debug('The email failed to send:results[0] ' + results[0].errors[0].messa
 
     @AuraEnabled
     public static Id createIltLocation(String accountId, String name, String address1, String address2, String postcode, String state, String city) {
+        // Error processing log
+        REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'createIltLoc';
+        processingLog.Payload__c = 'accountId='+accountId;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'createIltLoc';
+        processingLog.Payload__c = 'name='+name;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'createIltLoc';
+        processingLog.Payload__c = 'address='+address1+','+address2+','+city+','+state+','+postcode;
+        insert processingLog;
 
         // validate if the site is really new?
         List<redwing__ILT_Location__c> locations = [SELECT Id, Name, redwing__Address_1__c, redwing__Address_2__c, redwing__Postal_Code__c, redwing__State__c, redwing__City__c
@@ -2817,6 +2972,23 @@ System.debug('The email failed to send:results[0] ' + results[0].errors[0].messa
 
     @AuraEnabled
     public static String handleFullServiceClass(String classId, Integer studentCount, String trainingEventId) {
+        // Error processing log
+        REST_Service_Calls__c processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'handleFSClass';
+        processingLog.Payload__c = 'classId='+classId;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'handleFSClass';
+        processingLog.Payload__c = 'studentCount='+studentCount;
+        insert processingLog;
+        processingLog = new REST_Service_Calls__c();
+        processingLog.Name = 'CRE/RBC';
+        processingLog.Request_Method__c = 'handleFSClass';
+        processingLog.Payload__c = 'trainingEventId='+trainingEventId;
+        insert processingLog;
+
         List<ccrz__E_OrderItem__c> updatedOrderItems = new List<ccrz__E_OrderItem__c>();
         List<ccrz__E_TransactionPayment__c> updatedTransactionPayments = new List<ccrz__E_TransactionPayment__c>();
 

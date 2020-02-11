@@ -9,6 +9,7 @@
      * @param helper
      */
     doInit: function (component, event, helper) {
+        console.log("@@@oppId:", component.get("v.currOpportunitySfid"));
         helper.getFormData(component, event, helper);
         window.addEventListener("message", function(event) {
 			var cyberSourceResponse = event.data;
@@ -72,7 +73,87 @@
      * @param helper
      */
     submitFormData : function (component, event, helper) {
+        console.log("submit form data start...");
         helper.POSTFormData(component, helper);
+    },
+
+    handleFormInputChanged : function(component, event, helper){
+        helper.validateFormData(component, false);
+    },
+
+    handleCardNumberChanged : function(component, event, helper){
+        let cardNumber = event.getSource().get("v.value");
+        let cardType;
+        let cardNumberLength = 16;
+        let isCurrentlyAmexPmt = component.get("v.isAmexPmt");
+        isCurrentlyAmexPmt = isCurrentlyAmexPmt == null ? false : isCurrentlyAmexPmt;
+        let isAmexPmt = false;
+        if(cardNumber && cardNumber.length > 0){
+            let firstChar = cardNumber.charAt(0);
+            if(firstChar == "4"){ //visa
+                cardType = "Visa";
+            }
+            else if(firstChar == "5"){ //mastercard
+                cardType = "Mastercard";
+            }
+            else if(firstChar == "3"){ //amex
+                cardType = "American Express";
+                cardNumberLength = 15;
+                isAmexPmt = true;
+            }
+            else if(firstChar == "6"){ //discover
+                cardType = "Discover";
+            }
+        }
+        if(isCurrentlyAmexPmt != isAmexPmt){
+            component.set("v.card_cvn", null);
+        }
+        let cardNumberPattern = "[0-9]{"+cardNumberLength+"}";
+        component.set("v.card_type", cardType);
+        component.set("v.card_number_length", cardNumberLength);
+        component.set("v.card_number_pattern", cardNumberPattern);
+        component.set("v.isAmexPmt", isAmexPmt);
+        helper.validateFormData(component, false);
+    },
+
+    validateEntireForm : function(component, event, helper){
+        console.log("handleSubmitButtonOnHover...");
+        var formInputValid = component.get("v.formInputValid");
+        if(formInputValid == false){
+            helper.validateFormData(component, true);
+        }
+    },
+
+    validateCreditCardNumberInput : function(component, event, helper){
+        console.log('validateCreditCardNumberInput...');
+        let card_number = component.get("v.card_number");
+        card_number = card_number.replace(/\D+/g, "");
+        component.set("v.card_number", card_number);
+        helper.validateFormData(component, false);
+    },
+
+    validateExpirationDate : function(component, event, helper){
+        let expMonth = component.get("v.card_expiry_month");
+        let expYear = component.get("v.card_expiry_year");
+        let todayDate = new Date();
+        if(expMonth && expYear && expYear.length === 4 && expMonth.length === 2){
+            let expMonthInput;
+            for( let inputCmp of component.find("payment_form") ){
+                if($A.util.hasClass(inputCmp, "exp-month")){
+                    expMonthInput = inputCmp;
+                    break;
+                }
+            }
+            if(expYear == todayDate.getFullYear() && expMonth < (todayDate.getMonth() + 1)){
+                expMonthInput.setCustomValidity("Please enter a valid expiration month");
+                component.set("v.formInputValid", false);
+            }
+            else{
+                expMonthInput.setCustomValidity("");
+                
+            }
+        }
+        helper.validateFormData(component, false);
     }
 
 })

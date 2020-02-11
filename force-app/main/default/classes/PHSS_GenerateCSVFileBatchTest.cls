@@ -160,8 +160,11 @@ public class PHSS_GenerateCSVFileBatchTest {
         );
         insert testProduct;
         
-        ccrz__E_TransactionPayment__c testTransactionPayment = new ccrz__E_TransactionPayment__c(ccrz__AccountType__c = 'po');
-        insert testTransactionPayment;
+        ccrz__E_StoredPayment__c sPayment = new ccrz__E_StoredPayment__c(Name 				 	= 'test',
+                                                                         ccrz__Enabled__c  		= true,
+                                                                         Original_PO_Amount__c 	= 10000.00);
+        
+        
         
         ccrz__E_Order__c testOrder = new ccrz__E_Order__c(
             NSSCCConnector_SFCC_Order_Number__c = '3114226',
@@ -169,6 +172,13 @@ public class PHSS_GenerateCSVFileBatchTest {
             ccrz__Account__c = testAccount.Id
         );
         insert testOrder;
+        
+        ccrz__E_TransactionPayment__c testTransactionPayment = new ccrz__E_TransactionPayment__c(ccrz__AccountType__c 	 = 'po',                                                                                
+                                                                                                 ccrz__CCOrder__c		 = testOrder.Id,
+                                                                                                 ccrz__StoredPayment__c	 = sPayment.Id,
+                                                                                                 ccrz__Amount__c		 = 100,
+                                                                                                 ccrz__Account__c		 = testAccount.Id);
+        insert testTransactionPayment;
         
         ccrz__E_OrderItem__c testOrderItem = new ccrz__E_OrderItem__c(
             ccrz__Product__c = testProduct.Id,
@@ -336,11 +346,9 @@ public class PHSS_GenerateCSVFileBatchTest {
         );
         insert testProduct;
         
-        
-        
-        
-        ccrz__E_TransactionPayment__c testTransactionPayment = new ccrz__E_TransactionPayment__c(ccrz__AccountType__c = 'po');
-        insert testTransactionPayment;
+        ccrz__E_StoredPayment__c sPayment = new ccrz__E_StoredPayment__c(Name 				 	= 'test',
+                                                                         ccrz__Enabled__c  		= true,
+                                                                         Original_PO_Amount__c 	= 10000.00);
         
         ccrz__E_Order__c testOrder = new ccrz__E_Order__c(
             NSSCCConnector_SFCC_Order_Number__c = '3114226',
@@ -348,6 +356,13 @@ public class PHSS_GenerateCSVFileBatchTest {
             ccrz__Account__c = testAccount.Id
         );
         insert testOrder;
+        
+        ccrz__E_TransactionPayment__c testTransactionPayment = new ccrz__E_TransactionPayment__c(ccrz__AccountType__c 	 = 'po',                                                                                
+                                                                                                 ccrz__CCOrder__c		 = testOrder.Id,
+                                                                                                 ccrz__StoredPayment__c	 = sPayment.Id,
+                                                                                                 ccrz__Amount__c		 = 100,
+                                                                                                 ccrz__Account__c		 = testAccount.Id);
+        insert testTransactionPayment;
         
         ccrz__E_OrderItem__c testOrderItem = new ccrz__E_OrderItem__c(
             ccrz__Product__c = testProduct.Id,

@@ -169,16 +169,25 @@ public without sharing class PHSS_CpsController {
             newClass.Class_Searchable__c = true;
             
             //Get Order Item information
-            if (cpsWrap.oppId != null && cpsWrap.ccProductId != null) {
-                ccrz__E_OrderItem__c theOrderItem = [Select Id, ccrz__Product__c, ccrz__Order__c From ccrz__E_OrderItem__c
-                                                          Where ccrz__Order__r.ccrz__OriginatedCart__r.Opportunity__c = :cpsWrap.oppId And ccrz__E_OrderItem__c.ccrz__Product__c = :cpsWrap.ccProductId];
-                newClass.CPS_Order__c = theOrderItem.ccrz__Order__c;
-                newClass.CPS_Order_Item__c = theOrderItem.Id;
 
-                ccrz__E_Order__c newOrder = new ccrz__E_Order__c();
-                newOrder.Id = theOrderItem.ccrz__Order__c;
-                newOrder.CRE_Request_Processed__c = true;
-                updatedOrders.add(newOrder);                                            
+            if (cpsWrap.oppId != null && cpsWrap.ccProductId != null) {
+                for(ccrz__E_OrderItem__c theOrderItem : [Select Id, ccrz__Product__c, ccrz__Order__c From ccrz__E_OrderItem__c
+                                                         Where ccrz__Order__r.ccrz__OriginatedCart__r.Opportunity__c = :cpsWrap.oppId And ccrz__E_OrderItem__c.ccrz__Product__c = :cpsWrap.ccProductId]){
+
+                    if (theOrderItem != null){
+                        if (theOrderItem.ccrz__Order__c != null && theOrderItem.Id != null){
+                        	newClass.CPS_Order__c = theOrderItem.ccrz__Order__c;
+                        	newClass.CPS_Order_Item__c = theOrderItem.Id;
+                            
+                        }
+        
+                        ccrz__E_Order__c newOrder = new ccrz__E_Order__c();
+                        newOrder.Id = theOrderItem.ccrz__Order__c;
+                        newOrder.CRE_Request_Processed__c = true;
+                        updatedOrders.add(newOrder);                    
+                    }                                                             
+                                                             
+               }                  
             }
 
             
@@ -230,7 +239,7 @@ public without sharing class PHSS_CpsController {
             insert lv;
             
             // US1521 - Populate CC Cart Item Record(s) with ILT Class Id (if applicable)
-            
+ 
             if (cpsWrap.oppId != null && classID != null) {
                 for (ccrz__E_CartItem__c theCartItem : [Select Id, ccrz__Product__c, ILT_Class__c From ccrz__E_CartItem__c
                                                         Where ccrz__Cart__r.Opportunity__c = :cpsWrap.oppId]) {
@@ -250,7 +259,7 @@ public without sharing class PHSS_CpsController {
             if (updatedOrders.size() > 0) {
                 update updatedOrders;
             }
-            
+
 
         }
         catch(Exception e) {

@@ -205,6 +205,10 @@
         <name>Direct_Assignment_To_Bucket_Account_Error</name>
     </customLabels>
     <customLabels>
+        <label><!-- Error_Message_For_CRE_RBC --></label>
+        <name>Error_Message_For_CRE_RBC</name>
+    </customLabels>
+    <customLabels>
         <label><!-- Global Ghost Contacts --></label>
         <name>Global_Ghost_Contacts</name>
     </customLabels>
@@ -283,6 +287,14 @@
     <customLabels>
         <label><!-- Online_Work --></label>
         <name>Online_Work</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Open Order Processing Error No Account --></label>
+        <name>Open_Order_Processing_Error_No_Account</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Open Order Processing Error No Order --></label>
+        <name>Open_Order_Processing_Error_No_Order</name>
     </customLabels>
     <customLabels>
         <label><!-- Organization --></label>
@@ -609,6 +621,10 @@
         <name>Sales_Rep_Store</name>
     </customTabs>
     <customTabs>
+        <label><!-- Test Cart *DO NOT DEPLOY* --></label>
+        <name>Test_Cart_DO_NOT_DEPLOY</name>
+    </customTabs>
+    <customTabs>
         <label><!-- The Exchange --></label>
         <name>The_Exchange</name>
     </customTabs>
@@ -669,7 +685,7 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Add_Rescheduling_Fee_to_Order-15</fullName>
+            <fullName>Add_Rescheduling_Fee_to_Order-16</fullName>
             <screens>
                 <fields>
                     <name>PricingError</name>
@@ -824,15 +840,24 @@
     <flowDefinitions>
         <flows>
             <choices>
+                <name>choice_no</name>
+            </choices>
+            <choices>
+                <name>COM</name>
+            </choices>
+            <choices>
+                <name>choice_yes</name>
+            </choices>
+            <choices>
+                <name>CREStore</name>
+            </choices>
+            <choices>
                 <name>CPS</name>
             </choices>
             <choices>
                 <name>GeneralStore</name>
             </choices>
-            <choices>
-                <name>CREStore</name>
-            </choices>
-            <fullName>Create_Contract-30</fullName>
+            <fullName>Create_Contract-32</fullName>
             <screens>
                 <fields>
                     <name>Effective_End_Date</name>
@@ -848,13 +873,13 @@
                     <name>Group_Name</name>
                 </fields>
                 <fields>
-                    <name>Storefront</name>
-                </fields>
-                <fields>
                     <name>dspAccount</name>
                 </fields>
                 <fields>
                     <name>dspOppurtunityName</name>
+                </fields>
+                <fields>
+                    <name>selStorefront</name>
                 </fields>
                 <name>Establish_Price_Group</name>
             </screens>
@@ -873,6 +898,30 @@
                 </fields>
                 <name>Price_Lists</name>
             </screens>
+            <screens>
+                <fields>
+                    <name>CatMessage</name>
+                </fields>
+                <fields>
+                    <name>selCategory</name>
+                </fields>
+                <fields>
+                    <name>txt_select_pl_category</name>
+                </fields>
+                <name>Select_Price_List_Category</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>SelPriceListDisplay</name>
+                </fields>
+                <fields>
+                    <name>pl_add_more_price_lists</name>
+                </fields>
+                <fields>
+                    <name>txt_add_more_price_lists</name>
+                </fields>
+                <name>scrn_add_more_price_lists</name>
+            </screens>
         </flows>
         <fullName>Create_Contract</fullName>
     </flowDefinitions>
@@ -884,13 +933,13 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Create_Training_Event_from_Opputunity-20</fullName>
+            <fullName>Create_Training_Event_from_Opputunity-21</fullName>
         </flows>
         <fullName>Create_Training_Event_from_Opputunity</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Create_Vouchers_from_TE_V2-9</fullName>
+            <fullName>Create_Vouchers_from_TE_V2-10</fullName>
         </flows>
         <fullName>Create_Vouchers_from_TE_V2</fullName>
     </flowDefinitions>
@@ -908,7 +957,7 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Opportunity_Controller-35</fullName>
+            <fullName>Opportunity_Controller-36</fullName>
         </flows>
         <fullName>Opportunity_Controller</fullName>
     </flowDefinitions>
@@ -1164,7 +1213,7 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Disable_Price_Group_Accounts-1</fullName>
+            <fullName>Disable_Price_Group_Accounts-6</fullName>
         </flows>
         <fullName>Disable_Price_Group_Accounts</fullName>
     </flowDefinitions>
@@ -1227,6 +1276,12 @@
             <fullName>Update_CC_Order_PO_Number-1</fullName>
         </flows>
         <fullName>Update_CC_Order_PO_Number</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <fullName>Manage_Vouchers_on_Instructor_Change-1</fullName>
+        </flows>
+        <fullName>Manage_Vouchers_on_Instructor_Change</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows>
@@ -1347,25 +1402,25 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Learning_Assignment-7</fullName>
+            <fullName>Learning_Assignment-8</fullName>
         </flows>
         <fullName>Learning_Assignment</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Full_Service_Minimum_Quantity-9</fullName>
+            <fullName>Full_Service_Minimum_Quantity-10</fullName>
         </flows>
         <fullName>Full_Service_Minimum_Quantity</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Order_Header_Status_Update-5</fullName>
+            <fullName>Order_Header_Status_Update-6</fullName>
         </flows>
         <fullName>Order_Header_Status_Update</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Add_Student_Name_for_NAT-2</fullName>
+            <fullName>Add_Student_Name_for_NAT-3</fullName>
             <screens>
                 <fields>
                     <name>ErrorMessage</name>
@@ -1390,6 +1445,12 @@
             </screens>
         </flows>
         <fullName>Add_Student_Name_for_NAT</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <fullName>ILT_Instructor_Controller-2</fullName>
+        </flows>
+        <fullName>ILT_Instructor_Controller</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows>
@@ -1857,7 +1918,7 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Schedule_New_Training_Event-24</fullName>
+            <fullName>Schedule_New_Training_Event-29</fullName>
             <screens>
                 <fields>
                     <name>EventCancelled</name>
@@ -1877,6 +1938,10 @@
                 <name>Success_Screen</name>
             </screens>
             <screens>
+                <fields>
+                    <name>Number_of_Students_in_Class</name>
+                    <validationRule/>
+                </fields>
                 <fields>
                     <name>ProcessorCancel</name>
                 </fields>

@@ -61,8 +61,8 @@
         </div>
     </aura:if>
     
-    <div style="{!v.accountList.length > 0?'padding-top:100px':'0px'}">
-        <lightning:tabset variant="default"  onselect="{! c.handleSelectTab }">
+    <div class="tabset-container" style="{!'padding-top:'+ (v.accountList.length > 0 ? '100px;' : '0px;') }">
+        <lightning:tabset variant="default"  onselect="{! c.handleSelectTab }" class="tabset-parent">
             <lightning:tab title="Current Classes" id="current-classes">
                 <aura:set attribute="label">
                     {!v.label_Current_Classes}

@@ -62,4 +62,46 @@ public without sharing class OpportunityTriggerHandler {
 			update accountsToUpdate;
 		}		
 	}
+    
+    public static void opportunityCartUpdate(List<Opportunity> oppList, Map<Id, Opportunity> oppOldMap)
+    {
+        List<Opportunity> oppWithCart = [SELECT Id,
+                                         		AccountId,
+                                         		(SELECT Id,
+                                                 		ccrz__Account__c
+                                                   FROM CC_Carts__r
+												  WHERE ccrz__ActiveCart__c = true)
+										   FROM Opportunity
+ 										  WHERE Id IN: oppList];
+        
+        List<ccrz__E_Cart__c > cartToUpdate = new List<ccrz__E_Cart__c >();
+        
+        if(oppWithCart.size() > 0)
+        {
+            for(Opportunity opp : oppWithCart)
+            {
+                Opportunity oldOpp  = oppOldMap.get(opp.Id);
+                
+                Id oldOppAccId = oldOpp.AccountId;
+    			Id newOppAccId = opp.AccountId;
+  
+                if(oldOppAccId != newOppAccId)
+                {
+                    if(opp.CC_Carts__r.size() > 0)
+                    {
+                        for(ccrz__E_Cart__c c : opp.CC_Carts__r)
+                        {
+                            c.ccrz__Account__c = newOppAccId;
+                            cartToUpdate.add(c);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(cartToUpdate.size() > 0)
+        {
+            update cartToUpdate;
+        }
+	}
 }

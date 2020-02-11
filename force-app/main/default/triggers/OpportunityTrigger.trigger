@@ -17,5 +17,9 @@ trigger OpportunityTrigger on Opportunity (before update,before insert, after up
 		OpportunityTriggerHandler.opportunityAccountUpdate(Trigger.New);
 	}
 	
+    if(trigger.IsAfter && trigger.IsUpdate)
+    {
+        OpportunityTriggerHandler.opportunityCartUpdate(Trigger.New, Trigger.oldMap); //DE2446 
+    }
 	
 }

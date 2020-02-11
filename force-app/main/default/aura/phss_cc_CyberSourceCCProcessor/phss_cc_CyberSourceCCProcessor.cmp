@@ -2,19 +2,20 @@
  - Created by dgajwani on 9/28/18.
  -->
 
-<aura:component description="phss_cc_CyberSourceCCProcessor" controller="phss_cc_CyberSourceCCProcessorController">
+<aura:component description="phss_cc_CyberSourceCCProcessor" controller="phss_cc_CyberSourceCCProcessorController" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
 
     <!--Handler-->
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
 
     <!--Opportunity Data-->
-    <aura:attribute name="currOpportunitySfid" type="String"/>
+    <aura:attribute name="currOpportunitySfid" type="String" />
 
     <!--Booleans for view manipulation-->
     <aura:attribute name="showForm" type="Boolean" default="false"/>
     <aura:attribute name="allowPaymentSubmission" type="Boolean" default="true"/>
     
-    <aura:attribute name="showError" type="Boolean" default="false"/>
+    <aura:attribute name="isAmexPmt" type="Boolean" default="false"/>
+    <aura:attribute name="formInputValid" type="Boolean" default="false" />
     
     <!--Hack-->
     <aura:attribute name="requiresClickHack" type="Boolean" default="false"/>
@@ -34,8 +35,6 @@
     <aura:registerEvent name="cyberSourceResponse" type="c:phss_cc_CyberSourceResponseEvent"/>
     
     <aura:handler event="c:AccountBalanceToCreditCardEvent" action="{!c.handleABAmount}" includeFacets="true" />
-
-    
 
     <!--Form Data for POST-->
     <aura:attribute name="access_key" type="String"/>
@@ -68,8 +67,10 @@
     <aura:attribute name="bill_to_surname" type="String"/>
     <aura:attribute name="bill_to_email" type="String"/>
     <aura:attribute name="bill_to_phone" type="String"/>
-    <aura:attribute name="card_type" type="String"/>
+    <aura:attribute name="card_type" type="String" />
     <aura:attribute name="card_number" type="String"/>
+    <aura:attribute name="card_number_length" type="Integer"/>
+    <aura:attribute name="card_number_pattern" type="String" default="[0-9]{16}"/>
     <aura:attribute name="card_expiry_month" type="String"/>
     <aura:attribute name="card_expiry_year" type="String"/>
     <aura:attribute name="card_cvn" type="String"/>
@@ -90,28 +91,60 @@
                 </div>
             </header>
         </div>
-        <aura:if isTrue="{!v.showForm}">
+        <div class="{! v.showForm ? '' : 'slds-hide'}">
             <div class="slds-card__body slds-card__body_inner">
-
                 <!--Cardholder Details-->
                 <legend class="slds-form-element__label">Cardholder's Information</legend>
                 <div class="slds-grid slds-gutters_medium slds-wrap slds-m-bottom--x-large">
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning:input aura:id="payment_form" name="bill_to_forename" label="First Name"
-                                         required="true" value="{!v.bill_to_forename}"/>
+                        <lightning:input aura:id="payment_form"
+                                         name="bill_to_forename" 
+                                         label="First Name"
+                                         required="true" 
+                                         value="{!v.bill_to_forename}"
+                                         class="always-validate" 
+                                         pattern="[A-Za-z\s*'-]+$"
+                                         messageWhenPatternMismatch="Please enter a valid first name."
+                                         messageWhenValueMissing="Please enter a valid first name."
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning:input aura:id="payment_form" name="bill_to_surname" label="Last Name"
-                                         required="true" value="{!v.bill_to_surname}"/>
+                        <lightning:input aura:id="payment_form" 
+                                         name="bill_to_surname" 
+                                         label="Last Name"
+                                         required="true" 
+                                         value="{!v.bill_to_surname}"
+                                         class="always-validate" 
+                                         pattern="[A-Za-z\s*'-]+$"
+                                         messageWhenPatternMismatch="Please enter a valid last name."
+                                         messageWhenValueMissing="Please enter a valid last name."
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
 
                     <div class="slds-col slds-size_1-of-3">
-                        <lightning:input aura:id="payment_form" name="bill_to_phone" label="Phone Number"
-                                         required="true" value="{!v.bill_to_phone}"/>
+                        <lightning:input aura:id="payment_form" 
+                                         name="bill_to_phone" 
+                                         label="Phone Number"
+                                         required="true" 
+                                         value="{!v.bill_to_phone}"
+                                         class="always-validate" 
+                                         type="tel"
+                                         pattern="[0-9]{10}"
+                                         messageWhenPatternMismatch="Please enter a valid phone number."
+                                         messageWhenValueMissing="Please enter a valid phone number."
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
                     <div class="slds-col slds-size_1-of-3">
-                        <lightning:input aura:id="payment_form" name="bill_to_email" label="Email Address"
-                                         required="true" value="{!v.bill_to_email}"/>
+                        <lightning:input aura:id="payment_form" 
+                                         name="bill_to_email" 
+                                         label="Email Address"
+                                         required="true" 
+                                         value="{!v.bill_to_email}"
+                                         class="always-validate" 
+                                         pattern="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+                                         messageWhenPatternMismatch="Please enter a valid email address."
+                                         messageWhenValueMissing="Please enter a valid email address."
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
                     <div class="slds-col slds-size_1-of-3"></div>
                 </div>
@@ -120,73 +153,74 @@
                 <legend class="slds-form-element__label">Card Information</legend>
                 <div class="slds-grid slds-wrap slds-m-bottom--x-large">
                     <div class="slds-col slds-size_1-of-1">
-                        <lightning:select aura:id="payment_form" label="Card Type" name="card_type" required="true" value="{!v.card_type}">
+                        <!--lightning:select aura:id="payment_form" 
+                                          label="Card Type" 
+                                          name="card_type" 
+                                          required="true" 
+                                          value="{!v.card_type}"
+                                          onchange="{!c.handleCardTypeChanged}">
                             <aura:iteration items="{!v.paymentTypes}" var="payment">
                                 <option value="{!payment.key}">{!payment.value}</option>
                             </aura:iteration>
-                        </lightning:select>
+                        </!lightning:select-->
+                        <b><ui:outputText value="{!v.card_type}" class="{! v.card_type != null ? '' : 'slds-hide'}"/></b>
                     </div>
 
                     <div class="slds-col slds-size_1-of-1 ">
-
-                        <!--card_type=001 (Visa)-->
-                        <aura:if isTrue="{! equals(v.card_type, '001') }">
-                            <lightning:input aura:id="payment_form" name="card_number" label="Card Number" required="true"
-                                             value="{!v.card_number}"
-                                             pattern="([0-9]{4})?[-]?([0-9]{4})[-]?([0-9]{4})[-]?([0-9]{4})"
-                                             messageWhenPatternMismatch="Please enter a valid input in the format XXXX-XXXX-XXXX-XXXX."
-                                             maxlength="19"
-                            />
-                        </aura:if>
-
-                        <!--card_type=002 (Mastercard)-->
-                        <aura:if isTrue="{! equals(v.card_type, '002') }">
-                            <lightning:input aura:id="payment_form" name="card_number" label="Card Number" required="true"
-                                             value="{!v.card_number}"
-                                             pattern="([0-9]{4})?[-]?([0-9]{4})[-]?([0-9]{4})[-]?([0-9]{4})"
-                                             messageWhenPatternMismatch="Please enter a valid input in the format XXXX-XXXX-XXXX-XXXX."
-                                             maxlength="19"
-                            />
-                        </aura:if>
-
-                        <!--card_type=003 (American Express)-->
-                        <aura:if isTrue="{! equals(v.card_type, '003') }">
-                            <lightning:input aura:id="payment_form" name="card_number" label="Card Number" required="true"
-                                             value="{!v.card_number}"
-                                             pattern="([0-9]{4})?[-]?([0-9]{6})[-]?([0-9]{5})"
-                                             messageWhenPatternMismatch="Please enter a valid input in the format XXXX-XXXXXX-XXXXX."
-                                             maxlength="17"
-                            />
-                        </aura:if>
-
-                        <!--card_type=004 (Discover)-->
-                        <aura:if isTrue="{! equals(v.card_type, '004') }">
-                            <lightning:input aura:id="payment_form" name="card_number" label="Card Number" required="true"
-                                             value="{!v.card_number}"
-                                             pattern="([0-9]{4})?[-]?([0-9]{4})[-]?([0-9]{4})[-]?([0-9]{4})"
-                                             messageWhenPatternMismatch="Please enter a valid input in the format XXXX-XXXX-XXXX-XXXX."
-                                             maxlength="19"
-                            />
-                        </aura:if>
-
+                        <!--card_type-->
+                        <lightning:input aura:id="payment_form" 
+                                            name="card_number" 
+                                            label="Card Number" 
+                                            required="true"
+                                            value="{!v.card_number}"
+                                            pattern="{!v.card_number_pattern}"
+                                            messageWhenPatternMismatch="Please enter a valid credit card number."
+                                            messageWhenValueMissing="Please enter a valid credit card number."
+                                            onchange="{!c.handleCardNumberChanged}"
+                                            onkeyup="{!c.validateCreditCardNumberInput}"/>
                     </div>
 
                     <div class="slds-col slds-size--1-of-6 slds-m-right--medium">
-                        <lightning:input aura:id="payment_form" name="card_expiry_month" label="Exp MM"
+                        <lightning:input aura:id="payment_form"
+                                         name="card_expiry_month" 
+                                         label="Exp MM"
                                          required="true"
                                          value="{!v.card_expiry_month}"
-                                         pattern="([0-9]{2})" placeholder="MM"
-                                         messageWhenPatternMismatch="Please enter a valid Month in the format MM."/>
+                                         class="exp-month"
+                                         pattern="([0-9]{2})" 
+                                         placeholder="MM"
+                                         messageWhenPatternMismatch="Please enter a valid expiration month."
+                                         messageWhenValueMissing="Please enter a valid expiration month."
+                                         messageWhenBadInput="Please enter a valid expiration month."
+                                         onchange="{!c.validateExpirationDate}"/>
                     </div>
                     <div class="slds-col slds-size--1-of-6">
-                        <lightning:input aura:id="payment_form" name="card_expiry_year" label="Exp YYYY"
+                        <lightning:input aura:id="payment_form"
+                                         name="card_expiry_year" 
+                                         label="Exp YYYY"
                                          required="true"
-                                         pattern="([0-9]{4})" placeholder="YYYY" value="{!v.card_expiry_year}"
-                                         messageWhenPatternMismatch="Please enter a valid Year in the format YYYY."/>
+                                         pattern="^(2)([0-9]{1})([2-9]{1})([0-9]{1})" 
+                                         placeholder="YYYY" 
+                                         value="{!v.card_expiry_year}"
+                                         messageWhenPatternMismatch="Please enter a valid expiration year."
+                                         messageWhenValueMissing="Please enter a valid expiration year."
+                                         messageWhenBadInput="Please enter a valid expiration month."
+                                         onchange="{!c.validateExpirationDate}"/>
                     </div>
                     <div class="slds-col slds-size--1-of-6" style="margin-left: 220px;">
-                        <lightning:input aura:id="payment_form" name="card_cvn" label="CVV" required="true" maxlength="4" pattern="[0-9]*"
-                                         messageWhenTooLong="Enter up to 4 digits." value="{!v.card_cvn}" messageWhenPatternMismatch = "Only Numbers are allowed."/>
+                        <lightning:input aura:id="payment_form" 
+                                         name="card_cvn" 
+                                         label="CVV" 
+                                         required="true" 
+                                         maxlength="{! (v.isAmexPmt ? 4 : 3) }"
+                                         minlength="{! (v.isAmexPmt ? 4 : 3) }" 
+                                         pattern="[0-9]{3,4}" 
+                                         value="{!v.card_cvn}"
+                                         placeholder="{! v.isAmexPmt ? '1234' : '123' }"
+                                         messageWhenPatternMismatch = "Please enter a valid CVV number."
+                                         messageWhenValueMissing="Please enter a valid CVV number."
+                                         onchange="{!c.handleFormInputChanged}"/>
+                                         <!--messageWhenPatternMismatch = "{!'Enter a '+(v.isAmexPmt ? '4' : '3')+' digit number.'}"-->
                         Three digits for Most Credit Cards, four digits for American Express
                     </div>
                 </div>
@@ -196,45 +230,78 @@
 
                 <div class="slds-grid slds-wrap slds-gutters_large slds-m-bottom--xx-large">
                     <div class="slds-col slds-size_1-of-1">
-                        <lightning:input aura:id="payment_form" name="bill_to_address_line1" label="Street"
+                        <lightning:input aura:id="payment_form" 
+                                         name="bill_to_address_line1" 
+                                         label="Street"
                                          required="true"
-                                         value="{!v.bill_to_address_line1}"/>
+                                         value="{!v.bill_to_address_line1}"
+                                         pattern="[a-zA-Z0-9\s*\/#,'&amp;-]+$"
+                                         messageWhenPatternMismatch = "Please enter a valid billing address."
+                                         messageWhenValueMissing="Please enter a valid billing address."
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
-                        <lightning:input aura:id="payment_form" name="bill_to_address_city" label="City"
-                                         required="true" value="{!v.bill_to_address_city}"/>
+                        <lightning:input aura:id="payment_form" 
+                                         name="bill_to_address_city" 
+                                         label="City"
+                                         required="true" 
+                                         value="{!v.bill_to_address_city}"
+                                         pattern="[a-zA-Z0-9\s*\/#,-]+$"
+                                         messageWhenPatternMismatch = "Please enter a valid billing city."
+                                         messageWhenValueMissing="Please enter a valid billing city."
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
-                        <lightning:input aura:id="payment_form" name="bill_to_address_state" label="State" pattern="([A-Z]{2})" 
-                                         required="true" value="{!v.bill_to_address_state}" messageWhenPatternMismatch="Please enter State Code in two-digit capitalized Format."/>
+                        <lightning:input aura:id="payment_form" 
+                                         name="bill_to_address_state" 
+                                         label="State" 
+                                         pattern="([A-Z]{2})" 
+                                         required="true" 
+                                         value="{!v.bill_to_address_state}" 
+                                         messageWhenPatternMismatch="Please enter a valid state."
+                                         messageWhenValueMissing="Please enter a valid state."
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
 <!--                        <lightning:select aura:id="payment_form" value="{!v.bill_to_address_country}" label="Country" required = "true" >-->
 <!--                            <option>US</option>-->
 <!--                        </lightning:select>-->
-                        <lightning:input aura:id="payment_form" name="bill_to_address_country"
+                        <lightning:input aura:id="payment_form" 
+                                         name="bill_to_address_country"
                                          label="Country"
-                                         required="true" value="{!v.bill_to_address_country}"
+                                         required="true" 
+                                         value="{!v.bill_to_address_country}"
                                          maxlength="2"
-                                         readonly = "true"/>
+                                         readonly = "true"
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
-                        <lightning:input aura:id="payment_form" name="bill_to_address_postal_code"
-                                         label="Zip Code" required="true" pattern="([0-9]{5})" 
-                                         value="{!v.bill_to_address_postal_code}" messageWhenPatternMismatch="Please enter five digit Zip Code."/>
+                        <lightning:input aura:id="payment_form" 
+                                         name="bill_to_address_postal_code"
+                                         label="Zip Code" 
+                                         required="true" 
+                                         pattern="^\d{5}(?:[-\s]\d{4})?$" 
+                                         value="{!v.bill_to_address_postal_code}" 
+                                         messageWhenPatternMismatch="Please enter a valid zip code."
+                                         messageWhenValueMissing="Please enter a zip code (XXXXX or XXXXX-XXXX)."
+                                         onchange="{!c.handleFormInputChanged}"/>
                     </div>
                 </div>
-                
-                
-                <aura:if isTrue="{!v.showError}">
-                    Please look for all the error on the page.
-                </aura:if>
 
                 <!--Make Payment-->
                 <aura:if isTrue="{! v.allowPaymentSubmission }">
-                    <lightning:button variant="success" class="slds-align_absolute-center slds-m-top--large" label="Make Payment"
-                                      onclick="{!c.submitFormData}"/>
-
+                    <span onmouseover="{!c.validateEntireForm}">
+                        <lightning:button variant="success" 
+                                        class="slds-align_absolute-center slds-m-top--large" 
+                                        label="Make Payment"
+                                        onclick="{!c.submitFormData}" 
+                                        disabled="{!not(v.formInputValid)}" />
+                    </span>
+                    <aura:if isTrue="{!not(v.formInputValid)}">
+                        <div class="slds-align_absolute-center" style="color:rgb(194, 57, 52);">
+                            <a onclick="{!c.validateEntireForm}">Please correct all errors on the page to make a payment</a>
+                        </div>
+                    </aura:if>
                     <aura:set attribute="else">
                         <div class="slds-align_absolute-center slds-m-top_large">
 
@@ -265,7 +332,7 @@
                         src="{!v.iframeURL}"
                         width="1px" height="1px"></iframe>
             </div>
-        </aura:if>
+        </div>
     </article>
     
     <aura:if isTrue="{! v.showPaymentProgress }">

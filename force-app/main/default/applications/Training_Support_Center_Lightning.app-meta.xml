@@ -52,6 +52,9 @@
     <tabs>ccrz__E_TransactionPayment__c</tabs>
     <tabs>ccrz__E_OrderItem__c</tabs>
     <tabs>redwing__Task__c</tabs>
+    <tabs>CCS_Batch_Class__c</tabs>
+    <tabs>CCS_Batch_Instructor__c</tabs>
+    <tabs>CCS_Batch_Participant__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Training_Support_Center_Lightning_UtilityBar</utilityBar>
 </CustomApplication>

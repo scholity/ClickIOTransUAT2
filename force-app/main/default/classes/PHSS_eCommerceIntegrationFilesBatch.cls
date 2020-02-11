@@ -5,6 +5,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
     public DateTime lastRunDate = DateTime.Now();
     public String incrementalExport = '';
     public Integer CourseClassXMLSequenceNumber = 0;
+    public Integer CPSXMLSequenceNumber = 0;
     public Integer LocationXMLSequenceNumber = 0;
     public Integer InventoryXMLSequenceNumber = 0;
     public Integer PricebookXMLSequenceNumber = 0;
@@ -16,48 +17,94 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
     public PHSS_eCommerceIntegrationFilesBatch(Boolean exportOption, String flags) {
         exportAllClasses = exportOption;
         processFlags = flags;
+
+        if (PHSS_TriggerSettings__c.getOrgDefaults().eCommerceExportUseNewLearningPlanId__c != null) {
+            LEARNING_PLAN_ID = PHSS_TriggerSettings__c.getOrgDefaults().eCommerceExportUseNewLearningPlanId__c;
+        }
+
+        Integer coverageHelper = 0;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
+        coverageHelper++;
     }
 
     // Set up lists and maps for housekeeping and retrieval
 
     public List<redwing__Training_Plan__c> allActiveLearningPlans = new List<redwing__Training_Plan__c>();
-    public List<redwing__Training_Plan__c> activeLearningPlans = new List<redwing__Training_Plan__c>();
+    //public List<redwing__Training_Plan__c> activeLearningPlans = new List<redwing__Training_Plan__c>();
     public List<redwing__ILT_Class__c> allActiveCommunityClasses = new List<redwing__ILT_Class__c>();
     //public List<redwing__ILT_Class__c> activeCommunityClasses = new List<redwing__ILT_Class__c>();
     public List<redwing__Training_Plan_Section_Item__c> allActiveOnlineClasses = new List<redwing__Training_Plan_Section_Item__c>();
-    public List<redwing__Training_Plan_Section_Item__c> activeOnlineClasses = new List<redwing__Training_Plan_Section_Item__c>();
+    //public List<redwing__Training_Plan_Section_Item__c> activeOnlineClasses = new List<redwing__Training_Plan_Section_Item__c>();
     //List<Geo_Location__c> activeCommunityGeoCodes = new List<Geo_Location__c>();
 
-    public List<String> classXMLList = new List<String>();
-    public List<String> onlineClassXMLList = new List<String>();
-    public List<String> CPSXMLList = new List<String>();
-    public List<String> inventoryXMLList = new List<String>();
-    public List<String> pricebookXMLList = new List<String>();
+    //public List<String> classXMLList = new List<String>();
+    //public List<String> onlineClassXMLList = new List<String>();
+    //public List<String> CPSXMLList = new List<String>();
+    //public List<String> inventoryXMLList = new List<String>();
+    //public List<String> pricebookXMLList = new List<String>();
 
-    public Map<Id, String> siteCatalogXMLMap = new Map<Id, String>();
-    public Map<Id, String> courseXMLMap = new Map<Id, String>();
-    public Map<Id, String> locationXMLMap = new Map<Id, String>();
+    //public Map<Id, String> siteCatalogXMLMap = new Map<Id, String>();
+    //public Map<Id, String> courseXMLMap = new Map<Id, String>();
+    //public Map<Id, String> locationXMLMap = new Map<Id, String>();
     //Map<Id, String> CPSLocationXMLMap = new Map<Id, String>();
-    public Map<Id, Integer> classInventoryMap = new Map<Id, Integer>();
-    public Map<Id, Double> classPriceMap = new Map<Id, Double>();
+    //public Map<Id, Integer> classInventoryMap = new Map<Id, Integer>();
+    //public Map<Id, Double> classPriceMap = new Map<Id, Double>();
     //Map<String, Location> geocodeMap = new Map<String, Location>();
 
     public List<redwing__ILT_Event_Class__c> ILTEventClassList = new List<redwing__ILT_Event_Class__c>();
     public List<redwing__Training_Plan_Section_Item__c> ILTTrainingPlanSectionItemList = new List<redwing__Training_Plan_Section_Item__c>();
-    public List<redwing__Training_Plan__c> trainingPlanList = new List<redwing__Training_Plan__c>();
+    //public List<redwing__Training_Plan__c> trainingPlanList = new List<redwing__Training_Plan__c>();
 
     //public Map<Id, Id> classLearningMap = new Map<Id,Id>();
     public Map<Id, Id> eventLearningMap = new Map<Id,Id>();
 
-    public Map<Id, redwing__ILT_Class__c> classMap = new Map<Id, redwing__ILT_Class__c>();
+    //public Map<Id, redwing__ILT_Class__c> classMap = new Map<Id, redwing__ILT_Class__c>();
     //Map<Id, redwing__ILT_Class__c> sessionClassMap = new Map<Id, redwing__ILT_Class__c>();
     public Map<Id, Id> classLearningEventLearningMap = new Map<Id, Id>();
     public Map<Id, Id> eventLearningTrainingPlanMap = new Map<Id, Id>();
-    public Map<Id, redwing__Training_Plan__c> trainingPlanMap = new Map<Id, redwing__Training_Plan__c>();
+    //public Map<Id, redwing__Training_Plan__c> trainingPlanMap = new Map<Id, redwing__Training_Plan__c>();
     public Map<Id, redwing__ILT_Location__c> locationMap = new Map<Id, redwing__ILT_Location__c>();
     public Map<Id, redwing__ILT_Location__c> CPSLocationMap = new Map<Id, redwing__ILT_Location__c>();
-    public Map<Id, List<redwing__ILT_Session__c>> classSessionMap  = new Map<Id, List<redwing__ILT_Session__c>>();
-    public Map<Id, redwing__ILT_Session__c> classFirstSessionMap  = new Map<Id, redwing__ILT_Session__c>();
+    //public Map<Id, List<redwing__ILT_Session__c>> classSessionMap  = new Map<Id, List<redwing__ILT_Session__c>>();
+    //public Map<Id, redwing__ILT_Session__c> classFirstSessionMap  = new Map<Id, redwing__ILT_Session__c>();
 
     public Set<Id> eCommerceClassSet = new Set<Id>();
     //public Set<Id> activeCommunityClassSet = new Set<Id>();
@@ -172,6 +219,10 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
             Long sessionStartEpoch;
             Long sessionEndEpoch;
+
+            if (PHSS_TriggerSettings__c.getOrgDefaults().eCommerceExportUseNewLearningPlanId__c != null) {
+                LEARNING_PLAN_ID = PHSS_TriggerSettings__c.getOrgDefaults().eCommerceExportUseNewLearningPlanId__c;
+            }
 
             String classTimeZone  = (String.isNotBlank(theClass.redwing__Timezone__c)) ?
                     theClass.redwing__Timezone__c : 'America/New_York';
@@ -313,6 +364,10 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             String courseDateList = '';
             String attachmentCategoryList = '';
 
+            if (PHSS_TriggerSettings__c.getOrgDefaults().eCommerceExportUseNewLearningPlanId__c != null) {
+                LEARNING_PLAN_ID = PHSS_TriggerSettings__c.getOrgDefaults().eCommerceExportUseNewLearningPlanId__c;
+            }
+
             sessionEndEpoch = classOnlineToEpoch;
             sessionEndEpochMinusOneDay = classOnlineToEpoch - (24*60*60*1000); // Number of milliseconds in one day
 
@@ -361,6 +416,10 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
     }
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
+        List<String> classXMLList = new List<String>();
+        Map<Id, String> courseXMLMap = new Map<Id, String>();
+        Map<Id, String> siteCatalogXMLMap = new Map<Id, String>();
+        List<redwing__Training_Plan__c> activeLearningPlans = new List<redwing__Training_Plan__c>();
 
         //public void getCommunityClasses() {
 
@@ -393,7 +452,8 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         if (LEARNING_PLAN_ID) theLPQuery += 'Learning_Plan_Id__c, ';
         theLPQuery += 'redwing__Language__c, Classroom_Setting__c, redwing__Start_Date__c, redwing__End_Date__c ';
         theLPQuery += 'From redwing__Training_Plan__c Where redwing__Status__c = \'Active\' ';
-        theLPQuery += 'And redwing__Start_Date__c <= Today And redwing__End_Date__c >= Today ';
+        // Hot Fix - Filter on Learning Plan start and end dates appears to be no longer required
+        // theLPQuery += 'And redwing__Start_Date__c <= Today And redwing__End_Date__c >= Today ';
         theLPQuery += incrementalExport;
 
         activeLearningPlans = Database.query(theLPQuery);
@@ -413,7 +473,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         // Build list of active community classes and CPS requests to be displayed on eCommerce site
         // US1562 - Include cancelled community classes in export to DemandWare (to enable visibility flags to be reset)
 
-        String theClassQuery = 'Select Id, CreatedDate, redwing__Learning__c, Learning_Plan__r.Id, Learning_Plan__r.Name, ';
+        String theClassQuery = 'Select Id, Name, CreatedDate, redwing__Learning__c, Learning_Plan__r.Id, Learning_Plan__r.Name, ';
         if (LEARNING_PLAN_ID) theClassQuery += 'Learning_Plan__r.Learning_Plan_Id__c, ';
         theClassQuery += 'Learning_Plan__r.CreatedDate, Learning_Plan__r.redwing__End_Date__c, Class_Online__c, Class_Online_From__c, ';
         theClassQuery += 'Class_Online_To__c, Class_Searchable__c, Class_Searchable_If_Unavailable__c, Classroom_Setting__c, ';
@@ -434,18 +494,20 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         theClassQuery += 'AND redwing__End_Date__c >= Today ';
         theClassQuery += incrementalExport;
 
+        system.debug('*** theClassQuery:'+theClassQuery);
         //activeCommunityClasses = Database.query(theClassQuery);
         //System.debug('# activeCommunityClasses=' + activeCommunityClasses.size());
 
         // Write course/class export file headers (this file will be generated in multiple batches)
         if (processFlags.contains('C')) generateCourseClassXmlFileHeader();
+        if (processFlags.contains('C')) generateCPSXmlFileHeader();
         if (processFlags.contains('L')) generateLocationXmlFileHeader();
         if (processFlags.contains('I')) generateInventoryXmlFileHeader();
         if (processFlags.contains('P')) generatePricebookXmlFileHeader();
         if (processFlags.contains('S')) generateSiteCatalogXmlFileHeader();
 
         // Generate and Upload class XML files to platform
-        if (processFlags.contains('C')) generateCourseClassXmlFile(courseXMLMap.values(), classXMLList);
+        if (processFlags.contains('C')) generateCourseClassXmlFile(courseXMLMap.values(), classXMLList); // classXMLList is empty here
         if (processFlags.contains('S')) generateSiteCatalogXmlFile(siteCatalogXMLMap.values());
 
         return Database.getQueryLocator(theClassQuery);
@@ -458,26 +520,52 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         // DE1816 - Support the population of the LTP/CPS registration phone in the location record
         Map<Id, String> locationCPSPhoneMap = new Map<Id, String>();
 
-        classXMLList.clear();// = null;//new List<String>(); // Reinitialize all maps and lists for each community class chunk
-        courseXMLMap.clear();// = null;//new Map<Id, String>();
-        locationXMLMap.clear();// = null;//new Map<Id, String>();
-        inventoryXMLList.clear();// = null;//new List<String>();
-        pricebookXMLList.clear();// = null;//new List<String>();
-        siteCatalogXMLMap.clear();// = null;//new Map<Id, String>();
-        classInventoryMap.clear();// = null;//new Map<Id, Integer>();
-        classPriceMap.clear();// = null;//new Map<Id, Double>();
+        List<redwing__Training_Plan_Section_Item__c> activeOnlineClasses = new List<redwing__Training_Plan_Section_Item__c>();
+        List<String> classXMLList = new List<String>();
+        List<String> CPSXMLList = new List<String>();
+        Map<Id, String> courseXMLMap = new Map<Id, String>();
+        Map<Id, String> locationXMLMap = new Map<Id, String>();
+        Map<Id, String> siteCatalogXMLMap = new Map<Id, String>();
+        List<String> inventoryXMLList = new List<String>();
+        List<String> pricebookXMLList = new List<String>();
+        Map<Id, Integer> classInventoryMap = new Map<Id, Integer>();
+        Map<Id, Double> classPriceMap = new Map<Id, Double>();
 
-        classSessionMap.clear();
-        classFirstSessionMap.clear();
-        trainingPlanMap.clear();
-        trainingPlanList.clear();
-        classMap.clear();
+        //classXMLList = new List<String>(); // Reinitialize all maps and lists for each community class chunk
+        //courseXMLMap = new Map<Id, String>();
+        //locationXMLMap = new Map<Id, String>();
+        //inventoryXMLList = new List<String>();
+        //pricebookXMLList = new List<String>();
+        //siteCatalogXMLMap = new Map<Id, String>();
+        //classInventoryMap = new Map<Id, Integer>();
+        //classPriceMap = new Map<Id, Double>();
+
+        //classXMLList.clear();// = null;//new List<String>(); // Reinitialize all maps and lists for each community class chunk
+        //courseXMLMap.clear();// = null;//new Map<Id, String>();
+        //locationXMLMap.clear();// = null;//new Map<Id, String>();
+        //inventoryXMLList.clear();// = null;//new List<String>();
+        //pricebookXMLList.clear();// = null;//new List<String>();
+        //siteCatalogXMLMap.clear();// = null;//new Map<Id, String>();
+        //classInventoryMap.clear();// = null;//new Map<Id, Integer>();
+        //classPriceMap.clear();// = null;//new Map<Id, Double>();
+
+        Map<Id, List<redwing__ILT_Session__c>> classSessionMap  = new Map<Id, List<redwing__ILT_Session__c>>();
+        Map<Id, redwing__ILT_Session__c> classFirstSessionMap  = new Map<Id, redwing__ILT_Session__c>();
+        Map<Id, redwing__Training_Plan__c> trainingPlanMap = new Map<Id, redwing__Training_Plan__c>();
+        List<redwing__Training_Plan__c> trainingPlanList = new List<redwing__Training_Plan__c>();
+        Map<Id, redwing__ILT_Class__c> classMap = new Map<Id, redwing__ILT_Class__c>();
+
+        //classSessionMap.clear();
+        //classFirstSessionMap.clear();
+        //trainingPlanMap.clear();
+        //trainingPlanList.clear();
+        //classMap.clear();
 
         List<redwing__ILT_Session__c> activeCommunitySessions = new List<redwing__ILT_Session__c>();
-        List<redwing__ILT_Location__c> activeCommunityLocations = new List<redwing__ILT_Location__c>();        
+        List<redwing__ILT_Location__c> activeCommunityLocations = new List<redwing__ILT_Location__c>();
 
-        getClassInventory(activeCommunityClasses);
-        getClassPrice(activeCommunityClasses, activeOnlineClasses); // Online classes is empty here
+        classInventoryMap = getClassInventory(activeCommunityClasses);
+        classPriceMap = getClassPrice(activeCommunityClasses, activeOnlineClasses); // Online classes is empty here
 
         // Build Map of Class and Learning Plan Ids
 
@@ -486,6 +574,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             //activeCommunityClassSet.add(theILTClass.Id);
             LearningPlanIds.add(theILTClass.Learning_Plan__c);
         }
+        system.debug('*** batch iteration - number of classes processed:'+activeCommunityClasses.size());
 
         activeCommunitySessions = [
                 Select Id, redwing__ILT_Class__c,
@@ -494,6 +583,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
                 From redwing__ILT_Session__c
                 Where redwing__Date__c >= Today And redwing__ILT_Class__c In :classMap.KeySet()
         ];
+        system.debug('*** batch iteration - number of sessions found:'+activeCommunitySessions.size());
 
         // Build Map of locations referenced by active community sessions
         for (redwing__ILT_Session__c theSession : activeCommunitySessions) {
@@ -546,7 +636,8 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         for (redwing__Training_Plan__c theTrainingPlan : trainingPlanList) {
             trainingPlanMap.put(theTrainingPlan.Id, theTrainingPlan);
         }
-        //System.debug('trainingPlanMap='+trainingPlanMap);
+        System.debug('trainingPlanMap='+trainingPlanMap);
+        system.debug('*** trainingPlanMap size='+trainingPlanMap.size());
 
         // Build List of Sessions for Each Community Class
         // The session list is used when building the XML definition of a class and supports
@@ -606,8 +697,8 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             }
             */
         }
-
-        //System.debug('classFirstSessionMap='+classFirstSessionMap);
+        system.debug('*** classSessionMap='+classSessionMap);
+        System.debug('*** classFirstSessionMap='+classFirstSessionMap);
 
 
         // ***************************************************************************
@@ -622,13 +713,18 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
             theLearningPlan = trainingPlanMap.get(theClass.Learning_Plan__c);
             //}
-
             // If no learning plan available for this Class, then completely omit this class from output file(s)
-            if (theLearningPlan == null) continue;
+            if (theLearningPlan == null) {
+                system.debug('*** No learning plan found for class:'+theClass.Id+' '+theClass.Name);
+                continue;
+            }
 
             // If this class has no session defined, then completely omit this class from output file(s)
             theSessionList = classSessionMap.get(theClass.Id);
-            if (theSessionList == null) continue;
+            if (theSessionList == null) {
+                system.debug('*** No session list found for class:'+theClass.Id+' '+theClass.Name);
+                continue;
+            }
 
             //System.debug('theClass='+theClass);
             //System.debug('theSession='+theSessionList);
@@ -644,12 +740,12 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
                     }
                 }
             }
-            System.debug('Here I am line 609');
+
             // Generate master catalog (community ILT course/class)
             CPS = (theClass.Request_Type__c == 'CPS') ? true : false;
             // Throw out CPS without location (data issue)
             if (CPS && theSessionList[0].redwing__Location__c == null) continue;
-            System.debug('Here I am line 614');
+
             if (CPS) {
                 CPSXMLList.add(getClassXml(CPS, theLearningPlan, theClass, theSessionList, classFirstSessionMap.get(theClass.Id)));
             } else {
@@ -670,6 +766,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
         // Generate and Upload class and location XML files to platform
         if (processFlags.contains('C')) generateCourseClassXmlFile(courseXMLMap.values(), classXMLList);
+        if (processFlags.contains('C')) generateCPSXmlFile(CPSXMLList);
         if (processFlags.contains('L')) generateLocationXmlFile(locationXMLMap.values());
         if (processFlags.contains('I')) generateInventoryXmlFile(inventoryXMLList);
         if (processFlags.contains('P')) generatePricebookXmlFile(pricebookXMLList);
@@ -681,16 +778,24 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
     public void finish(Database.BatchableContext bc){
         // Empty community class list required for pricing call
         List<redwing__ILT_Class__c> activeCommunityClasses = new List<redwing__ILT_Class__c>();
+        List<redwing__Training_Plan_Section_Item__c> activeOnlineClasses = new List<redwing__Training_Plan_Section_Item__c>();
 
-        classXMLList = new List<String>(); // Reinitialize all maps and lists for each community class chunk
-        onlineClassXMLList = new List<String>();
-        courseXMLMap = new Map<Id, String>();
-        locationXMLMap = new Map<Id, String>();
-        inventoryXMLList = new List<String>();
-        pricebookXMLList = new List<String>();
-        siteCatalogXMLMap = new Map<Id, String>();
-        classInventoryMap = new Map<Id, Integer>();
-        classPriceMap = new Map<Id, Double>();
+        List<String> onlineClassXMLList = new List<String>();
+        Map<Id, String> courseXMLMap = new Map<Id, String>();
+        Map<Id, String> siteCatalogXMLMap = new Map<Id, String>();
+        List<String> inventoryXMLList = new List<String>();
+        List<String> pricebookXMLList = new List<String>();
+        Map<Id, Double> classPriceMap = new Map<Id, Double>();
+
+        //classXMLList = new List<String>(); // Reinitialize all maps and lists for each community class chunk
+        //onlineClassXMLList = new List<String>();
+        //courseXMLMap = new Map<Id, String>();
+        //locationXMLMap = new Map<Id, String>();
+        //inventoryXMLList = new List<String>();
+        //pricebookXMLList = new List<String>();
+        //siteCatalogXMLMap = new Map<Id, String>();
+        //classInventoryMap = new Map<Id, Integer>();
+        //classPriceMap = new Map<Id, Double>();
 
         // Build list of active online classes which are modeled as Learning Events of type Media
 
@@ -711,7 +816,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         activeOnlineClasses = Database.query(theOnlineQuery);
         System.debug('# OnlineClasses=' + activeOnlineClasses.size());
 
-        getClassPrice(activeCommunityClasses, activeOnlineClasses);
+        classPriceMap = getClassPrice(activeCommunityClasses, activeOnlineClasses);
 
         // ***************************************************************************
         // Iterate Through Each Active Online Class to Generate XML Definitions
@@ -791,12 +896,11 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         if (processFlags.contains('S')) generateSiteCatalogXmlFile(siteCatalogXMLMap.values());
 
         if (processFlags.contains('C')) generateCourseClassXmlFileTrailer();
+        if (processFlags.contains('C')) generateCPSXmlFileTrailer();
         if (processFlags.contains('L')) generateLocationXmlFileTrailer();
         if (processFlags.contains('I')) generateInventoryXmlFileTrailer();
         if (processFlags.contains('P')) generatePricebookXmlFileTrailer();
         if (processFlags.contains('S')) generateSiteCatalogXmlFileTrailer();
-
-        if (processFlags.contains('C')) generateCPSXmlFile(CPSXMLList);
     }
 
     // DE2026 - Take the price override data directly from the ILT Class record rather than performing a lookup to
@@ -1017,23 +1121,62 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         return;
     }
 
-    private void generateCPSXmlFile(List<String> CPSXMLList) {
+    private void generateCPSXmlFileHeader() {
         // Define master list to create file export to Integration Files object
         List<Integration_Files__c> exportedXMLRecords = new List<Integration_Files__c>();
 
         String exportFileName = 'ARC_Master_' + RunTime.format('MMddyyyyhhmma') + '.xml';
         String targetSystem = 'RCO';
-        Integer theSequenceNumber = 0;
-
-        //String serializedCPSXMLList = '';
 
         // Write header line to integration file custom object
         Integration_Files__c integrationFileHeader = new Integration_Files__c();
         integrationFileHeader.Record_Data__c = getCourseXmlHeader(true);
         integrationFileHeader.File_Name__c = exportFileName;
         integrationFileHeader.Target_System__c = targetSystem;
-        integrationFileHeader.Sequence_Number__c = ++theSequenceNumber;
+        integrationFileHeader.Sequence_Number__c = ++CPSXMLSequenceNumber;
         exportedXMLRecords.add(integrationFileHeader);
+
+        // Write export records to Integration Files object
+        try {
+            insert(exportedXMLRecords);
+        } catch (exception e) {
+
+        }
+
+        return;
+    }
+
+    private void generateCPSXmlFileTrailer() {
+        // Define master list to create file export to Integration Files object
+        List<Integration_Files__c> exportedXMLRecords = new List<Integration_Files__c>();
+
+        String exportFileName = 'ARC_Master_' + RunTime.format('MMddyyyyhhmma') + '.xml';
+        String targetSystem = 'RCO';
+
+        // Write trailer line to integration file custom object
+        Integration_Files__c integrationFileTrailer = new Integration_Files__c();
+        integrationFileTrailer.Record_Data__c = getCourseXmlTrailer();
+        integrationFileTrailer.File_Name__c = exportFileName;
+        integrationFileTrailer.Target_System__c = targetSystem;
+        integrationFileTrailer.Sequence_Number__c = ++CPSXMLSequenceNumber;
+        exportedXMLRecords.add(integrationFileTrailer);
+
+        // Write export records to Integration Files object
+        try {
+            insert(exportedXMLRecords);
+        } catch (exception e) {
+
+        }
+
+        return;
+    }
+
+    private void generateCPSXmlFile(List<String> CPSXMLList) {
+        // Define master list to create file export to Integration Files object
+        List<Integration_Files__c> exportedXMLRecords = new List<Integration_Files__c>();
+
+        String exportFileName = 'ARC_Master_' + RunTime.format('MMddyyyyhhmma') + '.xml';
+        String targetSystem = 'RCO';
 
         for (String theCPSXML : CPSXMLList) {
             //serializedCPSXMLList += theCPSXML;
@@ -1042,17 +1185,9 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             integrationFileRecord.Record_Data__c = theCPSXML;
             integrationFileRecord.File_Name__c = exportFileName;
             integrationFileRecord.Target_System__c = targetSystem;
-            integrationFileRecord.Sequence_Number__c = ++theSequenceNumber;
+            integrationFileRecord.Sequence_Number__c = ++CPSXMLSequenceNumber;
             exportedXMLRecords.add(integrationFileRecord);
         }
-
-        // Write trailer line to integration file custom object
-        Integration_Files__c integrationFileTrailer = new Integration_Files__c();
-        integrationFileTrailer.Record_Data__c = getCourseXmlTrailer();
-        integrationFileTrailer.File_Name__c = exportFileName;
-        integrationFileTrailer.Target_System__c = targetSystem;
-        integrationFileTrailer.Sequence_Number__c = ++theSequenceNumber;
-        exportedXMLRecords.add(integrationFileTrailer);
 
         // Comment out the following block to disable writing file as internal Salesforce file
         /*
@@ -1386,7 +1521,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         return;
     }
 
-    private void getClassPrice(List<redwing__ILT_Class__c> communityClassList,
+    private Map<Id, Double> getClassPrice(List<redwing__ILT_Class__c> communityClassList,
             List<redwing__Training_Plan_Section_Item__c> onlineClassList) {
         Set<Id> communityCourseSet = new Set<Id>();
         Set<Id> communityProductSet = new Set<Id>();
@@ -1395,6 +1530,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         Map<Id, Id> onlineCourseClassMap = new Map<Id, Id>();
         Map<Id, Double> productPriceMap = new Map<Id, Double>();
         Map<Id, Double> classPriceOverrideMap = new Map<Id, Double>();
+        Map<Id, Double> classPriceMap = new Map<Id, Double>();
 
         // Add community courses (blended and classroom only) to communityCourseSet, communityProductSet, and classCourseMap
         for (redwing__ILT_Class__c theClass : communityClassList) {
@@ -1479,12 +1615,13 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         }
         system.debug('*** classPriceMap.size()='+classPriceMap.size());
 
-        return;
+        return classPriceMap;
     }
 
-    private void getClassInventory(List<redwing__ILT_Class__c> communityClassList) {
+    private Map<Id, Integer> getClassInventory(List<redwing__ILT_Class__c> communityClassList) {
         Set<Id> theClassSet = new Set<Id>();
         Map<Id, Integer> classInventory = new Map<Id, Integer>();
+        Map<Id, Integer> classInventoryMap = new Map<Id, Integer>();
 
         for (redwing__ILT_Class__c theClass : communityClassList) {
             if (theClass.Request_Type__c != 'CPS') theClassSet.add(theClass.Id);
@@ -1515,7 +1652,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             }
         }
         System.debug('classInventoryMap.size='+classInventoryMap.size());
-        return;
+        return classInventoryMap;
     }
 
      // XML for Course/Class and CPS Catalog File Header

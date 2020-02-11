@@ -253,7 +253,7 @@
                 <leftValueReference>myVariable_current.redwing__Progress_Percentage__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <numberValue>100.0</numberValue>
+                    <numberValue>98.0</numberValue>
                 </rightValue>
             </conditions>
             <conditions>
@@ -294,7 +294,7 @@
         </rules>
     </decisions>
     <description>Learning Assignment Controller - Remove Ownership Change</description>
-    <interviewLabel>Learning_Assignment-7_InterviewLabel</interviewLabel>
+    <interviewLabel>Learning_Assignment-8_InterviewLabel</interviewLabel>
     <label>Learning Assignment Controller</label>
     <processMetadataValues>
         <name>ObjectType</name>

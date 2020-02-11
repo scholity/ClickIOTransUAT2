@@ -3,7 +3,7 @@
     <assignments>
         <name>Set_Order_Fulfillment</name>
         <label>Set Order Fulfillment</label>
-        <locationX>611</locationX>
+        <locationX>610</locationX>
         <locationY>364</locationY>
         <assignmentItems>
             <assignToReference>sFulfillment.Fulfillment_Date__c</assignToReference>
@@ -188,9 +188,6 @@
         <label>Add Fee to Order Item</label>
         <locationX>623</locationX>
         <locationY>217</locationY>
-        <connector>
-            <targetReference>Set_Order_Fulfillment</targetReference>
-        </connector>
         <inputAssignments>
             <field>ILT_Class__c</field>
             <value>
@@ -500,7 +497,13 @@
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
-    <startElementReference>Reschedule_Fee_Screen</startElementReference>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Reschedule_Fee_Screen</targetReference>
+        </connector>
+    </start>
     <status>Active</status>
     <variables>
         <name>colProductPrice</name>

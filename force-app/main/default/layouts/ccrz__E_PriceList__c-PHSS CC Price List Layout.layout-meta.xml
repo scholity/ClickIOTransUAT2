@@ -35,6 +35,10 @@
                 <behavior>Readonly</behavior>
                 <field>Count_of_Price_List_Items__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Price_List_Category__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

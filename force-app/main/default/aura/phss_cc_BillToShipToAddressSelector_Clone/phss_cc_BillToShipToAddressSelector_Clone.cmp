@@ -45,7 +45,10 @@
                 Bill To | Ship To
             </div>
 
-            <div class="slds-m-bottom--small slds-size--1-of-8 slds-text-heading--small">Billing Address:</div>
+            <div class="slds-m-bottom--small slds-size--1-of-8 slds-text-heading--small">
+                Billing Address:<br/>
+                <p>This is your Account Billing Address. If paying by Credit Card, please use the fields below to enter in the address associated with the credit card you wish to pay with.</p>
+            </div>
 
             <div class="slds-size--3-of-8">
                 <!--No Billing Address on Cart-->

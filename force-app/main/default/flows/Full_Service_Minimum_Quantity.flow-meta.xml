@@ -184,6 +184,31 @@
         </value>
     </constants>
     <decisions>
+        <name>FoundFulfillment</name>
+        <label>FoundFulfillment</label>
+        <locationX>1293</locationX>
+        <locationY>391</locationY>
+        <defaultConnector>
+            <targetReference>Do_Nothing</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>sFulfillmentItem.Fulfillment__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Fulfillment_Item</targetReference>
+            </connector>
+            <label>Exists</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Meets_Minimum</name>
         <label>Meets Minimum</label>
         <locationX>1087</locationX>
@@ -237,7 +262,7 @@
         <name>Type_of_Fee</name>
         <label>Type of Fee</label>
         <locationX>777</locationX>
-        <locationY>512</locationY>
+        <locationY>511</locationY>
         <defaultConnector>
             <targetReference>Find_Min_Values</targetReference>
         </defaultConnector>
@@ -287,7 +312,7 @@
             <label>Class Ratio</label>
         </rules>
     </decisions>
-    <description>Updated Instructor Calc</description>
+    <description>Updated Instructor Calc added Fulfillment Item Creation</description>
     <formulas>
         <name>fGreatestQty</name>
         <dataType>Number</dataType>
@@ -368,8 +393,12 @@
     <recordCreates>
         <name>Add_New_Order_Item</name>
         <label>Add New Order Item</label>
-        <locationX>1092</locationX>
-        <locationY>203</locationY>
+        <locationX>1093</locationX>
+        <locationY>201</locationY>
+        <assignRecordIdToReference>vOrderItem</assignRecordIdToReference>
+        <connector>
+            <targetReference>Get_Fulfillment</targetReference>
+        </connector>
         <inputAssignments>
             <field>ILT_Class__c</field>
             <value>
@@ -404,6 +433,12 @@
             <field>ccrz__AbsoluteDiscount__c</field>
             <value>
                 <elementReference>outOrderItem.ccrz__AbsoluteDiscount__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ccrz__Category__c</field>
+            <value>
+                <elementReference>sProduct.CC_Category__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -510,6 +545,79 @@
         </inputAssignments>
         <object>ccrz__E_OrderItem__c</object>
     </recordCreates>
+    <recordCreates>
+        <name>Create_Fulfillment_Item</name>
+        <label>Create Fulfillment Item</label>
+        <locationX>1300</locationX>
+        <locationY>570</locationY>
+        <inputAssignments>
+            <field>CC_Product__c</field>
+            <value>
+                <elementReference>sProduct.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Fulfillment__c</field>
+            <value>
+                <elementReference>sFulfillmentItem.Fulfillment__r.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ILT_Class__c</field>
+            <value>
+                <elementReference>outOrderItem.ILT_Class__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Order_Item__c</field>
+            <value>
+                <elementReference>vOrderItem</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Order__c</field>
+            <value>
+                <elementReference>outOrderItem.ccrz__Order__r.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Payment_Category__c</field>
+            <value>
+                <elementReference>sProduct.CC_Category__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Quantity__c</field>
+            <value>
+                <elementReference>outOrderItem.ccrz__Quantity__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SKU__c</field>
+            <value>
+                <elementReference>sProduct.ccrz__SKU__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Ready</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Transaction_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type__c</field>
+            <value>
+                <stringValue>Training</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Fulfillment_Item__c</object>
+    </recordCreates>
     <recordLookups>
         <name>Check_if_Previously_Processed</name>
         <label>Check if Previously Processed</label>
@@ -563,6 +671,27 @@
         <queriedFields>ccrz__Composite__c</queriedFields>
         <sortField>Name</sortField>
         <sortOrder>Asc</sortOrder>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Fulfillment</name>
+        <label>Get Fulfillment</label>
+        <locationX>1094</locationX>
+        <locationY>387</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>FoundFulfillment</targetReference>
+        </connector>
+        <filters>
+            <field>Order_Item__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>frmOrderItemID</elementReference>
+            </value>
+        </filters>
+        <object>Fulfillment_Item__c</object>
+        <outputReference>sFulfillmentItem</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Fulfillment__c</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_ILT_Class</name>
@@ -745,6 +874,7 @@
         <outputReference>sProduct</outputReference>
         <queriedFields>Id</queriedFields>
         <queriedFields>ccrz__SKU__c</queriedFields>
+        <queriedFields>CC_Category__c</queriedFields>
     </recordLookups>
     <start>
         <locationX>50</locationX>
@@ -800,6 +930,14 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>ccrz__E_CompositeProduct__c</objectType>
+    </variables>
+    <variables>
+        <name>sFulfillmentItem</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Fulfillment_Item__c</objectType>
     </variables>
     <variables>
         <name>sMinItemCheck</name>
@@ -865,6 +1003,13 @@
         <value>
             <numberValue>1.0</numberValue>
         </value>
+    </variables>
+    <variables>
+        <name>vOrderItem</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>vStudentMinQty</name>

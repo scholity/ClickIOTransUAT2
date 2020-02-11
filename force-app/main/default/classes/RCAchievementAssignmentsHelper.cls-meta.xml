@@ -3,7 +3,7 @@
     <apiVersion>46.0</apiVersion>
     <packageVersions>
         <majorNumber>4</majorNumber>
-        <minorNumber>24</minorNumber>
+        <minorNumber>100</minorNumber>
         <namespace>SDOC</namespace>
     </packageVersions>
     <packageVersions>

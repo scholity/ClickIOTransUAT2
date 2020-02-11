@@ -38,18 +38,16 @@
             <type>Alert</type>
         </actions>
         <active>true</active>
-        <booleanFilter>1 OR 2</booleanFilter>
-        <criteriaItems>
-            <field>Training_Events__c.Scheduling_Status__c</field>
-            <operation>equals</operation>
-            <value>Reserved</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Training_Events__c.Scheduling_Status__c</field>
-            <operation>equals</operation>
-            <value>Completed</value>
-        </criteriaItems>
         <description>When a Training Event Status = &quot;Completed&quot; or &quot;Reserved&quot;,  the Training Contact will receive an email.</description>
+        <formula>OR(
+AND(ISCHANGED(Scheduling_Status__c),
+    ISPICKVAL(Scheduling_Status__c,&quot;Reserved&quot;),
+    NOT(ISPICKVAL(PRIORVALUE(Scheduling_Status__c),&quot;Reserved&quot;))),
+
+AND(ISCHANGED(Scheduling_Status__c),
+    ISPICKVAL(Scheduling_Status__c,&quot;Completed&quot;),
+    NOT(ISPICKVAL(PRIORVALUE(Scheduling_Status__c),&quot;Completed&quot;)))
+)</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>

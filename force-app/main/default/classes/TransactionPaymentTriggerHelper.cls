@@ -27,12 +27,11 @@ public class TransactionPaymentTriggerHelper
                                                        		  ccrz__CCOrder__c,
                                                        		  ccrz__CCOrder__r.Supplemental_Information__c,
                                                        		  ccrz__AccountType__c,
-                                                       		  SFCC_Connector__c,
                                                        		  ccrz__PaymentType__c,
-                                                       		  SFCC_Order_Number__c,
                                                        		  ccrz__CCOrder__r.NSSCCConnector_SFCC_Order_Number__c,
                                                        		  ccrz__CCOrder__r.NSSCCConnector_from_SFCC__c, 
-                                                       		  ccrz__TransactionType__c
+                                                       		  ccrz__TransactionType__c,
+                                                       		  ccrz__Account__r.Open_Order_Amount__c
                                                         FROM  ccrz__E_TransactionPayment__c
                                                         WHERE Id IN: tpToAccountMap.keySet()];
         
@@ -124,7 +123,7 @@ public class TransactionPaymentTriggerHelper
                     Account acc = new Account();
                     
                     acc.Id 					 = tpToAccountMap.get(tPayment.Id);
-                    acc.Open_Order_Amount__c = tPayment.Open_Order_Amount_on_Account__c + tPayment.ccrz__Amount__c;
+                    acc.Open_Order_Amount__c = tPayment.ccrz__Account__r.Open_Order_Amount__c + tPayment.ccrz__Amount__c;
                     
                     accountsToUpdate.add(acc);
                 }
@@ -152,6 +151,7 @@ public class TransactionPaymentTriggerHelper
                     fi.Quantity__c					= oi.ccrz__Quantity__c;
                     fi.Transaction_Date__c			= system.Date.today();
                     fi.Supplemental_Information__c	= oi.Supplemental_Information__c;
+                    fi.Fulfillment_Date__c			= system.Date.today();
                     
                     fiList.add(fi);
                 }
