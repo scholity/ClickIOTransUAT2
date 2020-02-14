@@ -46,12 +46,14 @@ public with sharing class PHSS_ClassCompletionBatch {
     private static final Integer PARTICIPANT_MASTERY_FIELD_INDEX    = 8;
     private static final Integer PARTICIPANT_EVAL_NOTES_FIELD_INDEX = 9;
 
+    public static Map<String, Object> placeOrderResult;
+
     // result keys/values
     public static final String SUCCESS_KEY = 'success';
 
     // error messages
     private static final String INVALID_MASTERY_STATUS_VALUE = 'Invalid value for Mastery Status';
-    private static final String MISSING_FIELD_VALUE = 'Missing field value';
+    private static final String MISSING_FIELD_VALUE          = 'Missing field value';
 
 
     private Datetime batchTimestamp;
@@ -61,9 +63,10 @@ public with sharing class PHSS_ClassCompletionBatch {
     /**
      * @description Initializes specific variables for the batch
      */
-    public PHSS_ClassCompletionBatch() {
+    public PHSS_ClassCompletionBatch()
+    {
         batchTimestamp = System.now();
-        batchMap = new Map<String, CCS_Batch_Class__c>();
+        batchMap       = new Map<String, CCS_Batch_Class__c>();
     }
 
 
@@ -74,35 +77,44 @@ public with sharing class PHSS_ClassCompletionBatch {
      *
      * @return
      */
-    public Map<String, Object> processData(List<String> records) {
+    public Map<String, Object> processData(List<String> records)
+    {
         if (DEBUG_MODE) { System.debug('processing batch data'); }
 
         Savepoint sp = Database.setSavepoint();
 
         try {
 
-            List<CCS_Batch_Instructor__c> batchInstructors = new List<CCS_Batch_Instructor__c>();
+            List<CCS_Batch_Instructor__c> batchInstructors   = new List<CCS_Batch_Instructor__c>();
             List<CCS_Batch_Participant__c> batchParticipants = new List<CCS_Batch_Participant__c>();
 
             // store batch data
-            for (String record : records) {
+            for (String record : records)
+            {
                 List<String> values = record.split(FIELD_DELIMITER);
                 String recordType = values[RECORD_TYPE_FIELD_INDEX];
 
-                if (recordType == CLASS_RECORD_TYPE) {
+                if (recordType == CLASS_RECORD_TYPE)
+                {
                     CCS_Batch_Class__c batchClass = createClass(values);
                     insert batchClass;
                     batchMap.put(batchClass.Name, batchClass);
 
-                } else if (recordType == INSTRUCTOR_RECORD_TYPE) {
+                }
+                else if (recordType == INSTRUCTOR_RECORD_TYPE)
+                {
                     CCS_Batch_Instructor__c instructor = createInstructor(values);
                     batchInstructors.add(instructor);
 
-                } else if (recordType == PARTICIPANT_RECORD_TYPE) {
+                }
+                else if (recordType == PARTICIPANT_RECORD_TYPE)
+                {
                     CCS_Batch_Participant__c participant = createParticipant(values);
                     batchParticipants.add(participant);
 
-                } else {
+                }
+                else
+                {
                     if (DEBUG_MODE) { System.debug('unknown record type: ' + recordType); }
                 }
             }
@@ -110,33 +122,75 @@ public with sharing class PHSS_ClassCompletionBatch {
             if (batchInstructors.size() > 0) { insert batchInstructors; }
             if (batchParticipants.size() > 0) { insert batchParticipants; }
 
+            List<ccrz__E_OrderItem__c> orderItemsToUpdate = new List<ccrz__E_OrderItem__c>();
+            List<ccrz__E_Order__c> orderToUpdate          = new List<ccrz__E_Order__c>();
 
             // iterate through batches to validate and create training classes, instructors, and students
-            for (String batchName : batchMap.keySet()) {
-
+            for (String batchName : batchMap.keySet())
+            {
                 CCS_Batch_Class__c batchClass = batchMap.get(batchName);
 
                 redwing__ILT_Class__c trainingClass = PHSS_ClassCompletionTrainingClass.create(batchClass);
-                if (trainingClass != null) {
+
+                //todo: remove below
+
+                String myId = String.valueOf(placeOrderResult.get('orderId'));
+
+                List<ccrz__E_OrderItem__c> orderItemList = [SELECT Id, ILT_Class__c FROM ccrz__E_OrderItem__c WHERE ccrz__Order__c =: myId];
+
+                system.debug('***orderItemList***'+orderItemList);
+                system.debug('***trainingClass***'+trainingClass);
+
+                for(ccrz__E_OrderItem__c oi : orderItemList)
+                {
+                    oi.ILT_Class__c = trainingClass.Id;
+                    orderItemsToUpdate.add(oi);
+                }
+
+                ccrz__E_Order__c newOrder = new ccrz__E_Order__c();
+                newOrder.Id                       = myId;
+                newOrder.CRE_Request_Processed__c = true;
+
+                orderToUpdate.add(newOrder);
+                //update newOrder;
+
+                if (trainingClass != null)
+                {
 
                     List<redwing__ILT_Instructor__c> trainingInstructors;
 
-                    if (batchInstructors != null && batchInstructors.size() > 0) {
+                    if (batchInstructors != null && batchInstructors.size() > 0)
+                    {
                         trainingInstructors = PHSS_ClassCompletionInstructor.createAll(batchInstructors, batchClass, trainingClass);
-                        if (trainingInstructors.size() > 0) {
+                        if (trainingInstructors.size() > 0)
+                        {
                             insert trainingInstructors;
                         }
                     }
 
-//                    List<Contact> students;
-//
-//                    if (batchParticipants != null && batchParticipants.size() > 0) {
-//                        students = PHSS_ClassCompletionStudent.createAll(batchParticipants, batchClass, trainingClass);
+                    //List<Contact> students;
+
+                    if (batchParticipants != null && batchParticipants.size() > 0)
+                    {
+                        system.debug('Came here***');
+
+                        PHSS_ClassCompletionStudent.createAll(batchParticipants, batchClass, trainingClass);
+                        //students = PHSS_ClassCompletionStudent.createAll(batchParticipants, batchClass, trainingClass);
 //                        if (students != null && students.size() > 0) {
 //                            insert students;
 //                        }
-//                    }
+                    }
                 }
+            }
+
+            if(orderItemsToUpdate.size() > 0)
+            {
+                update orderItemsToUpdate;
+            }
+
+            if(orderToUpdate.size() > 0)
+            {
+                update orderToUpdate;
             }
 
         } catch (Exception e) {
@@ -190,7 +244,7 @@ public with sharing class PHSS_ClassCompletionBatch {
         CCS_Batch_Class__c batchClass = new CCS_Batch_Class__c(
                 Account__c                  = values[SENDER_FIELD_INDEX],
                 Name                        = values[BATCH_FIELD_INDEX],
-                ILT_Class__c                = values[CLASS_FIELD_INDEX],
+                Offering_Id_Batch_Class__c  = values[CLASS_FIELD_INDEX],
                 PO_Number__c                = values[PO_NUMBER_FIELD_INDEX],
                 Course_Code__c              = values[COURSE_CODE_FIELD_INDEX],
                 Course_Start_Date__c        = Date.parse(values[COURSE_START_DATE_FIELD_INDEX]),
@@ -202,6 +256,8 @@ public with sharing class PHSS_ClassCompletionBatch {
                 Training_Site_State__c      = values[TRAINING_SITE_STATE_FIELD_INDEX],
                 Training_Site_Zip_Code__c   = values[TRAINING_SITE_ZIP_CODE_FIELD_INDEX]
         );
+
+        //TODO: Remove below code
 
         Opportunity o = new Opportunity();
         
@@ -249,7 +305,7 @@ public with sharing class PHSS_ClassCompletionBatch {
 
         string encryptedCartId = String.valueOf(addToCartResult.get('encryptedCartId'));
 
-        Map<String, Object> placeOrderResult;
+        //Map<String, Object> placeOrderResult;
         try
         {
             placeOrderResult = phss_cc_OrderUtil.placeOrderOnCartPO(opportunitySfid, encryptedCartId, null);
@@ -258,6 +314,9 @@ public with sharing class PHSS_ClassCompletionBatch {
         {
             placeOrderResult = phss_cc_Exception.getErrorMessageMap(e.getMessage());
         }
+
+        system.debug('***placeOrderResult***'+placeOrderResult);
+        system.debug('***placeOrderResult***'+placeOrderResult.get('orderId'));
 
         return batchClass;
     }
@@ -268,26 +327,34 @@ public with sharing class PHSS_ClassCompletionBatch {
      *
      * @param values
      */
-    private CCS_Batch_Instructor__c createInstructor(List<String> values) {
-        if (String.isBlank(values[SENDER_FIELD_INDEX])) {
+    private CCS_Batch_Instructor__c createInstructor(List<String> values)
+    {
+        if (String.isBlank(values[SENDER_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Sender ID');
-        } else if (String.isBlank(values[BATCH_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[BATCH_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Batch ID');
-        } else if (String.isBlank(values[CLASS_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[CLASS_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Offering ID');
-        } else if (String.isBlank(values[INSTRUCTOR_ID_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[INSTRUCTOR_ID_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Instructor ID');
         }
 
         String batchId = values[BATCH_FIELD_INDEX];
+
         CCS_Batch_Class__c batchClass = batchMap.get(batchId);
-        CCS_Batch_Instructor__c instructor = new CCS_Batch_Instructor__c(
-                Batch_Class__c = batchClass.Id,
-                Instructor_Id__c = values[INSTRUCTOR_ID_FIELD_INDEX],
-                First_Name__c = values[INSTRUCTOR_FIRST_NAME_FIELD_INDEX],
-                Last_Name__c = values[INSTRUCTOR_LAST_NAME_FIELD_INDEX],
-                Email_Address__c = values[INSTRUCTOR_EMAIL_FIELD_INDEX]
-        );
+        
+        CCS_Batch_Instructor__c instructor = new CCS_Batch_Instructor__c( Batch_Class__c    = batchClass.Id,
+                                                                          Instructor_Id__c  = values[INSTRUCTOR_ID_FIELD_INDEX],
+                                                                          First_Name__c     = values[INSTRUCTOR_FIRST_NAME_FIELD_INDEX],
+                                                                          Last_Name__c      = values[INSTRUCTOR_LAST_NAME_FIELD_INDEX],
+                                                                          Email_Address__c  = values[INSTRUCTOR_EMAIL_FIELD_INDEX]);
 
         if (DEBUG_MODE) { System.debug('BatchInstructor created'); }
 
@@ -300,20 +367,34 @@ public with sharing class PHSS_ClassCompletionBatch {
      *
      * @param values
      */
-    private CCS_Batch_Participant__c createParticipant(List<String> values) {
-        if (String.isBlank(values[SENDER_FIELD_INDEX])) {
+    private CCS_Batch_Participant__c createParticipant(List<String> values)
+    {
+        if (String.isBlank(values[SENDER_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Sender ID');
-        } else if (String.isBlank(values[BATCH_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[BATCH_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Batch ID');
-        } else if (String.isBlank(values[CLASS_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[CLASS_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Offering ID');
-        } else if (String.isBlank(values[PARTICIPANT_FIRST_NAME_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[PARTICIPANT_FIRST_NAME_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Participant First Name');
-        } else if (String.isBlank(values[PARTICIPANT_LAST_NAME_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[PARTICIPANT_LAST_NAME_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Participant Last Name');
-        } else if (String.isBlank(values[PARTICIPANT_EMAIL_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[PARTICIPANT_EMAIL_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Participant Email Address');
-        } else if (String.isBlank(values[PARTICIPANT_MASTERY_FIELD_INDEX])) {
+        }
+        else if (String.isBlank(values[PARTICIPANT_MASTERY_FIELD_INDEX]))
+        {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Mastery Status');
         }
 
@@ -324,25 +405,30 @@ public with sharing class PHSS_ClassCompletionBatch {
         };
 
         String status = values[PARTICIPANT_MASTERY_FIELD_INDEX];
-        if (!possibleStatuses.contains(status)) {
+
+        if (!possibleStatuses.contains(status))
+        {
             throw new phss_cc_Exception(INVALID_MASTERY_STATUS_VALUE + ': ' + status);
-        } else if (status == UNSUCCESSFUL_MASTERY_STATUS) {
-            if (String.isBlank(values[PARTICIPANT_EVAL_NOTES_FIELD_INDEX])) {
+        }
+        else if (status == UNSUCCESSFUL_MASTERY_STATUS)
+        {
+            if (String.isBlank(values[PARTICIPANT_EVAL_NOTES_FIELD_INDEX]))
+            {
                 throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Evaluation Notes');
             }
         }
 
         String batchId = values[BATCH_FIELD_INDEX];
+
         CCS_Batch_Class__c batchClass = batchMap.get(batchId);
-        CCS_Batch_Participant__c participant = new CCS_Batch_Participant__c(
-                Batch_Class__c = batchClass.Id,
-                First_Name__c = values[PARTICIPANT_FIRST_NAME_FIELD_INDEX],
-                Last_Name__c = values[PARTICIPANT_LAST_NAME_FIELD_INDEX],
-                Email_Address__c = values[PARTICIPANT_EMAIL_FIELD_INDEX],
-                Phone_Number__c = values[PARTICIPANT_PHONE_FIELD_INDEX],
-                Mastery_Status__c = values[PARTICIPANT_MASTERY_FIELD_INDEX],
-                Evaluation_Notes__c = values[PARTICIPANT_EVAL_NOTES_FIELD_INDEX]
-        );
+
+        CCS_Batch_Participant__c participant = new CCS_Batch_Participant__c(    Batch_Class__c      = batchClass.Id,
+                                                                                First_Name__c       = values[PARTICIPANT_FIRST_NAME_FIELD_INDEX],
+                                                                                Last_Name__c        = values[PARTICIPANT_LAST_NAME_FIELD_INDEX],
+                                                                                Email_Address__c    = values[PARTICIPANT_EMAIL_FIELD_INDEX],
+                                                                                Phone_Number__c     = values[PARTICIPANT_PHONE_FIELD_INDEX],
+                                                                                Mastery_Status__c   = values[PARTICIPANT_MASTERY_FIELD_INDEX],
+                                                                                Evaluation_Notes__c = values[PARTICIPANT_EVAL_NOTES_FIELD_INDEX] );
 
         return participant;
     }

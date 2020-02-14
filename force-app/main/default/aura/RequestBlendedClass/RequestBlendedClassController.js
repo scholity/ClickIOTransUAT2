@@ -86,6 +86,9 @@
 
     productCountIncrement: function (component, event, helper) {
         component.set("v.CCProductId",event.getParam('productSfid'));
+        // DE2530 - Prevent account from being changed after product selected
+        component.set("v.isProductSelected",true);   
+        
         helper.getLearningPlanAttributes(component, event, helper);
 
         var delayInMilliseconds = "8000"; //10 seconds
@@ -660,6 +663,12 @@
         $A.get("e.force:refreshView").fire();
         component.set("v.stepNumber", "Zero");
     },
+    
+    cancelDropOpp : function(component, event, helper){
+        helper.cleanUp(component, event, helper);
+        $A.get("e.force:refreshView").fire();
+        component.set("v.stepNumber", "Zero");
+    },    
 
     addSession : function(component, event, helper) {
         var tempList = component.get("v.cpsWrap.sessionList");

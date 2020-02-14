@@ -16,7 +16,7 @@
     <aura:attribute name = "limitOffset"            type = "Integer"    default = "0"/>
     <aura:attribute name = "offset"                 type = "Integer"    default = "0"/>
     <aura:attribute name = "selectedTab"            type = "String"     default = "current-classes" />
-    
+    <aura:attribute name = "showLoadingSpinner"		type = "boolean"	default = "false" />
     <aura:attribute name = "sortField"              type = "String"     default = "startDate" />
     <aura:attribute name = "sortOrder"              type = "String"     default = "asc" />
     
@@ -34,30 +34,39 @@
     <aura:attribute name="label_Items"                          type="String" default="items"/>
     <aura:attribute name="label_Item"                           type="String" default="item"/>
     <aura:attribute name="label_No_Classes"                     type="String" default="No Classes"/>
+    
+
     <ltng:require scripts="{!join(',',
                            $Resource.RCUilib + '/jsLibs/moment-with-locales.min.js'
                            )}" afterScriptsLoaded="{!c.doInit}"/>
+
+    <aura:if isTrue="{!v.showLoadingSpinner}">
+        <lightning:spinner alternativeText="Loading" variant="brand" size="large"/>
+    </aura:if>
+
     <aura:if isTrue="{!v.accountList.length > 0}">
         <div class="slds-is-absolute">
             <div class="slds-float_left slds-p-around_small">
                 <h1>Organization</h1>
                 <lightning:select value="{!v.selectedAccount}" onchange="{!c.getInstructorValues}">
-                    <option value="" text="Select an Organization"/>
+                    <option value="" text="--select organization--" />
                     <aura:iteration items="{!v.accountList}" var="acc">
                         <option value="{!acc.Id}" text="{!acc.Name}" />   
                     </aura:iteration>
                 </lightning:select>   
             </div>
             
-            <div class="slds-float_left slds-p-around_small">
-                <h1>Instructor</h1>
-                <lightning:select value="{!v.selectedInstructor}" onchange="{!c.getInstClasses}" disabled="{!or(v.selectedAccount == '',v.selectedAccount == null)}">
-                    <option value="" text="Select an Instructor"/>
-                    <aura:iteration items="{!v.instList}" var="inst">
-                        <option value="{!inst.Id}" text="{!inst.Name}" selected="{!inst.Id == v.selectedInstructor}"/>   
-                    </aura:iteration>
-                </lightning:select>   
-            </div>
+            <aura:if isTrue="{!not(empty(v.selectedAccount))}">
+                <div class="slds-float_left slds-p-around_small">
+                    <h1>Instructor</h1>
+                    <lightning:select value="{!v.selectedInstructor}" onchange="{!c.getInstClasses}" disabled="{!or(v.selectedAccount == '',v.selectedAccount == null)}">
+                        <option value="" text="All Intructors"/>
+                        <aura:iteration items="{!v.instList}" var="inst">
+                            <option value="{!inst.Id}" text="{!inst.Name}" selected="{!inst.Id == v.selectedInstructor}"/>   
+                        </aura:iteration>
+                    </lightning:select>   
+                </div>
+            </aura:if>
         </div>
     </aura:if>
     

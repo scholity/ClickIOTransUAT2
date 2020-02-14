@@ -3,8 +3,8 @@
     <assignments>
         <name>Add_OrderFulfillment_Collection</name>
         <label>Add OrderFulfillment Collection</label>
-        <locationX>554</locationX>
-        <locationY>1254</locationY>
+        <locationX>568</locationX>
+        <locationY>1259</locationY>
         <assignmentItems>
             <assignToReference>colFulfillmentItems</assignToReference>
             <operator>Add</operator>
@@ -210,8 +210,8 @@
     <assignments>
         <name>Over_Credit_Limit</name>
         <label>Over Credit Limit</label>
-        <locationX>865</locationX>
-        <locationY>663</locationY>
+        <locationX>842</locationX>
+        <locationY>640</locationY>
         <assignmentItems>
             <assignToReference>ErrorMessage</assignToReference>
             <operator>Assign</operator>
@@ -725,7 +725,7 @@
         <name>Available_Credit</name>
         <label>Available Credit</label>
         <locationX>529</locationX>
-        <locationY>646</locationY>
+        <locationY>645</locationY>
         <defaultConnector>
             <targetReference>Over_Credit_Limit</targetReference>
         </defaultConnector>
@@ -754,7 +754,7 @@
         </rules>
         <rules>
             <name>Has_Available_Credit</name>
-            <conditionLogic>(1 AND 3) OR 2</conditionLogic>
+            <conditionLogic>((1 AND 3) OR 2) or (4 and 5)</conditionLogic>
             <conditions>
                 <leftValueReference>sOrder.ccrz__TotalAmount__c</leftValueReference>
                 <operator>LessThanOrEqualTo</operator>
@@ -774,6 +774,20 @@
                 <operator>NotEqualTo</operator>
                 <rightValue>
                     <stringValue>cc</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sOrder.ccrz__OrderStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>On Hold</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>cCreditLimit</leftValueReference>
+                <operator>GreaterThanOrEqualTo</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -1011,7 +1025,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Set_Order_Item_Status</targetReference>
+                <targetReference>Assign_Order_Fulfillment_Item</targetReference>
             </connector>
             <label>Is fee for Shipped Course - Kit</label>
         </rules>
@@ -1459,7 +1473,7 @@
             <label>IfReserved</label>
         </rules>
     </decisions>
-    <description>Added Individual Account Record Type Check - added additional fields to sOrder to allow for reducing SOQLs in On Hold Check - Changed Online Order Flow - Updated for Delivery Fee</description>
+    <description>Added Individual Account Record Type Check - added additional fields to sOrder to allow for reducing SOQLs in On Hold Check - Changed Online Order Flow - On Hold no longer included in Available Credit calculation</description>
     <formulas>
         <name>AddtoCourse</name>
         <dataType>Number</dataType>
@@ -2065,7 +2079,7 @@
             <targetReference>Lookup_Order2</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>ActiveContract</name>
         <dataType>Boolean</dataType>

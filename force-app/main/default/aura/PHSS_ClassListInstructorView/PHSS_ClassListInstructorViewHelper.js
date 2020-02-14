@@ -1,5 +1,6 @@
 ({
 	getValues : function(component) {
+        this.toggleLoadingSpinner(component);
 		var action = component.get("c.getPicklistValues");
         action.setParams({
             "objName" : component.get("v.objName"),
@@ -30,11 +31,13 @@
             else {
                 console.log('error');
             }
+            this.toggleLoadingSpinner(component);
         });
         $A.enqueueAction(action);	
 	},
     
     getData : function(component) {
+        this.toggleLoadingSpinner(component);
         var action = component.get("c.getClasses");
         console.log('account..'+component.get("v.selectedAccount"));
         console.log('instructor..'+component.get("v.selectedInstructor"));
@@ -67,6 +70,7 @@
             } else {
                 console.log('error');
             }
+            this.toggleLoadingSpinner(component);
         });
 
         $A.enqueueAction(action);
@@ -89,4 +93,8 @@
         component.set("v.sortOrder", order);
         component.set("v." + array + "Classes", resultArray);
     },
+
+    toggleLoadingSpinner : function(component){
+        component.set( "v.showLoadingSpinner", !component.get("v.showLoadingSpinner") );
+    }
 })

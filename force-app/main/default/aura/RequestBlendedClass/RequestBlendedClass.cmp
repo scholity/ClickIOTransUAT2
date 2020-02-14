@@ -86,6 +86,7 @@
     <aura:attribute name = "showLoadingSpinner"		type = "boolean"	default = "false" />
     <aura:attribute name = "isExtUser" 				type = "Boolean" 	default="true"/>
     <aura:attribute name = "isPartner"				type = "Boolean" 	default="false"/>
+	<aura:attribute name = "isProductSelected"      type = "Boolean"    default = "false"/>     
     
     <aura:attribute name = "storeFrontName" type="String" default = "" />
     
@@ -135,15 +136,17 @@
                     <!--Header - Start -->
                     
                     <header class="slds-modal__header">
-                        <button class	= "slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-                                title	= "Close"
-                                onclick = "{!c.cancel}">
-                            
-                            <lightning:icon iconName="utility:close">
-                            </lightning:icon>
-                            
-                            <span class="slds-assistive-text">Close</span>
-                        </button>
+                        <aura:if isTrue="{!v.stepNumber != 'Four'}" > 
+                            <button class	= "slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    title	= "Close"
+                                    onclick = "{!c.cancelDropOpp}">
+                                
+                                <lightning:icon iconName="utility:close">
+                                </lightning:icon>
+                                
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                        </aura:if>
                         <h2 id		= "header43"
                             class	= "slds-text-heading_medium">
                             Request Blended Class
@@ -185,12 +188,19 @@
                                                 <abbr class="slds-required" title="required">*</abbr> 
                                                 Organization
                                     		</label>
+                                            <aura:if isTrue="{!not(v.isProductSelected)}">                                      
+                                    			<lightning:helptext content="Select the Organization for whom the course will be offered. Only the organizations you are affiliated with will appear on this list." />
                                     
-                                    <lightning:helptext content="Select the Organization for whom the course will be offered. Only the organizations you are affiliated with will appear on this list." />
-                                    
-                                    <c:CustomLookup objectAPIName	=	"account"
-                                                    selectedRecord	=	"{!v.selectedLookUpRecord1}"
-                                                    errorMessage    =   "{!v.orgError}"/>
+                                    			<c:CustomLookup objectAPIName	=	"account"
+                                                   			 	selectedRecord	=	"{!v.selectedLookUpRecord1}"
+                                                    			errorMessage    =   "{!v.orgError}"/>
+	                                        
+                                            <aura:set attribute="else">
+	                                            <div class="slds-text-heading_medium">
+	                                                {!v.selectedLookUpRecord1.Name}
+	                                            </div>
+	                                        </aura:set>
+	                                        </aura:if>                                                 
 									
                                 </div>
                             </div>
@@ -858,10 +868,17 @@
                       <aura:if isTrue="{!v.stepNumber != 'Four'}" >
 
                         <div class="slds-col">
-                            <button class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancel}">Cancel</button>
+                            <button class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancelDropOpp}">Cancel</button>
                         </div>
                          
-                        </aura:if>
+                      </aura:if>
+                      <aura:if isTrue="{!v.stepNumber == 'Four'}" >
+
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_neutral" onclick="{!c.cancelDropOpp}" disabled="true" >Cancel</button>
+                        </div>
+                         
+                      </aura:if>                        
                         
                         <div class="slds-col slds-size_2-of-3 " >
                             <lightning:progressIndicator currentStep="{!v.stepNumber}" type="base"
@@ -913,7 +930,8 @@
                                     </div>
                                     <aura:set attribute="else">
                                         <div class="slds-col">
-                            <button class="slds-button slds-button_neutral customButton" onclick="{!c.cancel}">OK</button>
+                            				<button class="slds-button slds-button_neutral customButton" 
+                                                    onclick="{!c.cancel}">OK</button>
                                         </div>
                                     </aura:set>
                                 </aura:if>

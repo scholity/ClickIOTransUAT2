@@ -2,18 +2,23 @@
     doInit : function(component, event, helper) {
         component.set("v.objName","Account");
         helper.getValues(component);
-        helper.getData(component);
+        //helper.getData(component);
     },
     
+    /*Note:
+        This component is very inefficient and could be refactored to store data in memory and not query server each time an inst ro acct changes
+    */
     getInstructorValues : function(component, event, helper) {
         if(component.get("v.selectedAccount") == "") {
             component.set("v.selectedInstructor","");
+            component.set("v.historyClasses", []);
+            component.set("v.currentClasses", []);
         }    
         else { 
             component.set("v.objName","User");
-            helper.getValues(component); 
+            helper.getValues(component);
+            helper.getData(component);
         }
-        helper.getData(component);
     },
     
     handleSelectTab : function(component, event, helper){
@@ -25,7 +30,8 @@
         } else{
             component.set("v.isHistory", !component.get("v.isHistory"));
         }
-        if(isNeedUpdatedData){
+        var selectedAccount = component.get("v.selectedAccount");
+        if(isNeedUpdatedData && selectedAccount){
             helper.getData(component);
         }
         component.set("v.selectedTab", nameTab);

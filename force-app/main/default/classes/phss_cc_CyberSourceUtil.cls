@@ -55,6 +55,7 @@ public with sharing class phss_cc_CyberSourceUtil {
     private static final String PAYMENT_TYPES_KEY = 'paymentTypes';
     private static final String iFRAME_URL_KEY = 'iframeURL';
     private static final String IP_ADDRESS_KEY = 'ipAddr';
+    private static final String STATE_CODES_KEY = 'stateCodes';
 
     // CyberSource Response Keys
     public static final String CYBER_SOURCE_AUTH_TIME_KEY = 'auth_time';
@@ -421,7 +422,8 @@ public with sharing class phss_cc_CyberSourceUtil {
                 STATE_KEY => BILLING_STATE,
                 COUNTRY_KEY => BILLING_COUNTRY,
                 ZIPCODE_KEY => BILLING_POSTAL_CODE,
-                IP_ADDRESS_KEY => IP_ADDRESS
+                IP_ADDRESS_KEY => IP_ADDRESS,
+                STATE_CODES_KEY => getStatePicklistMap()
         };
 
         populateSignatureData(cybersourceHostedPageData);
@@ -760,5 +762,19 @@ public with sharing class phss_cc_CyberSourceUtil {
         }
 
         IP_ADDRESS = null;
+    }
+
+    public static Map<String, String> getStatePicklistMap(){
+        Map<String, String> statePicklistMap = new Map<String, String>();
+        try{
+            List<Schema.PicklistEntry> picklistValues = PHSS_Custom_Metadata__mdt.State_Codes__c.getDescribe().getPicklistValues();
+            for(Schema.PicklistEntry plv : picklistValues){
+                statePicklistMap.put(plv.getLabel(), plv.getValue());
+            }    	
+        }
+        catch(Exception ex){
+            System.debug('Unable to get State Code values from PHSS_Custom_Metadata__mdt Custom Metadata object: '+ex.getMessage());
+        }
+        return statePicklistMap;
     }
 }

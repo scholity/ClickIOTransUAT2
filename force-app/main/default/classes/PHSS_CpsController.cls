@@ -360,7 +360,12 @@ public without sharing class PHSS_CpsController {
 
             if (existingLoc.redwing__Address_1__c == address1 && existingLoc.redwing__Postal_Code__c == postcode && existingLoc.redwing__State__c == state && existingLoc.redwing__City__c == city &&
                     ( (String.isBlank(existingLoc.redwing__Address_2__c) && String.isBlank(address2)) || existingLoc.redwing__Address_2__c == address2 )) {
-
+                
+                existingLoc.Skedulo_Type__c = 'CPS';
+                existingLoc.GeoLocation__Latitude__s = decimal.valueOf(lat);
+                existingLoc.GeoLocation__Longitude__s = decimal.valueOf(lng);
+                update existingLoc;
+                        
                 return existingLoc.Id;
             }
         }

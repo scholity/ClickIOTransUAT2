@@ -256,7 +256,7 @@
         <name>Determine_Order_Status</name>
         <label>Determine Order Status</label>
         <locationX>825</locationX>
-        <locationY>221</locationY>
+        <locationY>220</locationY>
         <defaultConnector>
             <targetReference>Set_In_Process</targetReference>
         </defaultConnector>
@@ -315,7 +315,7 @@
         </rules>
         <rules>
             <name>Is_On_Hold</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>1 AND (2 OR 3 OR 4 OR 5)</conditionLogic>
             <conditions>
                 <leftValueReference>cntOnHold</leftValueReference>
                 <operator>GreaterThan</operator>
@@ -325,10 +325,28 @@
             </conditions>
             <conditions>
                 <leftValueReference>sOrder.ccrz__OrderStatus__c</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>In Process</stringValue>
+                    <stringValue>Order Submitted</stringValue>
                 </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sOrder.ccrz__OrderStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Open</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sOrder.ccrz__OrderStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>On Hold</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sOrder.ccrz__OrderStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
             </conditions>
             <connector>
                 <targetReference>Set_On_Hold</targetReference>

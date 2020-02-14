@@ -51,6 +51,10 @@
         <value xsi:type="xsd:string">Customer Community Plus Login User</value>
     </values>
     <values>
+        <field>State_Codes__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>UserProvisioningTriggerDebug__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>

@@ -31,6 +31,10 @@
                 <behavior>Edit</behavior>
                 <field>Last_Name__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Offering_Id_Batch_Instructor__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

@@ -108,13 +108,15 @@
                 <!--Header - Start -->
                 
                 <header class="slds-modal__header">
-                    <button class	= "slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-                            title	= "Close"
-                            onclick = "{!c.cancel}">
-                        
-                        <lightning:icon iconName="utility:close" class = "customButton"/>
-                        <span class="slds-assistive-text">Close</span>
-                    </button>
+					<aura:if isTrue="{!or(v.stepNumber != 'Three', and(v.stepNumber == 'Three', v.paymentComplete == false))}">                     
+                        <button class	= "slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title	= "Close"
+                                onclick = "{!c.cancel}">
+                            
+                            <lightning:icon iconName="utility:close" class = "customButton"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                    </aura:if>
                     <h2 id		= "header43"
                         class	= "slds-text-heading_medium">
                         Close Class
@@ -421,11 +423,16 @@
                 <!-- Footer - Start -->
                 <aura:if isTrue="{! v.eligibleForClose}" >
                 <footer class="slds-modal__footer slds-grid slds-grid_align-spread progIndicator">
-                    
-                    <div class="slds-col">
-                        <button class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancel}">Cancel</button>
-                    </div>
-                    
+					<aura:if isTrue="{!or(v.stepNumber != 'Three', and(v.stepNumber == 'Three', v.paymentComplete == false)) }">                  
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancel}">Cancel</button>
+                        </div>
+                    </aura:if>
+					<aura:if isTrue="{!and(v.stepNumber == 'Three', v.paymentComplete == true)}">                  
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_neutral" onclick="{!c.cancel}" disabled="true" >Cancel</button>
+                        </div>
+                    </aura:if>                    
                     <div class="slds-col slds-size_2-of-3 " >
                         <lightning:progressIndicator currentStep="{!v.stepNumber}" type="base">
                             

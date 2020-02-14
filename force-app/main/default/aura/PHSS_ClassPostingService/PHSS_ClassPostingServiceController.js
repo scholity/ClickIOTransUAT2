@@ -221,7 +221,7 @@
                 var timeOut = '0';
             }
             */
-            if(component.get("v.allValid") == false && component.get("v.offeringId") > 0 && component.get("v.cpsWrap.offeringId") == "0"){
+            if(component.get("v.allValid") == false && component.get("v.geoCodeLookup") == false && component.get("v.offeringId") > 0 && component.get("v.cpsWrap.offeringId") == "0"){
                     component.set("v.showError","false");
                     component.set("v.errorMessage","");
                 	var timeOut = '0';
@@ -243,7 +243,8 @@
                     component.set("v.orgError",false);
                 }
                 
-                if(component.get("v.allValid") && component.get("v.isUrlValid") && !component.get("v.orgError")) {
+                if(component.get("v.allValid")  && component.get("v.isUrlValid") && !component.get("v.orgError") && !component.get("v.geoCodeLookup")) {
+                    //alert("No Errors Path");
                     var tempList = component.get("v.offeringsList");
                     var existingOfferingInCart = component.get("v.cpsWrap.offeringId");
                     var offeringJson = JSON.stringify(component.get("v.cpsWrap"));
@@ -291,7 +292,8 @@
                     helper.clearForm(component,event,helper);
                     
                     component.set("v.stepNumber", "Two");    
-                } else if(component.get("v.offeringId") > 0 && component.get("v.cpsWrap.offeringId") == "0") {
+                } else if(!component.get("v.geoCodeLookup") && component.get("v.offeringId") > 0 && component.get("v.cpsWrap.offeringId") == "0") {
+                    //alert("Just Keep Going");
                     var action = component.get("c.getDisplayPaymentInfo"); 
                     action.setParams({ opportunityId : component.get("v.oppIdParent")});
                     action.setCallback(this, function(response) {
@@ -424,7 +426,7 @@
                     component.set("v.orgError",false);
                 }
                 
-                if(component.get("v.allValid") && component.get("v.isUrlValid") && !component.get("v.orgError")) {
+                if(component.get("v.allValid") && component.get("v.isUrlValid") && !component.get("v.orgError") && !component.get("v.geoCodeLookup")) {
                     var tempList = component.get("v.offeringsList");
                     var existingOfferingInCart = component.get("v.cpsWrap.offeringId");
                     var offeringJson = JSON.stringify(component.get("v.cpsWrap"));

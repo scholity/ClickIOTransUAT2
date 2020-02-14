@@ -39,6 +39,10 @@
                 <behavior>Edit</behavior>
                 <field>Phone_Number__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Offering_Id_Batch_Participant__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

@@ -1459,19 +1459,21 @@ public without sharing class PHSS_skedJobtoILTClass {
 
         List<redwing__ILT_Session__c> updSessionRecords = new List<redwing__ILT_Session__c>();
         //Update Session with job Active field if students are registered
-        // Eliminate update of session records to avoid Job cancellation errors
-        /*
+
         for(redwing__ILT_Session__c sesRec : [Select Id, Skedulo_Job_Status__c, Skedulo_Job_Id_External__c, Skedulo_Job_Active__c
             From redwing__ILT_Session__c Where Skedulo_Job_Id_External__c IN: MapCanceledJobs.keySet()]){
-            sesRec.Skedulo_Job_Active__c = false;
-            sesRec.Skedulo_Job_Status__c = 'Cancelled';
-            updSessionRecords.add(sesRec); 
+
+            redwing__ILT_Session__c updatedSesRec = new redwing__ILT_Session__c();
+            updatedSesRec.Id = sesRec.Id;
+            updatedSesRec.Skedulo_Job_Active__c = false;
+            updatedSesRec.Skedulo_Job_Status__c = 'Cancelled';
+            updSessionRecords.add(updatedSesRec);
         }
 
         if(updSessionRecords.size() > 0){
             update updSessionRecords;
         }
-        */
+
         Set<Id> SetIds = new Set<Id>();
         Set<Id> SetjobIds = new Set<Id>();
         for(sked__Job__c job : MapCanceledJobs.values()){

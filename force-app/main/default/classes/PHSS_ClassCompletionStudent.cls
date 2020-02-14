@@ -2,10 +2,10 @@
  * Created by jbarker on 2019-12-17.
  */
 
-public with sharing class PHSS_ClassCompletionStudent {
+public with sharing class PHSS_ClassCompletionStudent
+{
 
-    private static final String FAILED_TO_FETCH_USERS_BY_EMAIL_ADDRESS = 'Failed to fetch users by email address.';
-
+    //private static final String FAILED_TO_FETCH_USERS_BY_EMAIL_ADDRESS = 'Failed to fetch users by email address.';
 
     /**
      * @description Creates students for batch participants
@@ -15,13 +15,93 @@ public with sharing class PHSS_ClassCompletionStudent {
      *
      * @return
      */
-    public static List<Contact> createAll(List<CCS_Batch_Participant__c> batchParticipants, CCS_Batch_Class__c batchClass, redwing__ILT_Class__c trainingClass) {
+    public static void createAll(List<CCS_Batch_Participant__c> batchParticipants, CCS_Batch_Class__c batchClass, redwing__ILT_Class__c trainingClass)
+    {
+        system.debug('***batchParticipants***'+batchParticipants);
+        system.debug('***batchClass***'+batchClass);
+        system.debug('***trainingClass***'+trainingClass);
+        
+        if (batchParticipants != null && batchParticipants.size() > 0 && batchClass != null)
+        {
+            //START
+            Id learningPlanId   = trainingClass.Learning_Plan__c;
+            Map<id,id> rtpa     = new map<id,id>();
+            Map<id,id> rtpaac   = new map<id, id>();
 
-        if (batchParticipants == null || batchParticipants.size() == 0 || batchClass == null) {
-            return null;
+            map<id,list<redwing__Training_Plan_Achievement__c>> mapTrainingPlanWithTrainingPlanAchievements = new map<id,list<redwing__Training_Plan_Achievement__c>>();
+
+            for (redwing__Training_Plan_Achievement__c rtpalist :[SELECT Id, Name, redwing__Training_Plan__c, redwing__Achievement__c FROM redwing__Training_Plan_Achievement__c WHERE redwing__Training_Plan__c=: learningPlanId])
+            {
+                rtpa.put(rtpalist.redwing__Training_Plan__c, rtpalist.Id);
+                
+                rtpaac.put(rtpalist.redwing__Training_Plan__c, rtpalist.redwing__Achievement__c);
+                
+                if(mapTrainingPlanWithTrainingPlanAchievements.containskey(rtpalist.redwing__Training_Plan__c))
+                {
+                    mapTrainingPlanWithTrainingPlanAchievements.get(rtpalist.redwing__Training_Plan__c).add(rtpalist);
+                }
+                else
+                {
+                    list<redwing__Training_Plan_Achievement__c> lstRTPA = new list<redwing__Training_Plan_Achievement__c>();
+
+                    lstRTPA.add(rtpalist);
+
+                    mapTrainingPlanWithTrainingPlanAchievements.put(rtpalist.redwing__Training_Plan__c,lstRTPA);
+                }
+            }
+
+            List<redwing__Achievement_Assignment__c> AchievementAssignmentList = new List<redwing__Achievement_Assignment__c>();
+
+            for (CCS_Batch_Participant__c participant : batchParticipants)
+            {    
+                if (mapTrainingPlanWithTrainingPlanAchievements.containskey(learningPlanId))
+                {
+                    for(redwing__Training_Plan_Achievement__c rtpalist : mapTrainingPlanWithTrainingPlanAchievements.get(learningPlanId))
+                    {
+                        System.debug('Going to create Achievement assignment');
+
+                        redwing__Achievement_Assignment__c      rac = new redwing__Achievement_Assignment__c();
+
+                        rac.redwing__Training_Plan_Achievement__c   = rtpalist.id;
+                        rac.Firstname__c                            = participant.First_Name__c;
+                        rac.Lastname__c                             = participant.Last_Name__c;
+                        rac.Email__c                                = participant.Email_Address__c;
+                        rac.Phone__c                                = participant.Phone_Number__c;
+                        rac.Account__c                              = batchClass.Account__c;
+                        rac.redwing__Status__c                      = 'Eligible';
+                        rac.Evaluation_Result__c                    = participant.Mastery_Status__c;
+                        //rac.Grade_Reason__c                         = participant.Evaluation_Notes__c;
+                        rac.Grade_Additional_Info__c              = participant.Evaluation_Notes__c;
+
+                        if (participant.Mastery_Status__c == 'Successful')
+                        {
+                            rac.redwing__Status__c                  = 'OnHold';
+                            rac.redwing__Acquisition_Date__c        = System.today();       // Use ILT Class close date
+                        }
+                        
+                        rac.ILT_Class__c                            = trainingClass.Id;
+                        rac.External_Id__c                          = participant.First_Name__c+participant.Last_Name__c+participant.Email_Address__c+trainingClass.Id;
+                        
+                        rac.redwing__Achievement__c                 = rtpalist.redwing__Achievement__c;
+
+                        System.debug('Achievement Assignment created' +rac.redwing__Achievement__c);
+                        AchievementAssignmentList.add(rac);
+
+                        System.debug('AchievementAssignmentListvalue '+AchievementAssignmentList);
+                    }
+                }
+            }
+
+            if(AchievementAssignmentList.size() > 0)
+            {
+                insert AchievementAssignmentList;
+            }
         }
 
-        List<Contact> students;
+
+        //END
+
+/*        List<Contact> students;
 
         Map<String, User> userMap = new Map<String, User>();
         List<User> users = fetchUsersForParticipants(batchParticipants, batchClass);
@@ -64,7 +144,7 @@ public with sharing class PHSS_ClassCompletionStudent {
         }
         insert assignments;
 
-        return students;
+        return students; */
     }
 
 
@@ -77,7 +157,7 @@ public with sharing class PHSS_ClassCompletionStudent {
      *
      * @return
      */
-    private static String createUserKey(String firstName, String lastName, String emailAddress) {
+    /*private static String createUserKey(String firstName, String lastName, String emailAddress) {
         String key = '';
 
         if (String.isNotBlank(lastName)) {
@@ -91,7 +171,7 @@ public with sharing class PHSS_ClassCompletionStudent {
         }
 
         return key;
-    }
+    }*/
 
 
     /**
@@ -102,7 +182,7 @@ public with sharing class PHSS_ClassCompletionStudent {
      *
      * @return
      */
-    private static List<User> fetchUsersForParticipants(List<CCS_Batch_Participant__c> batchParticipants, CCS_Batch_Class__c batchClass) {
+    /*private static List<User> fetchUsersForParticipants(List<CCS_Batch_Participant__c> batchParticipants, CCS_Batch_Class__c batchClass) {
 
         List<User> users;
 
@@ -144,5 +224,5 @@ public with sharing class PHSS_ClassCompletionStudent {
         }
 
         return users;
-    }
+    }*/
 }

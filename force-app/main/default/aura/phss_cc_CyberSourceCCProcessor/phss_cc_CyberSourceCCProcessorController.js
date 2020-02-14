@@ -132,6 +132,14 @@
         helper.validateFormData(component, false);
     },
 
+    validatePhoneNumberInput : function(component, event, helper){
+        console.log('validatePhoneNumberInput...');
+        let bill_to_phone = component.get("v.bill_to_phone");
+        bill_to_phone = bill_to_phone.replace(/\D+/g, "");
+        component.set("v.bill_to_phone", bill_to_phone);
+        helper.validateFormData(component, false);
+    },
+
     validateExpirationDate : function(component, event, helper){
         let expMonth = component.get("v.card_expiry_month");
         let expYear = component.get("v.card_expiry_year");
