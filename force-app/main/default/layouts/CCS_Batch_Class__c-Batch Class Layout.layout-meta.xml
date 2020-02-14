@@ -59,6 +59,10 @@
                 <behavior>Edit</behavior>
                 <field>Training_Site_Zip_Code__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Offering_Id_Batch_Class__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

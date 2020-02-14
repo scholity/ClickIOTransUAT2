@@ -12,9 +12,10 @@
     
     <aura:attribute name="employeesUrl" type="String" required="false" />
     <aura:attribute name="selfRegisterLabel" type="String" required="false" default="Sign Me Up"/>
-    <aura:attribute name="forgotPasswordUrl" type="String" required="false" default="/learner/s/ForgotPassword"/>
+    <aura:attribute name="forgotPasswordUrl" type="String" required="false" default="/learner/s/forgot-password-b2c"/>
     <aura:attribute name="selfRegisterUrl" type="String" required="false" default="/learner/s/SelfRegister" />
     <aura:attribute name="learningCenterUrl" type="String" required="false" />
+    <aura:attribute name="forgotPasswordLabel" type="String" required="false" default="Forgot Password"/>    
     
     <aura:attribute name="isUsernamePasswordEnabled" type="Boolean" access="private"/>
     <aura:attribute name="isSelfRegistrationEnabled" type="Boolean" access="private"/>
@@ -44,6 +45,9 @@
                     </div>
                 </aura:renderIf>
             </span>
+                <div style="text-align: left;">
+                    <span style="font-weight: bold; font-size: 30px; color: red; ">Sign In</span>
+                </div>
                 <div id="sfdc_username_container" class="sfdc">
                     <span id="sfdc_user" class="sfdc" data-icon="c"><lightning:icon iconName="utility:user" size="small" /></span>
                     <ui:inputText value="" aura:id="username" placeholder="{!v.usernameLabel}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc" label="{!v.usernameLabel}" labelClass="assistiveText"/>
@@ -56,16 +60,21 @@
 
                 <lightning:button aura:id="submitButton" label="{!v.loginButtonLabel}" onclick="{!c.handleLogin}" class="sfdc_button"/>
                 <lightning:button aura:id="claimVoucherBtn" label="{!v.voucherButtonLabel}" onclick="{!c.navigateToClaimVoucher}" class="sfdc_button"/>
-
+				<!-- DE2468 - Remove "Sign Me Up" link from page and add "Forgot Password" -->
+                <!--
                 <div id="sfdc_register" class="sfdc">
                     <aura:renderIf isTrue="{!v.isSelfRegistrationEnabled}">
                         <span style="float:right" ><a href="{!v.selfRegisterUrl+'?startURL='+v.startUrl}">{!v.selfRegisterLabel}</a></span>
                     </aura:renderIf>
                 </div>
-
+				-->
+                <div id="sfdc_forgot" class="sfdc">
+                    <span style="float:right; color:red; font-style:bold; font-size:15px"><a href="{!if(v.communityForgotPasswordUrl == null, v.forgotPasswordUrl, v.communityForgotPasswordUrl)}">{!v.forgotPasswordLabel}</a></span>                           
+                </div>
+                <br/>
                 <div class="slds-p-top--small">
                     <p class="loginContent">
-                        <aura:unescapedHtml value="{!format($Label.c.PHSS_LoginContent,v.employeesUrl,v.forgotPasswordUrl,v.learningCenterUrl)}" />
+                        <aura:unescapedHtml value="{!format($Label.c.PHSS_LoginContent)}" />
                     </p>
                 </div>
 

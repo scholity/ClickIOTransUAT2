@@ -25,11 +25,15 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Users_Impacted__c</field>
+                <field>Triage_Category__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>SF_Case_Number__c</field>
+                <field>Related_Case__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Users_Impacted__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>

@@ -24,6 +24,8 @@
     <!--Other Attributes-->
     <aura:attribute name="cybersourceHostedFormData" type="Map"/>
     <aura:attribute name="iframeURL" type="String"/>
+    <aura:attribute name="state_options" type="List" />
+    <aura:attribute name="invalidFields" type="List" />
 
     <!--Spinner when page loads-->
     <aura:attribute type="Boolean" name="showSpinner" default="false"/>
@@ -130,9 +132,10 @@
                                          class="always-validate" 
                                          type="tel"
                                          pattern="[0-9]{10}"
-                                         messageWhenPatternMismatch="Please enter a valid phone number."
-                                         messageWhenValueMissing="Please enter a valid phone number."
-                                         onchange="{!c.handleFormInputChanged}"/>
+                                         messageWhenPatternMismatch="Please enter a valid phone number (XXXXXXXXXX)."
+                                         messageWhenValueMissing="Please enter a valid phone number (XXXXXXXXXX)."
+                                         onchange="{!c.handleFormInputChanged}"
+                                         onkeyup="{!c.validatePhoneNumberInput}"/>
                     </div>
                     <div class="slds-col slds-size_1-of-3">
                         <lightning:input aura:id="payment_form" 
@@ -187,7 +190,7 @@
                                          required="true"
                                          value="{!v.card_expiry_month}"
                                          class="exp-month"
-                                         pattern="([0-9]{2})" 
+                                         pattern="(\b(01|02|03|04|05|06|07|08|09|10|11|12)\b)" 
                                          placeholder="MM"
                                          messageWhenPatternMismatch="Please enter a valid expiration month."
                                          messageWhenValueMissing="Please enter a valid expiration month."
@@ -216,11 +219,10 @@
                                          minlength="{! (v.isAmexPmt ? 4 : 3) }" 
                                          pattern="[0-9]{3,4}" 
                                          value="{!v.card_cvn}"
-                                         placeholder="{! v.isAmexPmt ? '1234' : '123' }"
                                          messageWhenPatternMismatch = "Please enter a valid CVV number."
                                          messageWhenValueMissing="Please enter a valid CVV number."
                                          onchange="{!c.handleFormInputChanged}"/>
-                                         <!--messageWhenPatternMismatch = "{!'Enter a '+(v.isAmexPmt ? '4' : '3')+' digit number.'}"-->
+                                         <!--placeholder="{! v.isAmexPmt ? '1234' : '123' }" messageWhenPatternMismatch = "{!'Enter a '+(v.isAmexPmt ? '4' : '3')+' digit number.'}"-->
                         Three digits for Most Credit Cards, four digits for American Express
                     </div>
                 </div>
@@ -252,6 +254,7 @@
                                          onchange="{!c.handleFormInputChanged}"/>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
+                        <!--
                         <lightning:input aura:id="payment_form" 
                                          name="bill_to_address_state" 
                                          label="State" 
@@ -261,6 +264,19 @@
                                          messageWhenPatternMismatch="Please enter a valid state."
                                          messageWhenValueMissing="Please enter a valid state."
                                          onchange="{!c.handleFormInputChanged}"/>
+                        -->
+                        <lightning:select aura:id="payment_form" 
+                                          name="bill_to_address_state" 
+                                          label="State" 
+                                          value="{!v.bill_to_address_state}" 
+                                          required="true"
+                                          messageWhenValueMissing="Please select a State"
+                                          onchange="{!c.handleFormInputChanged}">
+                            <option value="">--select--</option>
+                            <aura:iteration items="{!v.state_options}" var="option" >
+                                <option value="{!option.value}">{!option.label}</option>
+                            </aura:iteration>
+                        </lightning:select>
                     </div>
                     <div class="slds-col slds-size--6-of-12">
 <!--                        <lightning:select aura:id="payment_form" value="{!v.bill_to_address_country}" label="Country" required = "true" >-->
@@ -282,7 +298,7 @@
                                          required="true" 
                                          pattern="^\d{5}(?:[-\s]\d{4})?$" 
                                          value="{!v.bill_to_address_postal_code}" 
-                                         messageWhenPatternMismatch="Please enter a valid zip code."
+                                         messageWhenPatternMismatch="Please enter a valid zip code (XXXXX or XXXXX-XXXX)."
                                          messageWhenValueMissing="Please enter a zip code (XXXXX or XXXXX-XXXX)."
                                          onchange="{!c.handleFormInputChanged}"/>
                     </div>
@@ -298,8 +314,15 @@
                                         disabled="{!not(v.formInputValid)}" />
                     </span>
                     <aura:if isTrue="{!not(v.formInputValid)}">
-                        <div class="slds-align_absolute-center" style="color:rgb(194, 57, 52);">
-                            <a onclick="{!c.validateEntireForm}">Please correct all errors on the page to make a payment</a>
+                        <div class="slds-align_absolute-center error-text">
+                            <p><b>Please correct the following fields:</b></p>
+                        </div>
+                        <div class="slds-align_absolute-center error-text">
+                            <ul style="list-style-type:disc;">
+                                <aura:iteration items="{!v.invalidFields}" var="fld">
+                                    <li>{!fld}</li>
+                                </aura:iteration>
+                            </ul>
                         </div>
                     </aura:if>
                     <aura:set attribute="else">

@@ -51,6 +51,10 @@
         <value xsi:type="xsd:string">PHSS-IC-Community Plus Login</value>
     </values>
     <values>
+        <field>State_Codes__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>UserProvisioningTriggerDebug__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>

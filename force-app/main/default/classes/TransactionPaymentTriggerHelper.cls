@@ -93,7 +93,7 @@ public class TransactionPaymentTriggerHelper
                 
                 for(Fulfillment_Item__c fItem : fulfillmentItemsList)
                 {
-                    fItem.Status__c = 'Complete';
+                    fItem.Status__c = 'Invoiced';   // Changed to invoiced
                     
                     fiToUpdate.add(fItem);
                 }

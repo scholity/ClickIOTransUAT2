@@ -168,16 +168,17 @@
                     <!--Header - Start -->
                     
                     <header class="slds-modal__header">
-                        <button class	= "slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-                                title	= "Close"
-                                onclick = "{!c.cancel}">
-                            
-                            <lightning:icon iconName="utility:close">
-                            </lightning:icon>
-                            
-                            <span class="slds-assistive-text">Close</span>
-                        </button>
-                        
+						<aura:if  isTrue="{!or(v.stepNumber != 'Four', and(v.stepNumber == 'Four', v.paymentComplete == false)) }" >                        
+                            <button class	= "slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    title	= "Close"
+                                    onclick = "{!c.cancelDropOpp}">
+                                
+                                <lightning:icon iconName="utility:close">
+                                </lightning:icon>
+                                
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                        </aura:if>
                         <h2 id		= "header43"
                             class	= "slds-text-heading_medium">
                             Course Record Entry
@@ -954,15 +955,20 @@
                     <!-- Footer - Start -->
                     
                     <footer class="slds-modal__footer slds-grid slds-grid_align-spread progIndicator">
-                        
-                        <div class="slds-col">
-                            <button class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancel}">Cancel</button>
-                        </div>
-                        
+						<aura:if  isTrue="{!or(v.stepNumber != 'Four', and(v.stepNumber == 'Four', v.paymentComplete == false)) }" >                          
+                            <div class="slds-col">
+                                <button class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancelDropOpp}">Cancel</button>
+                            </div>                               
+                        </aura:if> 
+						<aura:if  isTrue="{!and(v.stepNumber == 'Four', v.paymentComplete == true) }" > 
+                            <div class="slds-col">
+                                <button class="slds-button slds-button_neutral" onclick="{!c.cancelDropOpp}" disabled="true" >Cancel</button>                               
+                            </div>                              
+                        </aura:if>                         
                         <div class="slds-col slds-size_2-of-3 " >
-                            <lightning:progressIndicator currentStep="{!v.stepNumber}" type="base"
+                        <lightning:progressIndicator currentStep="{!v.stepNumber}" type="base"
                                                          >
-                                <aura:if isTrue="{!v.stepNumber != 'Four'}">
+                            <aura:if isTrue="{!v.stepNumber != 'Four'}">
                                 <lightning:progressStep label="Step 1"
                                                         value="One"
                                                         onclick="{!c.showStep1}"/>
@@ -978,51 +984,49 @@
 
                                 <lightning:progressStep label="Step 4"
                                                         value="Four"/>
-                               </aura:if>
+                            </aura:if>
 
                                 <!--
                                 <aura:if isTrue="{!!v.DisplayPaymentInfo}">
                                 <lightning:progressStep label="Step 3"
                                                         value="Four"/>
                                 </aura:if>-->
-                            </lightning:progressIndicator>
+                        </lightning:progressIndicator>
                         </div> 
                         
                         <aura:if isTrue="{!v.stepNumber == 'Four'}">
                             <div class="slds-col">
-                                 <aura:if  isTrue="{!and(v.stepNumber == 'Four', v.paymentComplete == false) }" >
-                                <button class="slds-button slds-button_neutral"
-                                        onclick="{!c.cancel}" disabled="true" >
-                                    Submit
-                                </button>
-                                     <aura:set attribute="else">
+                                <aura:if  isTrue="{!and(v.stepNumber == 'Four', v.paymentComplete == false) }" >
+                                    <button class="slds-button slds-button_neutral"
+                                            onclick="{!c.cancel}" disabled="true" >
+                                        Submit
+                                    </button>
+                                    <aura:set attribute="else">
                                         <button class="slds-button slds-button_neutral customButton"
                                                 onclick="{!c.cancel}" >
                                             Submit
                                         </button>
-                                          </aura:set>
-                            </aura:if>
-                            </div>
-                         
+                                    </aura:set>                                    
+                                </aura:if>  
+                            </div>                                 
                             
                             <aura:set attribute="else">                        
                                 
-                                <div class="slds-col">
+                                 <div class="slds-col">
                                   <aura:if isTrue="{!and(v.stepNumber == 'Three', v.tncCheck == false)}" >
-                                        <button class="slds-button slds-button_neutral"
-                                                onclick="{!c.onclickNext}" disabled="true">
-                                            Next
-                                        </button>
-                                       <aura:set attribute="else">
-                                          <button class="slds-button slds-button_neutral customButton"
-                                                onclick="{!c.onclickNext}" >
-                                            Next
-                                        </button>
-                                       </aura:set>
-
-                                    </aura:if>
+                                      <button class="slds-button slds-button_neutral"
+                                               onclick="{!c.onclickNext}" disabled="true">
+                                           Next
+                                      </button>
+                                      <aura:set attribute="else">
+                                              <button class="slds-button slds-button_neutral customButton"
+                                                    onclick="{!c.onclickNext}" >
+                                                Next
+                                              </button>
+                                      </aura:set>
+                                  </aura:if>
                                            
-                                </div>
+                                 </div>
                             </aura:set>
                         </aura:if>
                         

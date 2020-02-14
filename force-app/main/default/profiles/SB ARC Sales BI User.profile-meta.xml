@@ -5103,6 +5103,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>CCS_Batch_Class__c.Offering_Id_Batch_Class__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>CCS_Batch_Class__c.PO_Number__c</field>
         <readable>false</readable>
@@ -5158,6 +5163,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>CCS_Batch_Instructor__c.Offering_Id_Batch_Instructor__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>CCS_Batch_Participant__c.Batch_Class__c</field>
         <readable>false</readable>
@@ -5186,6 +5196,11 @@
         <editable>false</editable>
         <field>CCS_Batch_Participant__c.Mastery_Status__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>CCS_Batch_Participant__c.Offering_Id_Batch_Participant__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -8919,12 +8934,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Dedicated_Internal_Salesforce_Helpdesk__c.Additional_Contact_to_be_Merged__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Dedicated_Internal_Salesforce_Helpdesk__c.Approved_in_UAT__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Dedicated_Internal_Salesforce_Helpdesk__c.Configuration_Request_Type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Dedicated_Internal_Salesforce_Helpdesk__c.Contact_to_be_Merged__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -8956,6 +8981,11 @@
         <editable>false</editable>
         <field>Dedicated_Internal_Salesforce_Helpdesk__c.Lightning_related__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Dedicated_Internal_Salesforce_Helpdesk__c.Merge_fields_to_be_aware_of__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -8994,12 +9024,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Dedicated_Internal_Salesforce_Helpdesk__c.Primary_Contact__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Dedicated_Internal_Salesforce_Helpdesk__c.Priority__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Dedicated_Internal_Salesforce_Helpdesk__c.RCLC_Issue__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Dedicated_Internal_Salesforce_Helpdesk__c.Related_Case__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -9036,6 +9076,11 @@
         <editable>true</editable>
         <field>Dedicated_Internal_Salesforce_Helpdesk__c.Time_Zone__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Dedicated_Internal_Salesforce_Helpdesk__c.Triage_Category__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -11825,6 +11870,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>PHSS_Custom_Metadata__mdt.ProfileName__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>PHSS_Custom_Metadata__mdt.State_Codes__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -15119,6 +15169,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Voucher__c.Username__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Voucher__c.Voucher_Claim__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -15521,6 +15576,10 @@
     <layoutAssignments>
         <layout>Dedicated_Internal_Salesforce_Helpdesk__c-Configuration Request</layout>
         <recordType>Dedicated_Internal_Salesforce_Helpdesk__c.Configuration_Request</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Dedicated_Internal_Salesforce_Helpdesk__c-Contact Merge</layout>
+        <recordType>Dedicated_Internal_Salesforce_Helpdesk__c.Contact_Merge_Requests</recordType>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Dedicated_Internal_Salesforce_Helpdesk__c-New User Request</layout>
@@ -17599,6 +17658,11 @@
     <recordTypeVisibilities>
         <default>false</default>
         <recordType>Dedicated_Internal_Salesforce_Helpdesk__c.Configuration_Request</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Dedicated_Internal_Salesforce_Helpdesk__c.Contact_Merge_Requests</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>

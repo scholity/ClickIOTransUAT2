@@ -91,7 +91,15 @@
             //remove all special chars
             let billToPhone = (cybersourceHostedFormData.phone ? cybersourceHostedFormData.phone.replace(/\D+/g, "") : cybersourceHostedFormData.phone);
             component.set('v.bill_to_phone', billToPhone);
-
+            
+            console.log("@@@cybersourceHostedFormData.stateCodes:", cybersourceHostedFormData.stateCodes);
+            if(cybersourceHostedFormData.stateCodes){
+                var stateCodes = [];
+                for(let code in cybersourceHostedFormData.stateCodes){
+                    stateCodes.push({label: code, value: code});
+                }
+                component.set("v.state_options", stateCodes);
+            }
             // Creating key-value pairs to be used in lightning:select.
             var paymentTypesList = [];
             var paymentTypesMap = cybersourceHostedFormData.paymentTypes;
@@ -245,22 +253,38 @@
     },
 
     validateFormData : function (component, finalValidation) {
+        var invalidFields = [];
         finalValidation = finalValidation == null ? false : finalValidation;
         var isValid = component.find('payment_form').reduce(
             function (validSoFar, inputCmp) {
                 let inputValue = inputCmp.get("v.value");
                 let alwaysValidate = $A.util.hasClass(inputCmp, "always-validate");
                 if(finalValidation || alwaysValidate || (inputValue && inputValue.trim().length > 0) ){
-                    inputCmp.reportValidity();
+                    try{
+                        inputCmp.reportValidity();
+                    }
+                    catch(err){
+                        console.log("reportValidity error:", err);
+                    }
+                    try{
+                        inputCmp.checkValidity();
+                    }
+                    catch(err){
+                        console.log("checkValidity error:", err);
+                    }
                     inputCmp.showHelpMessageIfInvalid();
                 }
-                let isValid = inputCmp.get('v.validity').valid;
-                return validSoFar && isValid;
+                let inputValid = inputCmp.get("v.validity").valid;
+                if(!inputValid){
+                    invalidFields.push( inputCmp.get("v.label") );
+                }
+                return validSoFar && inputValid;
             }, 
             true //default function value
         );
         console.log("validateFormData isValid:", isValid);
         component.set("v.formInputValid", isValid);
+        component.set("v.invalidFields", invalidFields);
         return isValid;
     }
 })

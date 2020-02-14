@@ -73,7 +73,7 @@ public without sharing class PHSS_ClassListInstructorViewController {
             query += ' AND redwing__Instructor__c = :instructorId ';    
         }
         else {
-            query += ' AND redwing__Instructor__c = \'' + UserInfo.getUserId() + '\'';
+            //query += ' AND redwing__Instructor__c = \'' + UserInfo.getUserId() + '\'';
         }
         
         if(isHistory){
@@ -86,7 +86,7 @@ public without sharing class PHSS_ClassListInstructorViewController {
         if(Integer.valueOf(limitOffset) != 0){
             query +=  'LIMIT :limitOffset OFFSET :offset';
         }
-        System.debug('query - ' + query);
+        System.debug('>> query - ' + query);
         List<redwing__ILT_Instructor__c> instructors = Database.query(query);
         
         System.debug('>> instructors - ' + instructors);
@@ -214,7 +214,7 @@ classWrapperList.add(tempClassWrap);*/
         @AuraEnabled public Integer numberOfStudents;
         
         public ClassWrapper(redwing__ILT_Instructor__c instructor, redwing__Training_Plan__c plan, locationWrapper currentLocation, String classStatus, Integer duration, Integer numberOfStudents){
-            system.debug(instructor.redwing__ILT_Class__r.redwing__Start_Date__c + 'Start Date');
+            system.debug('>>'+instructor.redwing__ILT_Class__r.redwing__Start_Date__c + 'Start Date');
             this.classId      = instructor.redwing__ILT_Class__c;
             this.classOfferingId = instructor.redwing__ILT_Class__r.Offering_Id__c;
             this.className    = instructor.redwing__ILT_Class__r.Name;

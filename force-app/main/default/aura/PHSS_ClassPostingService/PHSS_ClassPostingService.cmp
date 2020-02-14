@@ -1,6 +1,6 @@
 <aura:component implements = "force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:lightningQuickAction,flexipage:availableForRecordHome,force:hasSObjectName" access="global"
                 controller = "PHSS_CpsController">
-	
+	<lightning:navigation aura:id="navService"/>
     <aura:handler   name = "init" value="{!this}" action = "{!c.doInit}" /> 
     <aura:handler   name="incrementProductCount"  event="c:phss_cc_ProductCountUpdateClone" action="{!c.productCountIncrement}"/>
     <aura:attribute name = "CCProductId"		  type = "String"  	default = ""/>
@@ -39,6 +39,7 @@
     <aura:attribute name = "zoneError"      type = "Boolean"    default = "false"/>
     <aura:attribute name = "scheduleError"  type = "Boolean"    default = "false"/>
     <aura:attribute name = "productChange"  type = "Boolean"    default = "false"/>
+    <aura:attribute name = "geoCodeLookup"  type = "Boolean"    default = "false"/>
     
     <aura:attribute name = "oppIdParent" 	type = "String" 	default = ""/>
     <aura:attribute name = "displayPaymentInfo" type = "Boolean" default="true"/>
@@ -97,6 +98,10 @@
                         Red Cross Class Posting Request
                     </h2>
                     <br/>
+                    <!--
+                    <div align="right"><lightning:button variant="neutral" label="View Posted Offerings" onclick="{!c.callDashboard}"/></div>
+                    <br/>
+					-->
                     <!-- <div align="center" style="font-size:1.75em;color:red;"><b>DO NOT USE! Coming Soon, CPS will be available beginning December 10th</b></div> -->
                     <aura:renderIf isTrue="{!v.showError}">
                         <div class="errMsg">
@@ -354,7 +359,7 @@
                                              aura:id  = "field"/>
                         </div>
 
-                        <div class = "slds-size_3-of-6 slds-p-top_small">
+                        <div onchange="{!c.onAddressChange}" class = "slds-size_3-of-6 slds-p-top_small">
                             <lightning:input value	  = "{!v.cpsWrap.address1}"
                                              label 	  = "Address 1"
                                              required = "true" 
@@ -362,21 +367,21 @@
                                              autocomplete = "off"
                                              aura:id  = "field"/>
                         </div>
-                        <div class = "slds-size_3-of-6 slds-p-top_small">
+                        <div onchange="{!c.onAddressChange}" class = "slds-size_3-of-6 slds-p-top_small">
                             <lightning:input value	  = "{!v.cpsWrap.address2}"
                                              label 	  = "Address 2"
                                              type	  = "text"
                                              autocomplete = "off"
                                              aura:id  = "field"/>
                         </div>
-                        <div class = "slds-size_3-of-6 slds-p-top_small">
+                        <div onchange="{!c.onAddressChange}" class = "slds-size_3-of-6 slds-p-top_small">
                             <lightning:input value	  = "{!v.cpsWrap.city}"
                                              label 	  = "City"
                                              required = "true" 
                                              autocomplete = "off"
                                              aura:id  = "field"/>
                         </div>
-                        <div class = "slds-size_3-of-6 slds-p-top_small">
+                        <div onchange="{!c.onAddressChange}" class = "slds-size_3-of-6 slds-p-top_small">
                             <lightning:input value	  = "{!v.cpsWrap.state}"
                                              label 	  = "State"
                                              required = "true" 
@@ -399,14 +404,14 @@
                                              label 	  = "geoLat"
                                              name	  = "geoLat"
                                              required = "true" 
-                                             aura:id  = "field"
+                                             aura:id  = "geofield"
                                              messageWhenPatternMismatch = "Please enter a valid Zip code"/>
                             <input type="hidden" id="geoCodeLng" name="geoCodeLng" value=""/>
                             <lightning:input value	  = "{!v.cpsWrap.geoLng}"
                                              label 	  = "geoLng"
                                              name	  = "geoLng"
                                              required = "true"
-                                             aura:id  = "field"
+                                             aura:id  = "geofield"
                                              messageWhenPatternMismatch = "Please enter a valid Zip code"/>
                         </div>
                         <div id="Accspinner" class="demo-only" style="height: 6rem;z-index:100;display:none">
@@ -719,12 +724,22 @@
                             <aura:if  isTrue="{!v.paymentComplete == false }" >
                                 <button class="slds-button slds-button_neutral"
                                         onclick="{!c.cancel}" disabled="true" >
-                                    Submit
+                                        <aura:if isTrue="{!v.offeringId > 1 }" >
+                                            Create Offerings
+                                        <aura:set attribute="else">
+                                            Create Offering
+                                        </aura:set>    
+                                        </aura:if>
                                 </button>
                                 <aura:set attribute="else">
                                     <button class="slds-button slds-button_neutral customButton"
                                             onclick="{!c.createClass}" >
-                                        Submit
+                                            <aura:if isTrue="{!v.offeringId > 1 }" >
+                                                Click to post classes
+                                            <aura:set attribute="else">
+                                                Click to post class
+                                            </aura:set>    
+                                            </aura:if>
                                     </button>
                                 </aura:set>
                             </aura:if>

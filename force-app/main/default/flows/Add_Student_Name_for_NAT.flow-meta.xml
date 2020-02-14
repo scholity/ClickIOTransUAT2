@@ -3,8 +3,8 @@
     <assignments>
         <name>Add_FFI_to_Output</name>
         <label>Add FFI to Output</label>
-        <locationX>785</locationX>
-        <locationY>342</locationY>
+        <locationX>841</locationX>
+        <locationY>426</locationY>
         <assignmentItems>
             <assignToReference>outFulfillmentItem</assignToReference>
             <operator>Add</operator>
@@ -19,8 +19,8 @@
     <assignments>
         <name>Add_Supplemental_Information_to_Fulfillment_Item</name>
         <label>Add Supplemental Information to Fulfillment Item</label>
-        <locationX>895</locationX>
-        <locationY>229</locationY>
+        <locationX>726</locationX>
+        <locationY>342</locationY>
         <assignmentItems>
             <assignToReference>sFulfillmentItem.Supplemental_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -35,8 +35,8 @@
     <assignments>
         <name>Assign_OOI_to_Output</name>
         <label>Assign OOI to Output</label>
-        <locationX>558</locationX>
-        <locationY>337</locationY>
+        <locationX>518</locationX>
+        <locationY>376</locationY>
         <assignmentItems>
             <assignToReference>outOrderItem</assignToReference>
             <operator>Add</operator>
@@ -51,8 +51,8 @@
     <assignments>
         <name>No_Fulfillment_Item</name>
         <label>No Fulfillment Item</label>
-        <locationX>305</locationX>
-        <locationY>245</locationY>
+        <locationX>300</locationX>
+        <locationY>262</locationY>
         <assignmentItems>
             <assignToReference>vNoFulfillmentItem</assignToReference>
             <operator>Assign</operator>
@@ -61,14 +61,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Not_Found</targetReference>
+            <targetReference>Supplemental_Information_Entry</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Update_Supplemental_Information</name>
         <label>Update Supplemental Information</label>
-        <locationX>672</locationX>
-        <locationY>223</locationY>
+        <locationX>608</locationX>
+        <locationY>244</locationY>
         <assignmentItems>
             <assignToReference>sOrderItem.Supplemental_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -83,8 +83,8 @@
     <decisions>
         <name>Found_Order</name>
         <label>Order Item Status</label>
-        <locationX>294</locationX>
-        <locationY>63</locationY>
+        <locationX>273</locationX>
+        <locationY>62</locationY>
         <defaultConnector>
             <targetReference>No_Fulfillment_Item</targetReference>
         </defaultConnector>
@@ -105,13 +105,38 @@
             <label>Notfound</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Had_Fulfillment_Items</name>
+        <label>Had Fulfillment Items</label>
+        <locationX>848</locationX>
+        <locationY>71</locationY>
+        <defaultConnector>
+            <targetReference>Update_Fulfillment_Items_Loop</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>No_Fulfillment_Items</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>vNoFulfillmentItem</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_Message</targetReference>
+            </connector>
+            <label>No Fulfillment Items</label>
+        </rules>
+    </decisions>
     <interviewLabel>Add Student Name for NAT {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Add Student Name for NAT</label>
     <loops>
         <name>Update_Fulfillment_Items_Loop</name>
         <label>Update Fulfillment Items Loop</label>
-        <locationX>782</locationX>
-        <locationY>53</locationY>
+        <locationX>836</locationX>
+        <locationY>219</locationY>
         <assignNextValueToReference>sFulfillmentItem</assignNextValueToReference>
         <collectionReference>colFulfillmentItem</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -119,14 +144,14 @@
             <targetReference>Add_Supplemental_Information_to_Fulfillment_Item</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
-            <targetReference>Update_Order_Item</targetReference>
+            <targetReference>Update_Fulfillment_Item</targetReference>
         </noMoreValuesConnector>
     </loops>
     <loops>
         <name>Update_Order_Items_Loop</name>
         <label>Update Order Items Loop</label>
-        <locationX>558</locationX>
-        <locationY>54</locationY>
+        <locationX>518</locationX>
+        <locationY>69</locationY>
         <assignNextValueToReference>sOrderItem</assignNextValueToReference>
         <collectionReference>colOrderItems</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -134,7 +159,7 @@
             <targetReference>Update_Supplemental_Information</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
-            <targetReference>Update_Fulfillment_Items_Loop</targetReference>
+            <targetReference>Update_Order_Item</targetReference>
         </noMoreValuesConnector>
     </loops>
     <processMetadataValues>
@@ -154,7 +179,7 @@
         <name>Get_Fulfillment_Item</name>
         <label>Get Fulfillment Item</label>
         <locationX>167</locationX>
-        <locationY>60</locationY>
+        <locationY>61</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Found_Order</targetReference>
@@ -198,7 +223,7 @@
         <name>Get_Order_Item</name>
         <label>Get Order Item</label>
         <locationX>93</locationX>
-        <locationY>218</locationY>
+        <locationY>215</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Fulfillment_Item</targetReference>
@@ -219,8 +244,8 @@
     <recordUpdates>
         <name>Update_Fulfillment_Item</name>
         <label>Update Fulfillment Item</label>
-        <locationX>1165</locationX>
-        <locationY>37</locationY>
+        <locationX>975</locationX>
+        <locationY>274</locationY>
         <connector>
             <targetReference>Error_Message</targetReference>
         </connector>
@@ -229,10 +254,10 @@
     <recordUpdates>
         <name>Update_Order_Item</name>
         <label>Update Order Item</label>
-        <locationX>1044</locationX>
-        <locationY>38</locationY>
+        <locationX>709</locationX>
+        <locationY>69</locationY>
         <connector>
-            <targetReference>Update_Fulfillment_Item</targetReference>
+            <targetReference>Had_Fulfillment_Items</targetReference>
         </connector>
         <inputReference>outOrderItem</inputReference>
     </recordUpdates>
@@ -253,27 +278,10 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <description>ERROR: NAT Items not on the order or Order is not in a state that can be edited.</description>
-        <name>Not_Found</name>
-        <label>Not Found</label>
-        <locationX>305</locationX>
-        <locationY>411</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>NoNATFulfillment</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;ERROR&lt;/b&gt;: NAT Items not on the order or Order is not in a state that can be edited.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Supplemental_Information_Entry</name>
         <label>Supplemental Information Entry</label>
-        <locationX>433</locationX>
-        <locationY>55</locationY>
+        <locationX>415</locationX>
+        <locationY>70</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>

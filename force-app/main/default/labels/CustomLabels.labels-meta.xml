@@ -511,11 +511,8 @@ Send an email to each Learner with a self-registration Voucher URL. Include the 
         <protected>false</protected>
         <shortDescription>PHSS_LoginContent</shortDescription>
         <value>&lt;html&gt;
-&lt;b&gt;If you have received a voucher to take an online course, select the Claim Voucher button in order to enter your voucher number and gain access to the Learner&#39;s Community.&lt;br/&gt;&lt;br&gt;
-&lt;u&gt;&lt;a href=&quot;{0}&quot;&gt;Red Cross Employees (whose primary role is not as an instructor), click here to login&lt;/a&gt;&lt;/b&gt;&lt;/u&gt;&lt;br/&gt;&lt;br/&gt;
-The Community is supported by Apple® Safari® 10.x on Mac OS, Microsoft® Edge for Windows® 10, Mozilla® Firefox® and Google Chrome™.&lt;br/&gt;&lt;br/&gt;
-&lt;b&gt;&lt;a href=&quot;{1}&quot;&gt;Forgot your password? Click here.&lt;/a&gt;&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;
-&lt;b&gt;Forgot your username?&lt;/b&gt; Try your email address. If this does not work, click on &lt;b&gt;&lt;a href=&quot;{2}&quot;&gt;Learning Center&lt;/a&gt;&lt;/b&gt; and then click on &quot;Forgot Username&quot;. Enter your email address and you will receive an email with your username. If you receive an error message that your email address does not exist in the system, please call the Training Support Center at 1-800-Red Cross and select the option for Training and Certification.
+&lt;b&gt;If you have received a voucher to take an online course, select the Claim Voucher button in order to enter your voucher number and gain access to the Red Cross Learning Center&lt;br/&gt;&lt;br&gt;
+The Red Cross Learning Center is supported by Microsoft® Edge for Windows® 10 and above, and Mozilla® Firefox® and Google Chrome™ for both Apple® Mac OS, and Microsoft ®&lt;br/&gt;
 &lt;/html&gt;</value>
     </labels>
     <labels>

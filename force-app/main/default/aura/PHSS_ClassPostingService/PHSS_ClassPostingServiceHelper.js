@@ -103,6 +103,7 @@
         component.set("v.zoneError",false);
         component.set("v.scheduleError",false);
         component.set("v.showError",false);
+        component.set("v.geoCodeLookup",false);
         component.set("v.errorMessage","");
         
         // Course validation
@@ -199,6 +200,15 @@
             var errMsg = "You can only have a \'URL for registration\' or \'Phone for registration\' not both.";
             component.set("v.errorMessage",errMsg);
             component.set("v.isUrlValid",false)
+        }
+        
+        //Geo Code Validation
+        if(component.get("v.allValid") && !component.get("v.cpsWrap").geoLat && !component.get("v.cpsWrap").geoLng){
+            component.set("v.showError","true");
+            component.set("v.geoCodeLookup","true");
+            component.set("v.cpsWrap.zip","");
+            var errMsg = "Please Re-enter your Facilities Zip Code.";
+            component.set("v.errorMessage",errMsg);
         }
         
         component.set("v.cpsWrap.OfferingInformation.selectedAccount",component.get("v.selectedLookUpRecord1"));
@@ -512,7 +522,7 @@
                         document.getElementById('geoCodeLng').value = lng;
 						console.log("Lat: " + document.getElementById('geoCodeLat').value + " Lng: " + document.getElementById('geoCodeLng').value);
                         //console.log("Returned GEO Codes Lat: " + component.get("v.geoLat") + " Long:" + component.get("v.geoLong") );
-						this.updateGeoLatLong(component,event,helper);
+						//this.updateGeoLatLong(component,event,helper);
                     }
 
 		        }
@@ -552,7 +562,8 @@
     },
     updateGeoLatLong : function (component, event, helper) {
     		component.set("v.cpsWrap.geoLat", document.getElementById('geoCodeLat').value);
-            component.set("v.cpsWrap.geoLng", document.getElementById('geoCodeLng').value);              
+            component.set("v.cpsWrap.geoLng", document.getElementById('geoCodeLng').value);
+        	//alert("Lat: " + component.get("v.cpsWrap.geoLat") + " Lng: " + component.get("v.cpsWrap.geoLng"));
     },
     createIltLocation : function(component) {
 

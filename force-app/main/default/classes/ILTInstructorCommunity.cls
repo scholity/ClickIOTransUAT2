@@ -1835,7 +1835,8 @@ public without sharing class ILTInstructorCommunity{
                 System.debug('*** newUserHandle:'+newUserHandle);
                 System.debug('*** newUserDomain:'+newUserDomain);
                 
-                Pattern handleSuffixPattern = Pattern.compile('^(.*?)([0-9]*)(\\@.*)');
+                //Pattern handleSuffixPattern = Pattern.compile('^(.*?)([0-9]*)(\\@.*)');
+                Pattern handleSuffixPattern = Pattern.compile('^(\\Q'+newUserHandle+'\\E)([0-9]*)(\\@.*)');
                 for (String theUserName : userNameEmailMap.keySet()) {
                     Matcher handleSuffixMatcher = handleSuffixPattern.matcher(theUserName);
                     if (handleSuffixMatcher.matches() && handleSuffixMatcher.groupCount() >= 3) {
@@ -2626,7 +2627,18 @@ public without sharing class ILTInstructorCommunity{
         }
         return o.Id;
     }
-    
+
+
+    @AuraEnabled
+    public static void deleteOpportunity(String opptyId) {
+
+        if(opptyId !=null && opptyId !=''){
+            delete [select Id from ccrz__E_Cart__c where Opportunity__c=:opptyId];
+            delete [select id from opportunity where id =:opptyId];
+        }
+        return;
+    }
+
     @AuraEnabled
     public static ccrz__E_Product__c getLearningPlanId(String ccProdId) {
         

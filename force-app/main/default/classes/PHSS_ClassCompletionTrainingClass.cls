@@ -2,22 +2,23 @@
  * Created by jbarker on 2019-12-16.
  */
 
-public with sharing class PHSS_ClassCompletionTrainingClass {
+public with sharing class PHSS_ClassCompletionTrainingClass
+{
 
-    private static final String EVENT_SECTION_KEY = 'eventSection';
-    private static final String EVENT_LEARNING_KEY = 'eventLearning';
+    private static final String EVENT_SECTION_KEY                   = 'eventSection';
+    private static final String EVENT_LEARNING_KEY                  = 'eventLearning';
 
-    private static final String ILT_CLASS_RECORD_TYPE_NAME = 'ILT Class';
-    private static final String ILT_EVENT_RECORD_TYPE_NAME = 'ILT Event';
+    private static final String ILT_CLASS_RECORD_TYPE_NAME          = 'ILT Class';
+    private static final String ILT_EVENT_RECORD_TYPE_NAME          = 'ILT Event';
 
-    private static final String FAILED_TO_CREATE_EVENT_CLASS = 'Failed to create event class.';
-    private static final String FAILED_TO_CREATE_LEARNING = 'Failed to create learning.';
-    private static final String FAILED_TO_CREATE_LEARNING_VERSION = 'Failed to create learning version.';
-    private static final String FAILED_TO_CREATE_TRAINING_CLASS = 'Failed to create training class.';
-    private static final String FAILED_TO_CREATE_TRAINING_SESSION = 'Failed to create training session.';
+    private static final String FAILED_TO_CREATE_EVENT_CLASS        = 'Failed to create event class.';
+    private static final String FAILED_TO_CREATE_LEARNING           = 'Failed to create learning.';
+    private static final String FAILED_TO_CREATE_LEARNING_VERSION   = 'Failed to create learning version.';
+    private static final String FAILED_TO_CREATE_TRAINING_CLASS     = 'Failed to create training class.';
+    private static final String FAILED_TO_CREATE_TRAINING_SESSION   = 'Failed to create training session.';
     private static final String FAILED_TO_FETCH_EVENT_SECTION_ITEMS = 'Failed to fetch event section items.';
-    private static final String FAILED_TO_FETCH_TRAINING_PLAN = 'Failed to fetch training plan.';
-    private static final String FAILED_TO_GET_LOCATION = 'Failed to get location.';
+    private static final String FAILED_TO_FETCH_TRAINING_PLAN       = 'Failed to fetch training plan.';
+    private static final String FAILED_TO_GET_LOCATION              = 'Failed to get location.';
 
 
     /**
@@ -27,23 +28,25 @@ public with sharing class PHSS_ClassCompletionTrainingClass {
      *
      * @return
      */
-    public static redwing__ILT_Class__c create(CCS_Batch_Class__c batchClass) {
+    public static redwing__ILT_Class__c create(CCS_Batch_Class__c batchClass)
+    {
 
         redwing__ILT_Class__c trainingClass;
 
-        try {
-            ccrz__E_Product__c product = phss_cc_ProductUtil.fetchProductForSKU(batchClass.Course_Code__c);
-            redwing__Training_Plan__c trainingPlan = fetchTrainingPlan(product.LMS_Learning_Plan__c);
-            redwing__Learning__c learning = createLearning(trainingPlan.Name);
+        try
+        {
+            ccrz__E_Product__c product              = phss_cc_ProductUtil.fetchProductForSKU(batchClass.Course_Code__c);
+            redwing__Training_Plan__c trainingPlan  = fetchTrainingPlan(product.LMS_Learning_Plan__c);
+            redwing__Learning__c learning           = createLearning(trainingPlan.Name);
 
-            Map<String, Object> sectionItems = fetchTrainingEventSectionItems(product.LMS_Learning_Plan__c);
-            Id eventLearningPlanSectionId = (Id) sectionItems.get(EVENT_SECTION_KEY);
-            Id eventLearningId = (Id) sectionItems.get(EVENT_LEARNING_KEY);
+            Map<String, Object> sectionItems        = fetchTrainingEventSectionItems(product.LMS_Learning_Plan__c);
+            Id eventLearningPlanSectionId           = (Id) sectionItems.get(EVENT_SECTION_KEY);
+            Id eventLearningId                      = (Id) sectionItems.get(EVENT_LEARNING_KEY);
 
-            redwing__ILT_Event_Class__c eventClass = createEventClass(eventLearningId, learning.Id);
-            redwing__ILT_Location__c location = getLocationForBatchClass(batchClass);
+            redwing__ILT_Event_Class__c eventClass  = createEventClass(eventLearningId, learning.Id);
+            redwing__ILT_Location__c location       = getLocationForBatchClass(batchClass);
 
-            trainingClass = new redwing__ILT_Class__c();
+            trainingClass                           = new redwing__ILT_Class__c();
             trainingClass.Skedulo_Account__c        = Id.valueOf(batchClass.Account__c);
             trainingClass.redwing__Start_Date__c    = batchClass.Course_Start_Date__c;
             trainingClass.redwing__End_Date__c      = batchClass.Course_End_Date__c;
@@ -70,7 +73,9 @@ public with sharing class PHSS_ClassCompletionTrainingClass {
             redwing__ILT_Session__c trainingSession = createTrainingSession(trainingClass);
             redwing__Learning_Version__c version = createLearningVersion(learning, trainingClass);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new phss_cc_Exception(FAILED_TO_CREATE_TRAINING_CLASS, e);
         }
 
@@ -86,33 +91,37 @@ public with sharing class PHSS_ClassCompletionTrainingClass {
      *
      * @return
      */
-    private static redwing__ILT_Event_Class__c createEventClass(Id eventLearningId, Id learningId) {
+    private static redwing__ILT_Event_Class__c createEventClass(Id eventLearningId, Id learningId)
+    {
 
         redwing__ILT_Event_Class__c eventClass;
 
-        try {
+        try
+        {
             redwing__ILT_Event__c event;
-            List<redwing__ILT_Event__c> events = [
-                    SELECT
-                            Id,
-                            redwing__Learning__c
-                    FROM
-                            redwing__ILT_Event__c
-                    WHERE
-                            redwing__Learning__c =: eventLearningId
-            ];
-            if (events != null && events.size() > 0) {
+            
+            List<redwing__ILT_Event__c> events = [SELECT Id, 
+                                                         redwing__Learning__c
+                                                    FROM redwing__ILT_Event__c
+                                                   WHERE redwing__Learning__c =: eventLearningId];
+
+            if (events != null && events.size() > 0)
+            {
                 event = events[0];
             }
 
-            if (event != null) {
-                eventClass = new redwing__ILT_Event_Class__c();
+            if (event != null)
+            {
+                eventClass                       = new redwing__ILT_Event_Class__c();
                 eventClass.redwing__ILT_Event__c = event.Id;
-                eventClass.redwing__Learning__c = learningId;
+                eventClass.redwing__Learning__c  = learningId;
+
                 insert eventClass;
             }
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new phss_cc_Exception(FAILED_TO_CREATE_EVENT_CLASS, e);
         }
 
@@ -127,11 +136,13 @@ public with sharing class PHSS_ClassCompletionTrainingClass {
      *
      * @return
      */
-    private static redwing__Learning__c createLearning(String name) {
+    private static redwing__Learning__c createLearning(String name)
+    {
 
         redwing__Learning__c learning;
 
-        try {
+        try
+        {
             Id recordTypeId = Schema.SObjectType.redwing__Learning__c.getRecordTypeInfosByName().get(ILT_CLASS_RECORD_TYPE_NAME).getRecordTypeId();
 
             learning = new redwing__Learning__c(
@@ -299,32 +310,30 @@ public with sharing class PHSS_ClassCompletionTrainingClass {
      *
      * @return
      */
-    private static redwing__ILT_Location__c getLocationForBatchClass(CCS_Batch_Class__c batchClass) {
-
+    private static redwing__ILT_Location__c getLocationForBatchClass(CCS_Batch_Class__c batchClass)
+    {
         redwing__ILT_Location__c trainingLocation;
 
         try {
             Id accountId = Id.valueOf(batchClass.Account__c);
-            List<redwing__ILT_Location__c> locations = [
-                    SELECT
-                            Id,
-                            Name,
-                            redwing__Address_1__c,
-                            redwing__Address_2__c,
-                            redwing__Postal_Code__c,
-                            redwing__State__c,
-                            redwing__City__c
-                    FROM
-                            redwing__ILT_Location__c
-                    WHERE
-                            Account__c = :accountId
-            ];
-            if (locations != null && locations.size() > 0) {
-                for (redwing__ILT_Location__c location : locations) {
-                    if (location.redwing__Address_1__c == batchClass.Training_Site_Address__c
-                            && location.redwing__Address_2__c == null       // This field is not set for batch classes. It should be null.
-                            && location.redwing__City__c == batchClass.Training_Site_City__c
-                            && location.redwing__State__c == batchClass.Training_Site_State__c
+            List<redwing__ILT_Location__c> locations = [ SELECT Id,
+                                                                Name,
+                                                                redwing__Address_1__c,
+                                                                redwing__Address_2__c,
+                                                                redwing__Postal_Code__c,
+                                                                redwing__State__c,
+                                                                redwing__City__c
+                                                           FROM redwing__ILT_Location__c
+                                                          WHERE Account__c = :accountId];
+            
+            if (locations != null && locations.size() > 0)
+            {
+                for (redwing__ILT_Location__c location : locations)
+                {
+                    if (location.redwing__Address_1__c          == batchClass.Training_Site_Address__c
+                            && location.redwing__Address_2__c   == null                                     // This field is not set for batch classes. It should be null.
+                            && location.redwing__City__c        == batchClass.Training_Site_City__c
+                            && location.redwing__State__c       == batchClass.Training_Site_State__c
                             && location.redwing__Postal_Code__c == batchClass.Training_Site_Zip_Code__c)
                     {
                         trainingLocation = location;
@@ -333,20 +342,24 @@ public with sharing class PHSS_ClassCompletionTrainingClass {
                 }
             }
 
-            if (trainingLocation == null) {
-                trainingLocation = new redwing__ILT_Location__c();
-                trainingLocation.Account__c = accountId;
-                trainingLocation.Name = batchClass.Training_Site_Name__c;
-                trainingLocation.redwing__Address_1__c = batchClass.Training_Site_Address__c;
-                trainingLocation.redwing__Street__c = batchClass.Training_Site_Address__c;
-                trainingLocation.redwing__City__c = batchClass.Training_Site_City__c;
-                trainingLocation.redwing__State__c = batchClass.Training_Site_State__c;
-                trainingLocation.redwing__Postal_Code__c = batchClass.Training_Site_Zip_Code__c;
+            if (trainingLocation == null)
+            {
+                trainingLocation                            = new redwing__ILT_Location__c();
+                trainingLocation.Account__c                 = accountId;
+                trainingLocation.Name                       = batchClass.Training_Site_Name__c;
+                trainingLocation.redwing__Address_1__c      = batchClass.Training_Site_Address__c;
+                trainingLocation.redwing__Street__c         = batchClass.Training_Site_Address__c;
+                trainingLocation.redwing__City__c           = batchClass.Training_Site_City__c;
+                trainingLocation.redwing__State__c          = batchClass.Training_Site_State__c;
+                trainingLocation.redwing__Postal_Code__c    = batchClass.Training_Site_Zip_Code__c;
 
                 insert trainingLocation;
             }
 
-        } catch (Exception e) {
+        }
+
+        catch (Exception e)
+        {
             throw new phss_cc_Exception(FAILED_TO_GET_LOCATION, e);
         }
 
