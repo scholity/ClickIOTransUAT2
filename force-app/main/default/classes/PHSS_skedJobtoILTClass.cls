@@ -1302,15 +1302,17 @@ public without sharing class PHSS_skedJobtoILTClass {
                         if (orderItemSet != null && !orderItemSet.isEmpty()) {
                             Id theOrderId;
                             for (ccrz__E_OrderItem__c oi : orderItemSet) {
-                                if (oi.ILT_Class__c == null) {
+                                // DE2237 - Class Id needs to be updated in order item record in special circumstances
+                                // such as when one class is replaced by another
+                                //if (oi.ILT_Class__c == null) {
                                     oi.ILT_Class__c = clsRecord.Id;
                                     lstOrderItems.add(oi);
-                                }
+                                //}
                                 theOrderId = oi.ccrz__Order__c;
                             }
                             ccrz__E_Order__c theOrder = new ccrz__E_Order__c();
                             theOrder.Id = theOrderId;
-                            // DE1987 - Change CRE Request Processed flag setting to False (per the defect
+                            // DE1987 - Change CRE Request Processed flag setting to False (per the defect)
                             // setting this to true here when class is created was causing downstream
                             // order management issues
                             theOrder.CRE_Request_Processed__c = false;

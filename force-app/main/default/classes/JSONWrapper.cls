@@ -56,9 +56,11 @@ public class JSONWrapper {
                     String text = parser.getText();
                     if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
                         if (text == 'FirstName') {
-                            FirstName = parser.getText().deleteWhitespace();
+                            FirstName = parser.getText();
+                            //FirstName = parser.getText().deleteWhitespace();
                         } else if (text == 'LastName') {
-                            LastName = parser.getText().deleteWhitespace();
+                            LastName = parser.getText();
+                            //LastName = parser.getText().deleteWhitespace();
                         } else if (text == 'Email') {
                             Email = parser.getText().deleteWhitespace();
                         } else if (text == 'Phone') {

@@ -29,10 +29,6 @@ public without sharing class PHSS_skedLocationtoILTlocation {
                 rl.redwing__Postal_Code__c = parsedAddress[4];
                 rl.redwing__Country__c = parsedAddress[5];
                 
-                if (skld.sked__GeoLocation__Longitude__s != null && skld.sked__GeoLocation__Latitude__s != null) {
-                   rl.redwing__Directions__c = String.ValueOf(skld.sked__GeoLocation__Longitude__s)+' '+String.ValueOf(skld.sked__GeoLocation__Latitude__s);
-                } else rl.redwing__Directions__c = '';
-                
                 rl.Skedulo_Is_Active__c = skld.Is_Active__c;
                 rl.Name = skld.Name;
                 rl.redwing__Description__c = skld.Notes__c;
@@ -45,6 +41,11 @@ public without sharing class PHSS_skedLocationtoILTlocation {
         Schema.SObjectField f = redwing__ILT_Location__c.Fields.Skedulo_Location_External__c;                       
         if(rdILTList.size() > 0){             
             Database.upsert(rdILTList, f, false);
+
+            // DE2532 - Obtain geocoordinates for this address (if available)
+            for (redwing__ILT_Location__c theLocation : rdILTList) {
+                PHSS_Geolocation.getGeocode(theLocation.Id);
+            }
         }
     }
     

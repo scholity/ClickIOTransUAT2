@@ -185,6 +185,33 @@
                 }
             }
         }
+        
+        var suppInfo = component.get("v.SupplementInfo");
+        
+        console.log("suppInfo***"+suppInfo);
+        
+        if(suppInfo)
+        {
+            if(suppInfo.match(/[!¡@#$%^&*+=|\/~`¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸ-‘’‚“”„†‡•…‰€™()]/))
+            {
+                console.log("suppInfo2*** "+suppInfo);
+                component.set('v.allValid', false);
+            }
+            /*console.log("suppInfo2.1*** "+suppInfo);
+            var ckallValid = component.find('spInfo').reduce(function (validSoFar, inputCmp) {
+                inputCmp.showHelpMessageIfInvalid();
+                return validSoFar && inputCmp.get('v.validity').valid;
+            }, true);
+
+            if(ckallValid)
+            {
+                component.set('v.allValid', true);
+            }
+            else
+            {
+                component.set('v.allValid', false);
+            }*/
+        }
     },
     
     mandateInput : function(component, event, helper) 

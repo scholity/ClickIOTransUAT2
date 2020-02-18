@@ -153,7 +153,12 @@
                         <ui:outputText value="{!v.Students}" /><br/><br/>
                         
                       <div class="slds-size_5-of-12 slds-m-around_x-small">
-                                    <lightning:input value="{!v.SupplementInfo}" label="Supplemental Information" pattern="^[a-zA-Z0-9_\s]*" messageWhenPatternMismatch	= "No Special Characters or Spaces allowed in the Supplemental info field" fieldLevelHelp = "If your organization requires this field to be completed for invoicing purposes, enter details here"/>
+                                    <lightning:input value						= "{!v.SupplementInfo}"
+                                                     label						= "Supplemental Information"
+                                                     pattern					= "^[a-zA-Z0-9_\s]*"
+                                                     messageWhenPatternMismatch	= "No Special Characters or Spaces allowed in the Supplemental info field"
+                                                     fieldLevelHelp 			= "If your organization requires this field to be completed for invoicing purposes, enter details here"
+                                                     aura:id					= "spInfo"/>
                                 </div><br/> 
                         
                         <p> STUDENT EVALUATION </p>
