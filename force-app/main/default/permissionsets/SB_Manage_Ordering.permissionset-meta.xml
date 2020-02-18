@@ -2274,4 +2274,8 @@
         <tab>ccrz__E_Product__c</tab>
         <visibility>Available</visibility>
     </tabSettings>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>RunFlow</name>
+    </userPermissions>
 </PermissionSet>

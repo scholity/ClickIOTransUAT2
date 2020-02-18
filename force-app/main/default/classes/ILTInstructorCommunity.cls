@@ -31,6 +31,9 @@ public without sharing class ILTInstructorCommunity{
     public Static Map<String, Contact> ContactEmailMap;
     public Static Map<String, Contact> ContactphoneMap;
     public Static Map<String, Voucher__c> studentvoucherMap;
+    public Static Map<Id, User> contactUserMap;
+    public Static Map<Id, Id> contactUserIdMap;
+    public Static Map<Id, Contact> userContactMap;
     public Static List<Id> vILTClasslist;
     public Static List<redwing__ILT_Class__c> vILTclasssessionlist;
     public Static Map<id,list<redwing__ILT_Session__c>> vILTClassSessionMap;
@@ -536,7 +539,6 @@ public without sharing class ILTInstructorCommunity{
 
             system.debug('***student.voucherid***'+student.voucherid);
 
-            //if (!onlineCourse) {
             if(String.IsNotBlank(student.voucherid)) {
                 try {
                      system.debug('***student.voucherid1***'+student.voucherid);
@@ -562,7 +564,6 @@ public without sharing class ILTInstructorCommunity{
                     voucherids.add(student.voucherid);
                 }
             }
-            //}
         }
 
         if (!boolErrorExists) {
@@ -571,12 +572,18 @@ public without sharing class ILTInstructorCommunity{
             contactEmailMap = new Map<String, Contact>();
             contactAccountMap = new Map<Id, Id>();
             studentvoucherMap = new Map<String, Voucher__c>();
+            contactUserIdMap = new Map<Id, Id>();
+            contactUserMap = new Map<Id, User>();
+            userContactMap = new Map<Id, Contact>();
 
             if (!CRE) {
                 //User Map to check if the user already exists - Not required for CRE
                 // DE2476 - Search for and assign only active users to classes
+
+                Set<Id> contactIds = new Set<Id>();
+
                 for (User u : [
-                        Select Id, FirstName, LastName, DM_External_Id__c, Email
+                        Select Id, FirstName, LastName, DM_External_Id__c, Email, ContactId
                         From User
                         Where LastName IN :studentLastNames And FirstName IN :studentFirstNames
                         And (Email = Null Or Email = '' Or Email In :studentEmails)
@@ -589,17 +596,21 @@ public without sharing class ILTInstructorCommunity{
                         userMap.put((u.LastName + u.FirstName).toLowerCase(), u);
                     }
 
+                    if (u.ContactId != null) {
+                        contactUserIdMap.put(u.ContactId, u.Id);
+                    }
                 }
-
 
                 // contactMap to check if student has existing contacts or not = Not required for CRE
                 // Updated (SJC) - Contact matching rule is always LN+FN+Email
+                // DE2170/2515 - SJC - Need to filter out all inactive contacts (community users)
 
                 for (Contact theContact : [
                         Select Id, AccountId, FirstName, LastName, Email, DM_External_Id__c, MobilePhone
                         From Contact
                         Where LastName IN :studentLastNames And FirstName IN :studentFirstNames
                         And (Email = Null Or Email = '' Or Email In :studentEmails)
+                        And Community_User_Status__c = 'Active'
                     ]) {
 
                     if (String.isNotBlank(theContact.Email)) {
@@ -608,9 +619,50 @@ public without sharing class ILTInstructorCommunity{
                         contactEmailMap.put((theContact.LastName + theContact.FirstName).toLowerCase(), theContact);
                     }
 
+                    contactIds.add(theContact.Id);
                     if (String.IsNotBlank(theContact.AccountId)) contactAccountMap.put(theContact.Id, theContact.AccountId);
                 }
 
+                // DE2170/2515 - SJC - Save contact to existing user relationship
+
+                for (User theUser : [
+                        Select Id, FirstName, LastName, Email, ContactId
+                        From User
+                        Where ContactId IN :contactIds
+                        And IsActive = TRUE
+                ]) {
+                    contactUserMap.put(theUser.ContactId, theUser);
+                    if (String.isNotBlank(theUser.Email)) {
+                        if (!userMap.containsKey((theUser.LastName + theUser.FirstName + theUser.Email).toLowerCase())) {
+                            userMap.put((theUser.LastName + theUser.FirstName + theUser.Email).toLowerCase(), theUser);
+                        }
+                    } else {
+                        if (!userMap.containsKey((theUser.LastName + theUser.FirstName).toLowerCase())) {
+                            userMap.put((theUser.LastName + theUser.FirstName).toLowerCase(), theUser);
+                        }
+                    }
+
+                }
+
+                // DE2170/2515 - SJC - Save user to existing contact relationship
+
+                for (Contact theContact : [
+                        Select Id, FirstName, LastName, Email
+                        From Contact
+                        Where Id IN :contactUserIdMap.keySet()
+                        And Community_User_Status__c = 'Active'
+                ]) {
+                    userContactMap.put(contactUserIdMap.get(theContact.Id), theContact);
+                    if (String.isNotBlank(theContact.Email)) {
+                        if (!contactEmailMap.containsKey((theContact.LastName + theContact.FirstName + theContact.Email).toLowerCase())) {
+                            contactEmailMap.put((theContact.LastName + theContact.FirstName + theContact.Email).toLowerCase(), theContact);
+                        }
+                    } else {
+                        if (!contactEmailMap.containsKey((theContact.LastName + theContact.FirstName).toLowerCase())) {
+                            contactEmailMap.put((theContact.LastName + theContact.FirstName).toLowerCase(), theContact);
+                        }
+                    }
+                }
 
                 // Retrieve voucher records by voucher Id - Not required for CRE
 
@@ -626,28 +678,12 @@ public without sharing class ILTInstructorCommunity{
                 }
             }
 
-            //Commented for multiple sessions
-            /*vILTClasslist = new list<Id>();
-            if(studentvoucherMap!=null){
-            for(Voucher__c vclasslist:studentvoucherMap.values())
-            {
-            System.debug('ILTClasslist'+vclasslist.ILT_Class__c);
-            vILTClasslist.add(vclasslist.ILT_Class__c);
-            }
-
-            vILTclasssessionlist = [Select id,(SELECT Id, Name FROM redwing__ILT_Sessions__r), Name from redwing__ILT_Class__c where Id IN:vILTClasslist];
-            vILTClassSessionMap = new Map<Id,list<redwing__ILT_Session__c>>();
-            for(redwing__ILT_Class__c r : vILTclasssessionlist)
-            vILTClassSessionMap.put(r.id,r.redwing__ILT_Sessions__r);
-            }*/
-
-            //Get learning planid by differentiating from claim voucher and (RBC or CRE) Componenet
+            //Get learning plan id by differentiating from claim voucher and (RBC or CRE) Component
             for (JSONWrapper.Students student : studentList){
                 if (studentvoucherMap.containskey(student.voucherid)) {
                     // Note: This logic assumes same learning plan/class for each student!!
                     // Why bother recursing through the entire set of vouchers?
 
-                    // DE2057 - Online class Learning Ids are different from ILT class Learning Ids
                     Voucher__c theStudentVoucher = studentvoucherMap.get(student.voucherid);
                     learningPlanId = theStudentVoucher.Learning_Plan__c;
 
@@ -655,6 +691,7 @@ public without sharing class ILTInstructorCommunity{
                     if (theStudentVoucher.Learning_Plan__r.Classroom_Setting__c != Null
                             && theStudentVoucher.Learning_Plan__r.Classroom_Setting__c == 'Online') onlineCourse = true;
 
+                    // DE2057 - Online class Learning Ids are different from ILT class Learning Ids
                     if (theStudentVoucher.ILT_Class__c != Null)  {
                         classLearningId = theStudentVoucher.ILT_Class__r.redwing__Learning__c;
                         classId = theStudentVoucher.ILT_Class__c;
@@ -720,7 +757,7 @@ public without sharing class ILTInstructorCommunity{
             }
             */
 
-            profileId = [SELECT Id, Name FROM Profile WHERE Name = 'Learner Community Profile' LIMIT 1];//Can be changed based
+            profileId = [SELECT Id, Name FROM Profile WHERE Name = 'Learner Community Profile' LIMIT 1];
 
             rosterList = new list<redwing__ILT_Roster__c>();
             accList = new list<account>();
@@ -1750,8 +1787,6 @@ public without sharing class ILTInstructorCommunity{
     // boolRetVal == true -> Returns an Id for a user record created earlier in this run having a given external Id
     // consisting of first name+last name+email address
     
-    // Note: this function is overloaded (fetchUser() and fetchUser(JSONWrapper.Students, Boolean))
-    
     public Static User fetchUser(JSONWrapper.Students student, Boolean boolRetVal){
         //String removespaces;
         //removespaces = (student.FirstName+student.lastName+student.Email).deleteWhitespace();
@@ -1939,7 +1974,7 @@ public without sharing class ILTInstructorCommunity{
         
         if(ret){
             // Return user's existing contact Id, if one exists
-            if(String.IsNotBlank(student.Email) && contactEmailMap.containsKey((student.LastName+student.FirstName+student.Email).toLowerCase())){
+            if(contactEmailMap.containsKey((student.LastName+student.FirstName+student.Email).toLowerCase())){
                 return contactEmailMap.get((student.LastName+student.FirstName+student.Email).toLowerCase());
             } else { 
                 // Else return internal pointer to new contact record being created in this process             
@@ -1947,6 +1982,9 @@ public without sharing class ILTInstructorCommunity{
             }
         }
         else {
+            System.debug('fetchContact - creating new account and contact');
+            // The custom label named UserID contains the user name to be used for new account ownership
+            // (this block avoids the runtime error community user owner must not have a role assigned)
             id userId;
             if(Label.UserID == 'blank'){
                 userId = [Select id from user where UserRoleId != null and profile.Name = 'System Administrator' and isActive=true limit 1].Id;    
@@ -1957,7 +1995,6 @@ public without sharing class ILTInstructorCommunity{
             Account acc = new Account();
             acc.DM_External_Id__c = (student.LastName+student.FirstName+student.Email).toLowerCase();
             acc.Name = student.FirstName +' '+ student.lastName;
-            
             acc.OwnerId = userId;
             acc.RecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Individual Account').getRecordTypeId();
             accList.add(acc);
@@ -1973,7 +2010,6 @@ public without sharing class ILTInstructorCommunity{
             
             return new Contact(DM_External_Id__c = (student.LastName+student.FirstName+student.Email).toLowerCase());
         }
-        
     }
     
     // Send values of specific class from server side (Close a class)
@@ -2549,6 +2585,13 @@ public without sharing class ILTInstructorCommunity{
 
             }
         }catch (Exception e) {
+            // CRE/RBC processing log
+            REST_Service_Calls__c activityLog = new REST_Service_Calls__c();
+            activityLog.Name = 'CRE/RBC';
+            activityLog.Request_Method__c = 'postClass';
+            activityLog.Payload__c = 'LINE_NUMBER=' + e.getLineNumber() + ' CAUSE=' + e.getCause() + ' STACK_TRACE=' + e.getStackTraceString();
+            insert activityLog;
+
             //throw new AuraHandledException('Invalid Attempt');
             System.debug('JASON: Exception caught: ' + e.getMessage());
             System.debug('LINE_NUMBER=' + e.getLineNumber() + ' CAUSE=' + e.getCause() + ' STACK_TRACE=' + e.getStackTraceString());
@@ -2951,6 +2994,16 @@ System.debug('The email failed to send:results[0] ' + results[0].errors[0].messa
             }
         }
 
+        // Hot fix - Validate postal code for US zips - if not at least five numeric characters than set to null
+        if (String.isNotBlank(postcode)) {
+            String editedPostalCode = postcode.replace('-','').deleteWhitespace(); // Remove embedded hyphens for numeric check
+            Pattern zipPatternUS = Pattern.compile('^[0-9]{5,}'); // Zip must have at least 5 numeric digits
+            Matcher zipMatcher = zipPatternUS.matcher(editedPostalCode);
+            if (!zipMatcher.matches()) {
+                postcode = '';
+            }
+        }
+
         // create if no match found to the existing ones
         redwing__ILT_Location__c loc = new redwing__ILT_Location__c();
         loc.Account__c = accountId;
@@ -2963,8 +3016,13 @@ System.debug('The email failed to send:results[0] ' + results[0].errors[0].messa
         loc.redwing__City__c = city;
 
         insert loc;
+        // Comment out until DE2532 released
+        //if (loc != null) {
+        //    PHSS_Geolocation.getGeocode(loc.Id);
+        //}
         return loc.Id;
     }
+
 
 //    @AuraEnabled
 //    public static void handleFullServiceClass(String orderId, Integer studentCount) {

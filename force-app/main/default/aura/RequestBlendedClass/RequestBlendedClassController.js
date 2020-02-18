@@ -365,6 +365,7 @@
                 if(allValid && orgBool && !instBool)
                 {
                     helper.stepOne(component, event);
+                    helper.createIltLocation(component); //DE2554
                 }
                 else
                 {
@@ -383,6 +384,7 @@
                 if(allValid && orgBool && usrBool && !instBool)
                 {
                     helper.stepOne(component, event);
+                    helper.createIltLocation(component); //DE2554
                 }
                 else
                 {
@@ -398,7 +400,8 @@
                     toastEvent.fire();
                 }
             }
-            helper.createIltLocation(component);
+            //DE2554 - moving it under validation block
+            //helper.createIltLocation(component);
         }
         
         else if(currentSN == "Two")
@@ -630,7 +633,7 @@
         }
         if(jsonStr!='')
         	jsonStr = '{'+'\"Students\": ['+jsonStr+'] } ';
-        
+
         var action = cmp.get("c.invokeMethodswithboolean");
         console.log("cpsWrap: " + JSON.stringify(cmp.get("v.cpsWrap")));
         action.setParams({ JSON : classDetailJSON, JSON1 : jsonStr, blend1 : true , wrapper: cmp.get("v.cpsWrap")});

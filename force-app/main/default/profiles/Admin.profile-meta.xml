@@ -920,6 +920,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PHSS_Geolocation</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PHSS_InstructorCertificationCTRL_Test</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -15188,6 +15192,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>sked__Admin_Setting__mdt.sked__Value_New__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>sked__Admin_Setting__mdt.sked__Value__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -15200,6 +15209,16 @@
         <editable>false</editable>
         <field>sked__Change_Event__e.sked__Data__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>sked__Log_Event__e.sked__Message__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>sked__Log_Event__e.sked__Type__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -17526,6 +17545,15 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
         <object>sked__Change_Event__e</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>sked__Log_Event__e</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>

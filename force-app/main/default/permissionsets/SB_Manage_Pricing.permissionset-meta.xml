@@ -157,4 +157,8 @@
         <object>ccrz__E_PriceList__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>RunFlow</name>
+    </userPermissions>
 </PermissionSet>

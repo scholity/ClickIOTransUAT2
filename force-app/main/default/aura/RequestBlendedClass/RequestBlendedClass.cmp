@@ -574,7 +574,7 @@
                                                 <lightning:input value="{!item.LastName}" label="Last Name" required = "true" aura:id="field"/>
                                             </th>
                                             <th scope="row">
-                                                <lightning:input value="{!item.Email}" label="Email" required="true" type = "email" aura:id="field" pattern="^[a-zA-Z0-9!#$+-]+([\.-]?\w+)*@\w+([\.-]?\w+)*[a-zA-Z_0-9]+?\.[a-zA-Z]{2,3}" messageWhenPatternMismatch = "Must be a valid email address"/>
+                                                <lightning:input value="{!item.Email}" label="Email" required="true" type = "email" aura:id="field" pattern="^[a-zA-Z0-9!#$+-]+([\.-]?\w+)*@\w+([\.-]?\w+)*[a-zA-Z_0-9]+?\.[a-zA-Z]{2,}" messageWhenPatternMismatch = "Must be a valid email address"/>
                                             </th>
                                             <th scope="row">
                                                 <lightning:input value="{!item.Phone}" label="Phone Number" type = "tel" pattern="[0-9]{10}" aura:id="field" messageWhenPatternMismatch	= "Must be 10-digits only."/>

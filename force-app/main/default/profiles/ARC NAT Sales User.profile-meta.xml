@@ -920,6 +920,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PHSS_Geolocation</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PHSS_InstructorCertificationCTRL_Test</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -15188,6 +15192,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>sked__Admin_Setting__mdt.sked__Value_New__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>sked__Admin_Setting__mdt.sked__Value__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -15199,6 +15208,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>sked__Change_Event__e.sked__Data__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>sked__Log_Event__e.sked__Message__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>sked__Log_Event__e.sked__Type__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -5625,4 +5625,12 @@
         <enabled>true</enabled>
         <name>EmailSingle</name>
     </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ViewRoles</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ViewSetup</name>
+    </userPermissions>
 </PermissionSet>

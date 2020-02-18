@@ -916,6 +916,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PHSS_Geolocation</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PHSS_InstructorCertificationCTRL_Test</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -15184,6 +15188,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>sked__Admin_Setting__mdt.sked__Value_New__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>sked__Admin_Setting__mdt.sked__Value__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -15195,6 +15204,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>sked__Change_Event__e.sked__Data__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>sked__Log_Event__e.sked__Message__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>sked__Log_Event__e.sked__Type__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -16920,6 +16939,15 @@
         <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
+        <object>PHSS_Geolocation__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
         <object>PHSS_Instructor_Certification__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
@@ -17363,6 +17391,15 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>sked__Change_Event__e</object>
         <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>sked__Log_Event__e</object>
+        <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>

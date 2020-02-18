@@ -1519,7 +1519,7 @@
         <object>redwing__Achievement_Assignment__c</object>
     </recordUpdates>
     <startElementReference>isChangedDecision2_myRule_1_redwing_Contact_c</startElementReference>
-    <status>Draft</status>
+    <status>Obsolete</status>
     <variables>
         <name>cancelWaits</name>
         <dataType>String</dataType>
