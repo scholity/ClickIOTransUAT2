@@ -25,6 +25,11 @@ public without sharing class PHSS_skedJobtoILTClass {
 
         // DE1988 - The following block maps the job last modified user Id to the user's email address
         // Required since email address is NOT included in the newRecords job list passed from trigger to handler
+
+        // Hot fix - DE1988 - This block now deprecated - we are no longer checking to determine if a Full Service
+        // job is associated to a Cloud Craze order since we are now in steady state.  This was a transitional issue.
+
+        /*
         Set<Id> userIds = new Set<Id>();
         for (sked__Job__c theJob : newRecords) {
             userIds.add(theJob.LastModifiedById);
@@ -33,7 +38,8 @@ public without sharing class PHSS_skedJobtoILTClass {
         for (User theUser : theUserList) {
             emailAddressMap.put(theUser.Id, theUser.Email);
         }
-            
+        */
+
         for(sked__Job__c jobRecord : newRecords) {
             System.debug('tst: new: jobRecord.Id='+jobRecord.Id);
             System.debug('tst: new: insertedJobs.contains(jobRecord.Id)='+insertedJobs.contains(jobRecord.Id));
@@ -69,6 +75,11 @@ public without sharing class PHSS_skedJobtoILTClass {
 
         // DE1988 - The following block maps the job last modified user Id to the user's email address
         // Required since email address is NOT included in the newRecords job list passed from trigger to handler
+
+        // Hot fix - DE1988 - This block now deprecated - we are no longer checking to determine if a Full Service
+        // job is associated to a Cloud Craze order since we are now in steady state.  This was a transitional issue.
+
+        /*
         Set<Id> userIds = new Set<Id>();
         for (sked__Job__c theJob : newRecords) {
             userIds.add(theJob.LastModifiedById);
@@ -77,7 +88,8 @@ public without sharing class PHSS_skedJobtoILTClass {
         for (User theUser : theUserList) {
             emailAddressMap.put(theUser.Id, theUser.Email);
         }
-            
+        */
+
         for(sked__Job__c jobRecord : newRecords) {
             System.debug('tst: update: jobRecord.Id='+jobRecord.Id);
             System.debug('tst: update: updatedJobs.contains(jobRecord.Id)='+updatedJobs.contains(jobRecord.Id));
@@ -96,13 +108,19 @@ public without sharing class PHSS_skedJobtoILTClass {
                 if (!updatedJobs.contains(jobRecord.Id)) {
                     if (checkJobStatus(jobRecord)) {
                         // Need to open this up; Job is "updated" when new/additional instructor is assigned.
+                        // This update seems to be limited to the job status field (dispatched or pending dispatch)
                         // ILT Class logic needs to be traversed to issue additional vouchers, if required,
                         // based on number of instructors (resources) assigned to class (job).  In this case
                         // no fields are modified in Job record, but the record still needs to be processed.
-                        //if (checkClassJobFields(jobRecord, oldJob) || checkSessionJobFields(jobRecord, oldJob)) {
-                        lstnewRecords.add(jobRecord);
-                        updatedJobs.add(jobRecord.Id);
-                        //}
+
+                        // DE2499 - SJC - We need to determine if any field relevant to class and session definition
+                        // is being updated.  sked__Job_Status__c is intentionally omitted; the change to Cancelled
+                        // is caught above and no other change has an impact on the class or session(s)
+                        // Note: A change from Pending Dispatch to Dispatched needs to be omitted for scalability
+                        if (checkClassJobFields(jobRecord, oldJob)) { //} || checkSessionJobFields(jobRecord, oldJob)) {
+                            lstnewRecords.add(jobRecord);
+                            updatedJobs.add(jobRecord.Id);
+                        }
                     }
                 }
             }
@@ -744,7 +762,7 @@ public without sharing class PHSS_skedJobtoILTClass {
                      
         // Get value from training event to populate Supplement
         if (SetTrainingEvents.size() > 0) {
-            List<Training_Events__c> trainingEvents = [Select Id, Supp_Info__c, Voucher_Created__c, Scheduling_Status__c, CC_Order_Item__c, CC_Order__c
+            List<Training_Events__c> trainingEvents = [Select Id, Supp_Info__c, Scheduling_Status__c, CC_Order_Item__c, CC_Order__c, CC_Order_Item__r.ccrz__Product__c
                 from Training_Events__c Where Id In :SetTrainingEvents];
             for (Training_Events__c theTrainingEvent : trainingEvents) {
                 if (String.isNotBlank(theTrainingEvent.Supp_Info__c)) suppInfoMap.put(theTrainingEvent.Id, theTrainingEvent.Supp_Info__c);
@@ -1344,8 +1362,7 @@ public without sharing class PHSS_skedJobtoILTClass {
                 if (theClass.Request_Type__c != null && (!theClass.Request_Type__c.contains('Full Service')
                     || (theClass.Request_Type__c.contains('Full Service') && theClass.Skedulo_Training_Event__c != null &&
                         trainingEventMap.containsKey(theClass.Skedulo_Training_Event__c) &&
-                        trainingEventMap.get(theClass.Skedulo_Training_Event__c).Scheduling_Status__c == 'Completed') &&
-                        trainingEventMap.get(theClass.Skedulo_Training_Event__c).Voucher_Created__c)) {
+                        'Completed, Rescheduling'.contains(trainingEventMap.get(theClass.Skedulo_Training_Event__c).Scheduling_Status__c)))) {
                     // Insure that the Learning Plan Id will be available if we need to create voucher, otherwise need to skip
                     if (catalogIds.get(jobCatalogMap.get(theClass.Skedulo_Job_Id__c)) != null) {
                         // For new ILT Class records use the previously calculated max seats(number of students) for voucher count
@@ -1366,6 +1383,7 @@ public without sharing class PHSS_skedJobtoILTClass {
                                 objVoucher.ILT_Class__c = theClass.Id;
                                 objVoucher.Learning_Plan__c = catalogIds.get(jobCatalogMap.get(theClass.Skedulo_Job_Id__c)).LMS_Learning_Plan__c;
                                 if (theClass.Request_Type__c.contains('Full Service')) {
+                                    objVoucher.CC_Product__c = trainingEventMap.get(theClass.Skedulo_Training_Event__c).CC_Order_Item__r.ccrz__Product__c;
                                     objVoucher.CC_Order__c = trainingEventMap.get(theClass.Skedulo_Training_Event__c).CC_Order__c;
                                     objVoucher.CC_Order_Item__c = trainingEventMap.get(theClass.Skedulo_Training_Event__c).CC_Order_Item__c;
                                 }
@@ -1633,8 +1651,8 @@ public without sharing class PHSS_skedJobtoILTClass {
         update lstCls;
     }
 
-    // Comment out for now since this is no longer being called - helps test class coverage
-    /*
+    // !! Comment out for now since this is no longer being called - helps test class coverage !!
+
     private Boolean checkClassJobFields(sked__Job__c newJob, sked__Job__c oldJob) {
         Boolean classFieldChange = false; // true = at least one field value has changed between old and new records
 
@@ -1642,10 +1660,20 @@ public without sharing class PHSS_skedJobtoILTClass {
                 oldValues = oldJob.getPopulatedFieldsAsMap(),
                 newValues = newJob.getPopulatedFieldsAsMap();
 
+        for (String theString : oldValues.keySet()) {
+            object oldValue = oldValues.get(theString);
+            object newValue = newValues.get(theString);
+            if (oldValue != newValue) system.debug('***Field Name:'+theString+' Old Value:'+oldValue+' New Value:'+newValue);
+        }
+
+        // The following list of fields are all those that impact the structure of the ILT Class and Session records
+        // sked__Job_Status__c is intentionally omitted; a change in status does not require re-traversing the class and
+        // session update logic.  This allows a bulk change of jobs to scale as in the case of auto-dispatch.
+        // A status change to Cancelled (sic) is caught earlier in the flow.
         String classFields = 'sked__Account__c,sked__Location__c,sked__Type__c,Ready_to_Publish__c,Location_Confirmed__c,';
         classFields += 'Course_Class_Type__c,Is_Stacked_Class__c,Is_Master_Class__c,Course_Code__c,';
         classFields += 'sked__Parent__c,Course_Catalog__c,sked__TimeZone__c,sked__Start__c,sked__Finish__c,';
-        classFields += 'sked__Recurring_Schedule__c,sked__Job_Status__c,sked__Description__c';
+        classFields += 'sked__Recurring_Schedule__c,sked__Description__c,Number_of_Instructors__c';
         List<String> classFieldList = classFields.split(',');
 
         for (String theClassField : classFieldList) {
@@ -1659,7 +1687,7 @@ public without sharing class PHSS_skedJobtoILTClass {
 
         return classFieldChange;
     }
-    */
+
     
     private Boolean checkSessionJobFields(sked__Job__c newJob, sked__Job__c oldJob) {
         Boolean sessionFieldChange = true; // force true for now

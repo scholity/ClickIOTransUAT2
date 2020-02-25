@@ -43,8 +43,10 @@ public without sharing class PHSS_skedLocationtoILTlocation {
             Database.upsert(rdILTList, f, false);
 
             // DE2532 - Obtain geocoordinates for this address (if available)
-            for (redwing__ILT_Location__c theLocation : rdILTList) {
-                PHSS_Geolocation.getGeocode(theLocation.Id);
+            if (!Test.isRunningTest()) {
+                for (redwing__ILT_Location__c theLocation : rdILTList) {
+                    PHSS_Geolocation.getGeocode(theLocation.Id);
+                }
             }
         }
     }

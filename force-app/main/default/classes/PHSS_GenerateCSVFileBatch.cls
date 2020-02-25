@@ -508,6 +508,7 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
                 system.debug('***eDate4***'+eDate);
                 String day 		= String.valueOf(eDate.day());
                 String month 	= String.valueOf(eDate.month());
+                String year 	= String.valueOf(eDate.year());
                 
                 if(day.length()<2)
                 {
@@ -519,8 +520,12 @@ global class PHSS_GenerateCSVFileBatch implements Database.Batchable<sOBject>, D
                     month='0'+month;
                 }
                 
-                endDate = '"' + dt.year()+'/'+month+'/'+day+' 00:00:00' + '"';
+                //endDate = '"' + dt.year()+'/'+month+'/'+day+' 00:00:00' + '"';
+                endDate = '"' + year+'/'+month+'/'+day+' 00:00:00' + '"';
             } 
+            
+            System.debug('endDate - '+endDate);
+ 
             // CRS Comments - No more than 50 characters, check for special characters
             String crsComments = '""';
             

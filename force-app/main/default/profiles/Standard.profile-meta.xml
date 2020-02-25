@@ -920,6 +920,14 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PHSS_GeolocationMockImpl</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>PHSS_Geolocation_test</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PHSS_InstructorCertificationCTRL_Test</apexClass>
         <enabled>false</enabled>
     </classAccesses>

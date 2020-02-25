@@ -425,6 +425,17 @@ public without sharing class PHSS_CpsController {
         
         return addToCartResult;
 	}
+    
+    @AuraEnabled
+    public static void deleteOpportunity(String opptyId) {
+    
+        if(opptyId !=null && opptyId !=''){
+            delete [select Id from ccrz__E_Cart__c where Opportunity__c=:opptyId];
+            delete [select id from opportunity where id =:opptyId];
+        }
+        return;
+    }
+    
 	/*
     @AuraEnabled 
     public static Boolean checkURL(String url) { 

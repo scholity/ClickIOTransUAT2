@@ -679,7 +679,7 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Order_Status_Controller-51</fullName>
+            <fullName>Order_Status_Controller-54</fullName>
         </flows>
         <fullName>Order_Status_Controller</fullName>
     </flowDefinitions>
@@ -1390,7 +1390,7 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Create_On_Hold_Order_Case-21</fullName>
+            <fullName>Create_On_Hold_Order_Case-23</fullName>
         </flows>
         <fullName>Create_On_Hold_Order_Case</fullName>
     </flowDefinitions>
@@ -1408,13 +1408,43 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
+            <fullName>Cancel_Order_Screens-1</fullName>
+            <screens>
+                <fields>
+                    <name>NoMessage</name>
+                </fields>
+                <name>Can_Not_be_Cancelled</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>MsgSuccess</name>
+                </fields>
+                <name>Cancel_Order_Successful</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>AreYouSure</name>
+                </fields>
+                <name>Check_for_Cancel</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>MsgCancel</name>
+                </fields>
+                <name>Not_Done</name>
+            </screens>
+        </flows>
+        <fullName>Cancel_Order_Screens</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
             <fullName>Full_Service_Minimum_Quantity-10</fullName>
         </flows>
         <fullName>Full_Service_Minimum_Quantity</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Order_Header_Status_Update-7</fullName>
+            <fullName>Order_Header_Status_Update-8</fullName>
         </flows>
         <fullName>Order_Header_Status_Update</fullName>
     </flowDefinitions>
@@ -1544,7 +1574,7 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Order_Item_Status_Controller_Change-29</fullName>
+            <fullName>Order_Item_Status_Controller_Change-30</fullName>
         </flows>
         <fullName>Order_Item_Status_Controller_Change</fullName>
     </flowDefinitions>

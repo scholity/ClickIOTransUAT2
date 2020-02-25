@@ -56,10 +56,12 @@ public class JSONWrapper {
                     String text = parser.getText();
                     if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
                         if (text == 'FirstName') {
-                            FirstName = parser.getText();
+                            // DE2548 - Allow embedded whitespace in student first and last name
+                            FirstName = parser.getText().trim();
                             //FirstName = parser.getText().deleteWhitespace();
                         } else if (text == 'LastName') {
-                            LastName = parser.getText();
+                            // DE2548 - Allow embedded whitespace in student first and last name
+                            LastName = parser.getText().trim();
                             //LastName = parser.getText().deleteWhitespace();
                         } else if (text == 'Email') {
                             Email = parser.getText().deleteWhitespace();

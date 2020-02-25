@@ -25,6 +25,17 @@
 		//alert('Date + 7 ' + todayPlus7);        
         
         component.set("v.todaysDatePlus7",todayPlus7);
+        
+        var pageReference = {
+            type: 'standard__component',
+            attributes: {
+                componentName: 'c:PHSS_ClassPostingDashboard',
+            },
+            state: {
+                 
+            }
+        };
+        component.set("v.pageReference", pageReference);
     },
     
     productCountIncrement: function (component, event, helper) {
@@ -215,7 +226,7 @@
             helper.formatTime(component,event,helper);
             helper.updateGeoLatLong(component,event,helper);
             helper.validateFields(component,event,helper);
-            helper.createIltLocation(component);
+            //helper.createIltLocation(component);
             /*
             if(component.get('v.cpsWrap.locationId') != ""){
                 var timeOut = '0';
@@ -245,6 +256,7 @@
                 
                 if(component.get("v.allValid")  && component.get("v.isUrlValid") && !component.get("v.orgError") && !component.get("v.geoCodeLookup")) {
                     //alert("No Errors Path");
+                    helper.createIltLocation(component);
                     var tempList = component.get("v.offeringsList");
                     var existingOfferingInCart = component.get("v.cpsWrap.offeringId");
                     var offeringJson = JSON.stringify(component.get("v.cpsWrap"));
@@ -403,7 +415,7 @@
             helper.formatTime(component,event,helper);
         	helper.updateGeoLatLong(component,event,helper);
             helper.validateFields(component,event,helper);
-            helper.createIltLocation(component);
+            //helper.createIltLocation(component);
         	
         	/*
             if(component.get('v.cpsWrap.locationId') != ""){
@@ -427,6 +439,7 @@
                 }
                 
                 if(component.get("v.allValid") && component.get("v.isUrlValid") && !component.get("v.orgError") && !component.get("v.geoCodeLookup")) {
+                    helper.createIltLocation(component);
                     var tempList = component.get("v.offeringsList");
                     var existingOfferingInCart = component.get("v.cpsWrap.offeringId");
                     var offeringJson = JSON.stringify(component.get("v.cpsWrap"));
@@ -505,6 +518,11 @@
         	component.set("v.stepNumber", "Zero");
         }
     },
+    cancelDropOpp : function(component, event, helper){
+        helper.cleanUp(component, event, helper);
+        $A.get("e.force:refreshView").fire();
+        component.set("v.stepNumber", "Zero");
+    },  
         
     handleChange : function (component, event) {
         // This will contain the string of the "value" attribute of the selected option
@@ -603,5 +621,24 @@
         console.log('check if payment completed'+component.get("v.paymentComplete"));
 
     },
+    callDashboard : function(component, event, helper){
+        alert("Call CPS Dashboard ");
+        /*
+        var navService = component.find("navService");
+        var pageReference = component.get("v.pageReference");
+        alert("Navigate to  "+JSON.stringify(pageReference));
+        event.preventDefault();
+        navService.navigate(pageReference);
+        */
+		
+        var evnt = $A.get("e.force:navigateToComponent");
+        evnt.setParams({
+            componentDef  : "c:PHSS_ClassPostingDashboard",
+            componentAttributes: { }
+    	});
+        evnt.fire();
+        
+
+	},
 
 })

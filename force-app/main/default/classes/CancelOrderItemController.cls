@@ -750,6 +750,8 @@ public class CancelOrderItemController {
         }
         
         system.debug('voucherListIds***'+voucherListIds);
+
+        //DExxxx Perform query on voucher to obtain value of ILT_class.skedulo_status
         
         //DE1496 
         
@@ -795,7 +797,8 @@ public class CancelOrderItemController {
                                             RCO_Order_Id__c,
                                             RCO_Reservation_Timestamp__c,
                                             Status__c,
-                                            User__c 
+                                            User__c,
+                                            ILT_Class__r.Skedulo_Job_Status__c
                                      FROM   Voucher__c
 									WHERE 	Id
 									 IN 	:voucherListIds];
@@ -828,7 +831,7 @@ public class CancelOrderItemController {
             update vouchersToUpdate;
         }
         
-        if(vouchers.size() > 0)
+        if(vouchers.size() > 0 && vouchers[0].ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled')
         {
             for(Voucher__c v : vouchers)
             {   

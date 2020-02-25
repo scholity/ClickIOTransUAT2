@@ -389,10 +389,10 @@ public with sharing class PHSS_ClassCompletionBatch {
         {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Participant Last Name');
         }
-        else if (String.isBlank(values[PARTICIPANT_EMAIL_FIELD_INDEX]))
+        /*else if (String.isBlank(values[PARTICIPANT_EMAIL_FIELD_INDEX]))
         {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Participant Email Address');
-        }
+        }*/
         else if (String.isBlank(values[PARTICIPANT_MASTERY_FIELD_INDEX]))
         {
             throw new phss_cc_Exception(MISSING_FIELD_VALUE + ': Mastery Status');

@@ -54,7 +54,7 @@ public without sharing class PHSS_CancelEnrollmentController {
         keyPrefixroster = r.getKeyPrefix();
 
         if(recId.startsWith(keyPrefixroster)) {
-            List<redwing__ILT_Roster__c> rosterList = [Select Id,redwing__User__c,redwing__Learning_Assignment__c,redwing__ILT_Class__c 
+            List<redwing__ILT_Roster__c> rosterList = [Select Id,redwing__User__c,redwing__Learning_Assignment__c,redwing__ILT_Class__c,redwing__ILT_Class__r.Skedulo_Job_Status__c,Voucher_Id__c
                                                    From redwing__ILT_Roster__c 
                                                    Where Id = :recId];
         
@@ -90,12 +90,24 @@ public without sharing class PHSS_CancelEnrollmentController {
 	        List<redwing__Achievement_Assignment__c> AchievementAssignmentList = [Select Id,redwing__User__c 
 	                                                                      From redwing__Achievement_Assignment__c 
 	                                                                      Where redwing__User__c = :rosterList[0].redwing__User__c AND 
-	                                                                            redwing__Training_Plan_Achievement__c IN :LearningPlanAchievementList];
+	                                                                            redwing__Training_Plan_Achievement__c IN :LearningPlanAchievementList AND
+																		        redwing__Status__c Not In ('Acquired', 'Expired')];
 	        
-	        // Release voucher - empty student specific fields, status to 'issued'  
-	        List<Voucher__c> voucherList = [Select Id From Voucher__c Where User__c = :rosterList[0].redwing__User__c AND 
-	                                                                      Learning_Plan__c = :LearningAssignmentList[0].redwing__Training_Plan__c AND 
-	                                                                      ILT_Class__c = :rosterList[0].redwing__ILT_Class__c];
+	        // Release voucher - empty student specific fields, status to 'issued'
+			// DE2491 - Do no generate new (replacement) voucher if student is cancelled out of cancelled class
+			List<Voucher__c> voucherList = new List<Voucher__c>();
+			if (rosterList[0].Voucher_Id__c != null) {
+				voucherList = [Select Id, ILT_Class__r.Skedulo_Job_Status__c From Voucher__c Where Id = :rosterList[0].Voucher_Id__c];
+
+			} else {
+				voucherList = [
+						Select Id, ILT_Class__r.Skedulo_Job_Status__c
+						From Voucher__c
+						Where User__c = :rosterList[0].redwing__User__c AND
+						Learning_Plan__c = :LearningAssignmentList[0].redwing__Training_Plan__c AND
+						ILT_Class__c = :rosterList[0].redwing__ILT_Class__c
+				];
+			}
 	        if(!voucherList.isEmpty()) {
 	            // Keep voucher on cancel to retain financial information
 				Voucher__c updatedVoucher = new Voucher__c();
@@ -117,12 +129,15 @@ public without sharing class PHSS_CancelEnrollmentController {
 	            update updatedVoucher;
 	            
 	            // Generate replacement voucher for seat that has just opened in class - this will keep inventory valid
-	            Voucher__c newVoucher = new Voucher__c();
-	            newVoucher.Status__c = 'Issued';
-	            newVoucher.Learning_Plan__c = LearningAssignmentList[0].redwing__Training_Plan__c;
-	            newVoucher.ILT_Class__c = rosterList[0].redwing__ILT_Class__c;
-	            
-	            insert newVoucher;
+				// DE2491 - Do no generate new (replacement) voucher if student is cancelled out of cancelled class
+				if (voucherList[0].ILT_Class__r.Skedulo_Job_Status__c != null && voucherList[0].ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled') {
+					Voucher__c newVoucher = new Voucher__c();
+					newVoucher.Status__c = 'Issued';
+					newVoucher.Learning_Plan__c = LearningAssignmentList[0].redwing__Training_Plan__c;
+					newVoucher.ILT_Class__c = rosterList[0].redwing__ILT_Class__c;
+
+					insert newVoucher;
+				}
 	        }
 	        
 	        // update roster record - status 'Cancelled' , status date (new fields)
@@ -184,7 +199,8 @@ public without sharing class PHSS_CancelEnrollmentController {
 	            List<redwing__Achievement_Assignment__c> AchievementAssignmentList = [Select Id,redwing__User__c 
 	                                                                          From redwing__Achievement_Assignment__c 
 	                                                                          Where redwing__User__c = :LearningAssignmentList[0].redwing__User__c AND 
-	                                                                          redwing__Training_Plan_Achievement__c IN :LearningPlanAchivementList];
+	                                                                          redwing__Training_Plan_Achievement__c IN :LearningPlanAchivementList AND
+																			  redwing__Status__c Not In ('Acquired', 'Expired')];
 
 				// Release voucher -
 				List<Voucher__c> voucherList = [Select Id From Voucher__c Where User__c = :LearningAssignmentList[0].redwing__User__c AND

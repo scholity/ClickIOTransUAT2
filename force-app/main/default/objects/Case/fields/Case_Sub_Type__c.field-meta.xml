@@ -138,6 +138,11 @@
                 <label>CEU Class</label>
             </value>
             <value>
+                <fullName>Charged incorrect price</fullName>
+                <default>false</default>
+                <label>Charged incorrect price</label>
+            </value>
+            <value>
                 <fullName>Cintas</fullName>
                 <default>false</default>
                 <label>Cintas</label>
@@ -256,6 +261,11 @@
                 <fullName>Curriculum question</fullName>
                 <default>false</default>
                 <label>Curriculum question</label>
+            </value>
+            <value>
+                <fullName>Customer Dissatisfaction</fullName>
+                <default>false</default>
+                <label>Customer Dissatisfaction</label>
             </value>
             <value>
                 <fullName>Denied</fullName>
@@ -586,6 +596,11 @@
                 <fullName>No Show Instructor</fullName>
                 <default>false</default>
                 <label>No Show Instructor</label>
+            </value>
+            <value>
+                <fullName>No voucher created</fullName>
+                <default>false</default>
+                <label>No voucher created</label>
             </value>
             <value>
                 <fullName>Online Content Completion Report and Roster</fullName>
@@ -1057,6 +1072,28 @@
             <valueName>Pricing not on account</valueName>
         </valueSettings>
         <valueSettings>
+            <controllingFieldValue>Credit Adjustment</controllingFieldValue>
+            <valueName>Charged incorrect price</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Credit Adjustment</controllingFieldValue>
+            <valueName>Customer Dissatisfaction</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Credit Adjustment</controllingFieldValue>
+            <valueName>No voucher created</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Credit Adjustment</controllingFieldValue>
+            <controllingFieldValue>Non PHSS Referral</controllingFieldValue>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Product Sales Referral</controllingFieldValue>
+            <controllingFieldValue>Non-Training</controllingFieldValue>
+            <controllingFieldValue>Community Course Support</controllingFieldValue>
+            <controllingFieldValue>Course Records</controllingFieldValue>
+            <valueName>Other</valueName>
+        </valueSettings>
+        <valueSettings>
             <controllingFieldValue>Special Processes</controllingFieldValue>
             <valueName>Annual AP/LTP Price Increase</valueName>
         </valueSettings>
@@ -1210,15 +1247,6 @@
             <controllingFieldValue>Non PHSS Referral</controllingFieldValue>
             <controllingFieldValue>Non-Training</controllingFieldValue>
             <valueName>Gov Shutdown</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Non PHSS Referral</controllingFieldValue>
-            <controllingFieldValue>Other</controllingFieldValue>
-            <controllingFieldValue>Product Sales Referral</controllingFieldValue>
-            <controllingFieldValue>Non-Training</controllingFieldValue>
-            <controllingFieldValue>Community Course Support</controllingFieldValue>
-            <controllingFieldValue>Course Records</controllingFieldValue>
-            <valueName>Other</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Non PHSS Referral</controllingFieldValue>

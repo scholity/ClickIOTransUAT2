@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>ILT_Class_Sharing</fullName>
+        <accessLevel>Read</accessLevel>
+        <label>ILT Class Sharing</label>
+        <sharedTo>
+            <allCustomerPortalUsers/>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>ILT Class</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>ILT_Class_Sharing2</fullName>
+        <accessLevel>Read</accessLevel>
+        <label>ILT Class Sharing</label>
+        <sharedTo>
+            <group>Customer_Portal_Users</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>ILT Class</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+</SharingRules>

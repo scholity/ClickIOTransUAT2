@@ -27,6 +27,9 @@ private without sharing class ILTInstructorCommunitytest {
         esettings.Switch__c = false;
         insert esettings;
 
+        PHSS_Geolocation__c setting = new PHSS_Geolocation__c();
+        setting.PHSS_Geolocation_API_Key__c = 'AIzaSyAbiSkystXXjCtlOAtH6H-4Ej2GLn_EbNM';
+        insert setting;
 
     }
 

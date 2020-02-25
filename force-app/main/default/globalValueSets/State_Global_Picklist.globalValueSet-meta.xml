@@ -36,6 +36,11 @@
         <label>CT</label>
     </customValue>
     <customValue>
+        <fullName>DC</fullName>
+        <default>false</default>
+        <label>DC</label>
+    </customValue>
+    <customValue>
         <fullName>DE</fullName>
         <default>false</default>
         <label>DE</label>

@@ -289,7 +289,37 @@
     <summaryLayout>
         <masterLabel>00h21000000SHXz</masterLabel>
         <sizeX>4</sizeX>
-        <sizeY>0</sizeY>
+        <sizeY>2</sizeY>
+        <summaryLayoutItems>
+            <field>ccrz__PaymentType__c</field>
+            <posX>0</posX>
+            <posY>0</posY>
+        </summaryLayoutItems>
+        <summaryLayoutItems>
+            <field>ccrz__CCOrder__c</field>
+            <posX>0</posX>
+            <posY>1</posY>
+        </summaryLayoutItems>
+        <summaryLayoutItems>
+            <field>ccrz__TransactionType__c</field>
+            <posX>1</posX>
+            <posY>0</posY>
+        </summaryLayoutItems>
+        <summaryLayoutItems>
+            <field>ccrz__Storefront__c</field>
+            <posX>1</posX>
+            <posY>1</posY>
+        </summaryLayoutItems>
+        <summaryLayoutItems>
+            <field>ccrz__StoredPayment__c</field>
+            <posX>2</posX>
+            <posY>0</posY>
+        </summaryLayoutItems>
+        <summaryLayoutItems>
+            <field>ccrz__Amount__c</field>
+            <posX>3</posX>
+            <posY>0</posY>
+        </summaryLayoutItems>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
     </summaryLayout>
 </Layout>
