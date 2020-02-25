@@ -8,6 +8,7 @@ public with sharing class phss_cc_FulfillmentUtil {
     private static final String FULFILLMENT_ITEM_STATUS_READY           = 'Ready';
     private static final String FULFILLMENT_ITEM_STATUS_IN_PROGRESS     = 'In Progress';
     private static final String FULFILLMENT_ITEM_STATUS_COMPLETE        = 'Complete';
+    private static final String FULFILLMENT_ITEM_STATUS_INVOICED        = 'Invoiced';
 
     //  error messages
     private static final String FAILED_TO_COMPLETE_FULFILLMENT = 'Failed to complete fulfillment.';
@@ -36,7 +37,7 @@ public with sharing class phss_cc_FulfillmentUtil {
 
             for (Fulfillment_Item__c item : fulfillmentItems) {
                 if (item.Status__c == FULFILLMENT_ITEM_STATUS_READY) {
-                    item.Status__c = FULFILLMENT_ITEM_STATUS_COMPLETE;
+                    item.Status__c = FULFILLMENT_ITEM_STATUS_INVOICED; //FULFILLMENT_ITEM_STATUS_COMPLETE; DE2307 -Training Revenue records not being created
                     updatedItems.add(item);
                 }
             }

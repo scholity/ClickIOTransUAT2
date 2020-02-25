@@ -1366,7 +1366,7 @@
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
             <name>myRule_3</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>or</conditionLogic>
             <conditions>
                 <processMetadataValues>
                     <name>inputDataType</name>
@@ -1398,10 +1398,41 @@
                     <stringValue>Returned</stringValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <processMetadataValues>
+                    <name>inputDataType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>leftHandSideType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>operatorDataType</name>
+                    <value>
+                        <stringValue>String</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>rightHandSideType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <leftValueReference>myVariable_current.ccrz__OrderStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Cancelled</stringValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>myRule_3_A1</targetReference>
             </connector>
-            <label>Return and Stop</label>
+            <label>Return or Cancel  - Stop</label>
         </rules>
     </decisions>
     <decisions>
@@ -1572,9 +1603,9 @@
                     </value>
                 </processMetadataValues>
                 <leftValueReference>myVariable_current.ccrz__Storefront__c</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>CPS</stringValue>
+                    <stringValue>GeneralStore</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -1689,9 +1720,9 @@
                     </value>
                 </processMetadataValues>
                 <leftValueReference>myVariable_current.ccrz__Storefront__c</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>CREStore</stringValue>
+                    <stringValue>GeneralStore</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -2375,8 +2406,8 @@
             <label>On Hold</label>
         </rules>
     </decisions>
-    <description>Manages Order Status Changes - Add Return and Credit Decision - Stop Recursion</description>
-    <interviewLabel>Order_Status_Controller-51_InterviewLabel</interviewLabel>
+    <description>Manages Order Status Changes - Add Return and Credit Decision - Stop Recursion add Cancelled status</description>
+    <interviewLabel>Order_Status_Controller-54_InterviewLabel</interviewLabel>
     <label>Order Status Controller</label>
     <processMetadataValues>
         <name>ObjectType</name>

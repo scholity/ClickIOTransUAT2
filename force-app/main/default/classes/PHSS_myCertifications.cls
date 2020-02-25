@@ -13,11 +13,11 @@ public without sharing class PHSS_myCertifications
          Boolean expiredAchievement = false;
             user u = fetchUser();            
             List<redwing__Achievement_Assignment__c> achievementAssignments = [Select Id, Name, Account__r.Name, redwing__Contact__r.Email, redwing__Contact__r.Phone,
-            	redwing__Achievement__r.Name, QR_Code_Web_Address__c, redwing__User__c , redwing__User__r.Name, redwing__User__r.Phone, redwing__User__r.Email, 
+            	redwing__Achievement__r.Name, redwing__Achievement__r.Description__c ,QR_Code_Web_Address__c, redwing__User__c , redwing__User__r.Name, redwing__User__r.Phone, redwing__User__r.Email, 
             	redwing__Expiration_Date__c 
             	From redwing__Achievement_Assignment__c 
             	Where redwing__Contact__c =:u.ContactId and redwing__Status__c = 'Acquired' and Achievement_Type__c = 'Certifications'  
-            	ORDER BY redwing__Contact__r.Name,redwing__Achievement__r.Name ASC];
+            	ORDER BY redwing__Contact__r.Name,redwing__Achievement__r.Description__c ASC]; //DE2135 - Show description (from Achievement) instead of Achievement name
             	
             myCertList = new List<myCertWrapper>();
             for(redwing__Achievement_Assignment__c theAssignment: achievementAssignments)
@@ -34,8 +34,8 @@ public without sharing class PHSS_myCertifications
                 {
                   	expiredAchievement = false;
                 }
-                
-               myCertList.add(new myCertWrapper(theAssignment.redwing__Achievement__r.Name, theAssignment.QR_Code_Web_Address__c, theAssignment.redwing__Expiration_Date__c, expiredAchievement));
+               //DE2135 - Show description (from Achievement) instead of Achievement name 
+               myCertList.add(new myCertWrapper(theAssignment.redwing__Achievement__r.Description__c, theAssignment.QR_Code_Web_Address__c, theAssignment.redwing__Expiration_Date__c, expiredAchievement));
         }
         return myCertList;
         }

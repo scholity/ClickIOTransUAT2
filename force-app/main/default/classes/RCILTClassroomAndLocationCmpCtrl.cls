@@ -165,8 +165,16 @@ public without sharing class RCILTClassroomAndLocationCmpCtrl {
                             redwing__Location__r.redwing__City__c, toLabel(redwing__Location__r.redwing__Country__c),
                             redwing__Location__r.redwing__State__c, redwing__Location__r.redwing__Postal_Code__c, redwing__ILT_Class__r.redwing__Start_Date__c
                     FROM redwing__ILT_Session__c
-                    WHERE redwing__ILT_Class__c = :recId
-                    AND redwing__Date__c >= TODAY
+                    WHERE  redwing__ILT_Class__c = :recId
+                    // Hot fix - SJC - 02-21-2020 - The following filter on end date resulted in 'dancing balls'
+                    // when a class detail page was viewed in the community.  The issue was in two places, both
+                    // where the classroom location details are located in the page.  Removing this filter on
+                    // end date solved the issue.  It is not known what value this filter was intended to bring.
+                    //AND (
+                    //    (redwing__ILT_Class__r.redwing__End_Date__c >= TODAY AND redwing__Date__c >= TODAY)
+                    //    OR
+                    //    (redwing__ILT_Class__r.redwing__End_Date__c  < TODAY AND redwing__Date__c  < TODAY)
+                    //)
                     ORDER BY redwing__Date__c, redwing__Start_Time__c
             ];
 

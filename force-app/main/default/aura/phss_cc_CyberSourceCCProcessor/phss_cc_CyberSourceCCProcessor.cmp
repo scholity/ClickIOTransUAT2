@@ -144,10 +144,11 @@
                                          required="true" 
                                          value="{!v.bill_to_email}"
                                          class="always-validate" 
-                                         pattern="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+                                         pattern="^[a-zA-Z0-9\._%+\-~{|}`^?=/*'&amp;$#!]+@((([a-z\-0-9]+\.)+[a-zA-Z]{2,}))$"
                                          messageWhenPatternMismatch="Please enter a valid email address."
                                          messageWhenValueMissing="Please enter a valid email address."
                                          onchange="{!c.handleFormInputChanged}"/>
+                        <!-- ([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$ -->
                     </div>
                     <div class="slds-col slds-size_1-of-3"></div>
                 </div>
@@ -248,7 +249,7 @@
                                          label="City"
                                          required="true" 
                                          value="{!v.bill_to_address_city}"
-                                         pattern="[a-zA-Z0-9\s*\/#,-]+$"
+                                         pattern="[a-zA-Z0-9\s*\/#,'&amp;-]+$"
                                          messageWhenPatternMismatch = "Please enter a valid billing city."
                                          messageWhenValueMissing="Please enter a valid billing city."
                                          onchange="{!c.handleFormInputChanged}"/>

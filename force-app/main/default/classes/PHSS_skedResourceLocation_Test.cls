@@ -1,6 +1,10 @@
 @isTest 
 public class PHSS_skedResourceLocation_Test {
     @isTest static void TestAddDeleteInstructors() {
+        PHSS_Geolocation__c setting = new PHSS_Geolocation__c();
+        setting.PHSS_Geolocation_API_Key__c = 'AIzaSyAbiSkystXXjCtlOAtH6H-4Ej2GLn_EbNM';
+        insert setting;
+
         Map<string, sObject> mapTestData1 = skedDataSetup.setupCommonTestData();   
         
         sked__Resource__c instructor1 = (sked__Resource__c)mapTestData1.get('instructor1');

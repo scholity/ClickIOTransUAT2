@@ -321,9 +321,9 @@
                     //alert(component.get("v.offeringsPosted") + " == " + component.get("v.offeringId"));
                     if(component.get("v.offeringsPosted") == component.get("v.offeringId")){
                         if(component.get("v.offeringId") > 1){
-                            alert('Classes posted successfully!!!');
+                            alert('Class postings created!!!\n\nPlease allow up 48 hours for your Classes to appear on https://www.redcross.org/take-a-class.');
                         } else {
-                            alert('Class posted successfully!!!');
+                            alert('Class posting created!!!\n\nPlease allow up 48 hours for your Class to appear on https://www.redcross.org/take-a-class.');
                         }
                     }
 
@@ -593,5 +593,44 @@
             //alert("Location ID "+component.get('v.cpsWrap.locationId'));
         });
         $A.enqueueAction(action);
+    },
+    cleanUp : function (component,event,helper){
+        console.log("cleanUp");
+        var opptyId = component.get("v.oppIdParent");
+       
+        if (opptyId != null || opptyId != undefined){
+            var action = component.get("c.deleteOpportunity");
+           
+            action.setParams({
+                opptyId : opptyId
+            });
+            console.log("opptyId="+opptyId);
+            action.setCallback(this, function(response) {
+               
+                var state = response.getState();
+               
+                console.log(state);
+                if (state === "SUCCESS") {
+                    var storeResponse = response.getReturnValue();
+   
+                }
+                else if (state === "ERROR") {
+                   
+                    var errors = response.getError();
+                    if (errors) {
+                       
+                        if (errors[0] && errors[0].message) {
+                            console.log("Error message: " +
+                                        errors[0].message);
+                        }
+                    } else {
+                        console.log("Unknown error");
+                    }
+                }
+               
+            });
+           
+            $A.enqueueAction(action);
+        }
     },
 })

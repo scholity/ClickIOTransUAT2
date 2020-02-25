@@ -1,8 +1,11 @@
 @isTest
 private class PHSS_skedJobToILTClass_Test {
     @isTest static void testRecurringClass(){
+        PHSS_Geolocation__c setting = new PHSS_Geolocation__c();
+        setting.PHSS_Geolocation_API_Key__c = 'AIzaSyAbiSkystXXjCtlOAtH6H-4Ej2GLn_EbNM';
+        insert setting;
+
         sked__Location__c objLocation = new sked__Location__c();
-        
         objLocation.Name = 'Test Location';
         objLocation.sked__Type__c = 'Community';
         objLocation.Is_Active__c = true;        

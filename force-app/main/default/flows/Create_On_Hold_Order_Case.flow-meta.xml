@@ -319,10 +319,13 @@
             <conditions>
                 <leftValueReference>sOrder.ccrz__OrderStatus__c</leftValueReference>
                 <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>On Hold</stringValue>
+                </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>sOrder.Error_Message__c</leftValueReference>
-                <operator>EqualTo</operator>
+                <operator>NotEqualTo</operator>
                 <rightValue>
                     <stringValue>Over Credit Limit</stringValue>
                 </rightValue>

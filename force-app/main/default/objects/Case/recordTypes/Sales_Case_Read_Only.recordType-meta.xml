@@ -115,6 +115,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Charged incorrect price</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Community Cancellation</fullName>
             <default>false</default>
         </values>
@@ -140,6 +144,10 @@
         </values>
         <values>
             <fullName>Course Record-  Replacement Cert Request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Customer Dissatisfaction</fullName>
             <default>false</default>
         </values>
         <values>
@@ -184,6 +192,10 @@
         </values>
         <values>
             <fullName>New Registration</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No voucher created</fullName>
             <default>false</default>
         </values>
         <values>
@@ -2169,6 +2181,10 @@
         </values>
         <values>
             <fullName>Course Records</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Credit Adjustment</fullName>
             <default>false</default>
         </values>
         <values>

@@ -315,7 +315,7 @@
         </rules>
         <rules>
             <name>Is_On_Hold</name>
-            <conditionLogic>1 AND (2 OR 3 OR 4 OR 5)</conditionLogic>
+            <conditionLogic>(1 AND (2 OR 3 OR 5))  OR 4</conditionLogic>
             <conditions>
                 <leftValueReference>cntOnHold</leftValueReference>
                 <operator>GreaterThan</operator>

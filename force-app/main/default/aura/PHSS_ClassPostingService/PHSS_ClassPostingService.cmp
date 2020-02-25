@@ -1,7 +1,8 @@
 <aura:component implements = "force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:lightningQuickAction,flexipage:availableForRecordHome,force:hasSObjectName" access="global"
                 controller = "PHSS_CpsController">
-	<lightning:navigation aura:id="navService"/>
+    <aura:attribute name="pageReference" type="Object"/>
     <aura:handler   name = "init" value="{!this}" action = "{!c.doInit}" /> 
+    <lightning:navigation aura:id="navService"/> 
     <aura:handler   name="incrementProductCount"  event="c:phss_cc_ProductCountUpdateClone" action="{!c.productCountIncrement}"/>
     <aura:attribute name = "CCProductId"		  type = "String"  	default = ""/>
     <aura:attribute name = "LPName"				  type = "String"  	default = ""/>
@@ -86,13 +87,15 @@
                 <!--Header - Start -->
                 
                 <header class="slds-modal__header">
+                    <aura:if  isTrue="{!v.paymentComplete == false}" >
                     <button class	= "slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
                             title	= "Close"
-                            onclick = "{!c.cancel}">
+                            onclick = "{!c.cancelDropOpp}">
                         
                         <lightning:icon iconName="utility:close" class = "white"/>
                         <span class="slds-assistive-text">Close</span>
                     </button>
+                    </aura:if>
                     <h2 id		= "header43"
                         class	= "slds-text-heading_medium">
                         Red Cross Class Posting Request
@@ -101,7 +104,11 @@
                     <!--
                     <div align="right"><lightning:button variant="neutral" label="View Posted Offerings" onclick="{!c.callDashboard}"/></div>
                     <br/>
+					
+                    <div align="right"><lightning:button variant="neutral" label="View Posted Offerings" onclick="{!c.callDashboard}"/></div>
+                    <br/>
 					-->
+					
                     <!-- <div align="center" style="font-size:1.75em;color:red;"><b>DO NOT USE! Coming Soon, CPS will be available beginning December 10th</b></div> -->
                     <aura:renderIf isTrue="{!v.showError}">
                         <div class="errMsg">
@@ -691,9 +698,9 @@
                     
                     <div class="slds-col">
                             <aura:if isTrue="{!v.paymentComplete}">
-                           		<button aura:id="cancelButton" class=" slds-hidden slds-button slds-button_neutral customButtonRed" onclick="{!c.cancel}">Cancel</button>
+                           		<button aura:id="cancelButton" class=" slds-hidden slds-button slds-button_neutral customButtonRed" onclick="{!c.cancelDropOpp}">Cancel</button>
                             <aura:set attribute="else">
-                              	<button aura:id="cancelButton" class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancel}">Cancel</button>
+                              	<button aura:id="cancelButton" class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancelDropOpp}">Cancel</button>
                             </aura:set>
                           </aura:if>
                     </div>
@@ -725,9 +732,9 @@
                                 <button class="slds-button slds-button_neutral"
                                         onclick="{!c.cancel}" disabled="true" >
                                         <aura:if isTrue="{!v.offeringId > 1 }" >
-                                            Create Offerings
+                                            Click to post classes
                                         <aura:set attribute="else">
-                                            Create Offering
+                                            Click to post class
                                         </aura:set>    
                                         </aura:if>
                                 </button>

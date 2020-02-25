@@ -289,16 +289,32 @@ public class PHSS_VoucherTriggerHandler {
                 }
                 
                 list<voucher__c> lstVouchersToUpdate = new list<voucher__c>();
-                for(voucher__c vcr : lstvchrs){	
-                    if ((vcr.Status__c =='Issued' || vcr.Status__c =='Blocked' || vcr.Status__c == 'Void') && String.isBlank(vcr.User__c)) {
+
+                for(voucher__c vcr : lstvchrs){
+                    Boolean updateVoucher = false;
+                    voucher__c theUpdatedVoucher = new voucher__c();
+
+                    // Hot Fix - SJC - Dynamically change voucher status from Void to Blocked for regression purposes for load balancing
+                    // Vouchers should be in Blocked not Void status if not assigned to a student
+
+                    if (vcr.Status__c == 'Void' && String.isBlank(vcr.User__c)) {
+                        vcr.Status__c = 'Blocked';
+                        theUpdatedVoucher.Id = vcr.Id;
+                        theUpdatedVoucher.Status__c = 'Blocked';
+                        updateVoucher = true;
+                    }
+
+                    if ((vcr.Status__c =='Issued' || vcr.Status__c =='Blocked') && String.isBlank(vcr.User__c)) {
+                    //if ((vcr.Status__c =='Issued' || vcr.Status__c =='Blocked' || vcr.Status__c == 'Void') && String.isBlank(vcr.User__c)) {
                     	if (vcr.ILT_Class__c != null && vcr.ILT_Class__r.Skedulo_Parent_Job__c != null) {
 	                		// Block the remaining vouchers (Issued) for each oversold class in stack                     	
 	                        if(OversoldParentJobIds.contains(vcr.ILT_Class__r.Skedulo_Parent_Job__c) && vcr.status__c =='Issued'){
-			                	voucher__c theUpdatedVoucher = new voucher__c();
+			                	//voucher__c theUpdatedVoucher = new voucher__c();
 			                	theUpdatedVoucher.Id = vcr.Id;	                        	
-	                            //theUpdatedVoucher.status__c = 'Blocked';
-                                theUpdatedVoucher.status__c = 'Void';
-	                            lstVouchersToUpdate.add(theUpdatedVoucher);
+	                            theUpdatedVoucher.status__c = 'Blocked';
+                                //theUpdatedVoucher.status__c = 'Void';
+                                updateVoucher = true;
+	                            //lstVouchersToUpdate.add(theUpdatedVoucher);
 	                        }    
 	                        // Open up vouchers to the max remaining number of seats to sell, block all others
 	                        if(UndersoldParentJobIds.contains(vcr.ILT_Class__r.Skedulo_Parent_Job__c)) {  
@@ -307,22 +323,26 @@ public class PHSS_VoucherTriggerHandler {
                     	
 	                        	// If at least one, and this voucher is blocked, then reset to issued (else leave in blocked status)
 	                        	// If none, and this voucher is open (Issued), then reset to blocked (else leave in issued status)
-	                        	if (classOpenSeats > 0 && (vcr.status__c =='Blocked' || vcr.status__c == 'Void')){
-				                	voucher__c theUpdatedVoucher = new voucher__c();
+                                if (classOpenSeats > 0 && (vcr.status__c =='Blocked')){
+	                        	//if (classOpenSeats > 0 && (vcr.status__c =='Blocked' || vcr.status__c == 'Void')){
+				                	//voucher__c theUpdatedVoucher = new voucher__c();
 				                	theUpdatedVoucher.Id = vcr.Id;	                        	
-		                            theUpdatedVoucher.status__c = 'Issued'; 
-		                            lstVouchersToUpdate.add(theUpdatedVoucher);		                        		                        		
+		                            theUpdatedVoucher.status__c = 'Issued';
+                                    updateVoucher = true;
+		                            //lstVouchersToUpdate.add(theUpdatedVoucher);
 	                        	} else if (classOpenSeats <= 0 && vcr.status__c =='Issued'){
-				                	voucher__c theUpdatedVoucher = new voucher__c();
+				                	//voucher__c theUpdatedVoucher = new voucher__c();
 				                	theUpdatedVoucher.Id = vcr.Id;	 	                        		
-//		                            theUpdatedVoucher.status__c = 'Blocked';
-		                            theUpdatedVoucher.status__c = 'Void';
-		                            lstVouchersToUpdate.add(theUpdatedVoucher);
+		                            theUpdatedVoucher.status__c = 'Blocked';
+		                            //theUpdatedVoucher.status__c = 'Void';
+                                    updateVoucher = true;
+		                            //lstVouchersToUpdate.add(theUpdatedVoucher);
 	                        	}
 		                        if (classOpenSeats > 0) lstClassOpenSeats.put(vcr.ILT_Class__c, --classOpenSeats);	                        	
 	                        }   
                     	}
-                    }  
+                    }
+                    if (updateVoucher) lstVouchersToUpdate.add(theUpdatedVoucher);
                 }
                 //set the flag to true so that it will not call recursively
                 PHSS_VoucherTriggerHandler.setAlreadyUpdatedVouchers();

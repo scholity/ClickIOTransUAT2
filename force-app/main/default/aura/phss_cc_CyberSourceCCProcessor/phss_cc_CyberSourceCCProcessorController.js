@@ -93,7 +93,7 @@
             if(firstChar == "4"){ //visa
                 cardType = "Visa";
             }
-            else if(firstChar == "5"){ //mastercard
+            else if(firstChar == "5" || firstChar == "2"){ //mastercard
                 cardType = "Mastercard";
             }
             else if(firstChar == "3"){ //amex
