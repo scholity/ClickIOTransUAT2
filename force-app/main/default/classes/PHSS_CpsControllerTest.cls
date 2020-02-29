@@ -153,6 +153,8 @@ private class PHSS_CpsControllerTest {
                 PHSS_CpsController.getDisplayPaymentInfo(oppId);
                 
                 PHSS_CpsController.postClass(jsonStr);
+                
+                PHSS_CpsController.createSDSjob(oppId);
 
             }
             Test.stopTest();

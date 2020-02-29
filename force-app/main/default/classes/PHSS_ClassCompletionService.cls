@@ -1,19 +1,22 @@
 @RestResource(urlMapping='/PHSSClassCompletion/batch/*')
-global with sharing class PHSS_ClassCompletionService {
+global without sharing class PHSS_ClassCompletionService {
 
     private static final Boolean DEBUG_MODE     = true;
 
     private static final String EOL_WINDOWS     = '\r\n';
     private static final String EOL_UNIX        = '\n';
     private static final String EOL_MAC_OLD     = '\r';
-
+    
     // error messages
     private static final String NO_DATA_FOUND   = 'No data found.';
+    private static final String FAILED_TO_FETCH_STUDENT_ACHIEVEMENTS = 'Failed to Fetch student achievements.';
+    
 
 
     @HttpPost
     global static String process() {
-
+        List<PHSS_ClassCompletionResponseWrapper> responsePayload = new List<PHSS_ClassCompletionResponseWrapper>();
+        
         String buffer = EncodingUtil.base64Decode(EncodingUtil.base64Encode(RestContext.request.requestBody)).toString();
         if (String.isBlank(buffer)) {
             return NO_DATA_FOUND;
@@ -25,6 +28,74 @@ global with sharing class PHSS_ClassCompletionService {
 
             PHSS_ClassCompletionBatch batch = new PHSS_ClassCompletionBatch();
             result = batch.processData(records);
+            Map<String, CCS_Batch_Class__c> batchMap = batch.getBatchMap();
+            
+           	// iterate through batches to create process log
+            for (String batchName : batchMap.keySet())
+            {
+                CCS_Batch_Class__c batchClass = batchMap.get(batchName);
+				/*
+                Long startTime = DateTime.now().getTime();
+                Long finishTime = DateTime.now().getTime();
+                while ((finishTime - startTime) < 9000) {
+                    //sleep for 9s
+                    finishTime = DateTime.now().getTime();
+                }
+				*/
+                //Build Student ResponsePayload
+                //
+                try {
+                    List<redwing__Achievement_Assignment__c> studentAchievements = [
+                        SELECT 
+                        Account__c,
+                        Achievement_Type__c,
+                        CreatedById,
+                        CreatedDate,
+                        Firstname__c,
+                        ILT_Class__c,
+                        Lastname__c,
+                        Name,Phone__c,
+                        QR_Code_Identifier__c,
+                        QR_Code_Web_Address__c,
+                        QR_Code__c,
+                        redwing__Acquisition_Date__c,
+                        redwing__Status__c,
+                        redwing__User__c,Request_Type__c,
+                        Student_name__c 
+                        FROM redwing__Achievement_Assignment__c 
+                        Where 
+                        Achievement_Type__c = 'Certifications' 
+                        And
+                        ILT_Class__c = :batchClass.ILT_Class__c
+                    ];
+                    
+                    if (studentAchievements != null && studentAchievements.size() > 0) {
+                        
+                        for (redwing__Achievement_Assignment__c studentAchievement : studentAchievements) {
+                            
+                                PHSS_ClassCompletionResponseWrapper studentWrapper = new PHSS_ClassCompletionResponseWrapper();
+                                studentWrapper.account_Id = batchClass.Account__c;
+                                studentWrapper.batch_Id = batchClass.Name;
+                                studentWrapper.offering_Id = batchClass.Offering_Id_Batch_Class__c;
+                                studentWrapper.cre_ilt_class_Id = String.valueOf(batchClass.ILT_Class__c);
+                                studentWrapper.student_firstName = studentAchievement.Firstname__c;
+                                studentWrapper.student_lastName = studentAchievement.Lastname__c;
+                                studentWrapper.student_achievement = studentAchievement.redwing__Status__c;
+                                studentWrapper.student_achievement_createDate = String.valueOf(studentAchievement.redwing__Acquisition_Date__c);
+                                studentWrapper.student_certCompletionQRCode = studentAchievement.QR_Code_Identifier__c;
+                                studentWrapper.student_notes = '';
+                                responsePayload.add(studentWrapper);
+							
+                        }
+						
+                    }
+        			
+                    
+                } catch (Exception e) {
+                    throw new phss_cc_Exception(FAILED_TO_FETCH_STUDENT_ACHIEVEMENTS, e);
+                    //throw new phss_cc_Exception(JSON.serialize(batchClass), e);
+                }
+	    }
 
 
         } catch (Exception e) {
@@ -35,7 +106,8 @@ global with sharing class PHSS_ClassCompletionService {
             return String.valueOf(result);
         }
 
-        return 'Done';
+        String myJson = JSON.serializePretty(responsePayload);
+        return myJson.replaceAll('\"', '\'');
     }
 
 

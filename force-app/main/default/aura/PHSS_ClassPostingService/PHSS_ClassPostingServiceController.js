@@ -468,7 +468,19 @@
                     helper.updateProductQuantityMap(component,event,helper);
     
                     var offeringStartDate = $A.localizationService.formatDate(component.get("v.cpsWrap.sessionList[0].classDate"), "MM/dd/yyyy");
-                    alert("Offering " + component.get("v.cpsWrap.courseName") + " " +  offeringStartDate + " has been add to your shopping cart.\n\nTo continue adding offerings to your shopping cart click on the \"Add To Cart\" button. When you are finished adding offerings, click on the \"Next\" button to review your Order Summary.");
+                    //alert("Offering " + component.get("v.cpsWrap.courseName") + " " +  offeringStartDate + " has been add to your shopping cart.\n\nTo continue adding offerings to your shopping cart click on the \"Add To Cart\" button. When you are finished adding offerings, click on the \"Next\" button to review your Order Summary.");
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        title : "Offering " + component.get("v.cpsWrap.courseName") + " " +  offeringStartDate + " has been add to your shopping cart.",
+                        message: "To continue adding offerings to your shopping cart click on the \"Add To Cart\" button. When you are finished adding offerings, click on the \"Next\" button to review your Order Summary.",
+                        messageTemplate: 'Record {0} created! See it {1}!',
+                        duration:' 5000',
+                        key: 'info_alt',
+                        type: 'success',
+                        mode: 'dismissible'
+                    });
+                    toastEvent.fire();
+                    
                     helper.clearForm(component,event,helper);
                     component.set("v.stepNumber", "One");    
                 }
@@ -497,26 +509,8 @@
     },
     
     cancel : function(component, event, helper){
-        //helper.clearForm(component,event,helper);
-        
-        var madePayment = component.get("v.paymentComplete");
-        
-        if(madePayment)            
-        {
-            var button = component.find("cancelButton");
-        	$A.util.addClass(button.getElement(), 'slds-hidden');
-            /*
-            var yes = confirm("You have already submitted yor payment. If you Cancel now, the offering(s) you paid for will Not be Posted on RCO! To post your offering(s) click on Cancel on the dialog window and then click on Checkout at the bottom right.");
-       
-            if(yes){
-                $A.get("e.force:refreshView").fire();
-                component.set("v.stepNumber", "Zero");
-            }
-            */
-        } else {
-        	$A.get("e.force:refreshView").fire();
-        	component.set("v.stepNumber", "Zero");
-        }
+        $A.get("e.force:refreshView").fire();
+        component.set("v.stepNumber", "Zero");
     },
     cancelDropOpp : function(component, event, helper){
         helper.cleanUp(component, event, helper);
@@ -619,6 +613,24 @@
         component.set("v.paymentComplete", true);
 
         console.log('check if payment completed'+component.get("v.paymentComplete"));
+        
+                
+		//alert("myProductQuantityMap "+ JSON.stringify(component.get("v.myProductQuantityMap")) );
+        var action = component.get("c.updateCartProducts");
+        action.setParams({opportunitySfid : component.get("v.oppIdParent"),
+                          productQuantityMap : component.get("v.myProductQuantityMap")});
+        action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                
+                var storeResponse = response.getReturnValue();
+                console.log("Cart updated"+storeResponse);
+            }
+        });
+        $A.enqueueAction(action);
+
+        helper.createClass(component, event, helper);
+        //$A.get("e.force:refreshView").fire();
 
     },
     callDashboard : function(component, event, helper){

@@ -1295,6 +1295,7 @@
     <tabs>CCS_Batch_Class__c</tabs>
     <tabs>CCS_Batch_Instructor__c</tabs>
     <tabs>CCS_Batch_Participant__c</tabs>
+    <tabs>Open_Order_Processing__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>ARC_Service_Console_UtilityBar</utilityBar>
     <workspaceConfig>
@@ -1309,6 +1310,9 @@
         </mappings>
         <mappings>
             <tab>Long_Article__kav</tab>
+        </mappings>
+        <mappings>
+            <tab>Open_Order_Processing__c</tab>
         </mappings>
         <mappings>
             <tab>Student_Bulk_Upload__c</tab>

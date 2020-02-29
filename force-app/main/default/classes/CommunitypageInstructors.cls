@@ -81,20 +81,20 @@ public without sharing class CommunitypageInstructors
         if(((List<Id>)JSON.deserializeStrict(accId ,List<Id>.class)).size () > 0 && ((List<Id>)JSON.deserializeStrict(instId ,List<Id>.class)).size () == 0 )
         {
             List<Id> accIdsFromClient = (List<Id>)JSON.deserializeStrict(accId ,List<Id>.class);
-            sQuery =  'select id, Name, ContactId from User where ContactId in (SELECT ContactId FROM AccountContactRelation WHERE AccountId In ( \'' +String.join(accIdsFromClient, '\',\'') +'\' )) order by createdDate DESC limit 100';
+            sQuery =  'select id, Name, ContactId from User where ContactId in (SELECT ContactId FROM AccountContactRelation WHERE AccountId In ( \'' +String.join(accIdsFromClient, '\',\'') +'\' )) order by createdDate DESC limit 50000'; //DE2552 - Change limit to 50K
             
         }
         else if(((List<Id>)JSON.deserializeStrict(instId ,List<Id>.class)).size () > 0 && ((List<Id>)JSON.deserializeStrict(accId ,List<Id>.class)).size () == 0)
         {
             List<Id> userIdsFromClient = (List<Id>)JSON.deserializeStrict(instId ,List<Id>.class);
-            sQuery =  'select id, Name,ContactId from User where ContactId in (SELECT ContactId FROM AccountContactRelation WHERE AccountId IN :SetAccIDs) and id In( \'' + String.join(userIdsFromClient, '\',\'') + '\') order by createdDate DESC limit 100';
+            sQuery =  'select id, Name,ContactId from User where ContactId in (SELECT ContactId FROM AccountContactRelation WHERE AccountId IN :SetAccIDs) and id In( \'' + String.join(userIdsFromClient, '\',\'') + '\') order by createdDate DESC limit 50000'; //DE2552 - Change limit to 50K
             System.debug('Contactlist >>>>>>>>>>>'+Database.query(sQuery));
         }
         else
         {
             List<Id> accIdsFromClient = (List<Id>)JSON.deserializeStrict(accId ,List<Id>.class);
             List<Id> userIdsFromClient = (List<Id>)JSON.deserializeStrict(instId ,List<Id>.class);
-            sQuery =  'select id, Name,ContactId from User where ContactId in (SELECT ContactId FROM AccountContactRelation WHERE AccountId In ( \'' + String.join(accIdsFromClient, '\',\'') +'\')) and id In (\'' + String.join(userIdsFromClient, '\',\'') +'\') order by createdDate DESC limit 100';
+            sQuery =  'select id, Name,ContactId from User where ContactId in (SELECT ContactId FROM AccountContactRelation WHERE AccountId In ( \'' + String.join(accIdsFromClient, '\',\'') +'\')) and id In (\'' + String.join(userIdsFromClient, '\',\'') +'\') order by createdDate DESC limit 50000'; //DE2552 - Change limit to 50K
         }
         lstOfRecords = Database.query(sQuery);
         

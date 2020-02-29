@@ -731,22 +731,12 @@
                             <aura:if  isTrue="{!v.paymentComplete == false }" >
                                 <button class="slds-button slds-button_neutral"
                                         onclick="{!c.cancel}" disabled="true" >
-                                        <aura:if isTrue="{!v.offeringId > 1 }" >
-                                            Click to post classes
-                                        <aura:set attribute="else">
-                                            Click to post class
-                                        </aura:set>    
-                                        </aura:if>
+ 										Submit
                                 </button>
                                 <aura:set attribute="else">
                                     <button class="slds-button slds-button_neutral customButton"
-                                            onclick="{!c.createClass}" >
-                                            <aura:if isTrue="{!v.offeringId > 1 }" >
-                                                Click to post classes
-                                            <aura:set attribute="else">
-                                                Click to post class
-                                            </aura:set>    
-                                            </aura:if>
+                                            onclick="{!c.cancel}" >
+										Submit
                                     </button>
                                 </aura:set>
                             </aura:if>

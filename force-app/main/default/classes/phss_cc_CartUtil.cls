@@ -564,6 +564,9 @@ public with sharing class phss_cc_CartUtil {
 
             if (currCart.containsKey(CART_ITEMS_KEY)) {
                 List<Map<String, Object>> cartItems = (List<Map<String, Object>>) currCart.get(CART_ITEMS_KEY);
+                //debug
+                system.debug('@@@cartItems: '+cartItems);
+                //debug
                 for (Map<String, Object> cartItem : cartItems) {
                     String productSfid = (String) cartItem.get(CART_ITEM_PRODUCT_SFID_KEY);
                     if ((String) cartItem.get(CART_ITEM_TYPE) == CART_ITEM_TYPE_MAJOR) {

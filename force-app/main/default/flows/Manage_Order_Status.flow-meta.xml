@@ -724,12 +724,27 @@
     <decisions>
         <name>Available_Credit</name>
         <label>Available Credit</label>
-        <locationX>529</locationX>
-        <locationY>645</locationY>
+        <locationX>530</locationX>
+        <locationY>644</locationY>
         <defaultConnector>
             <targetReference>Over_Credit_Limit</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Over Available Credit Limit</defaultConnectorLabel>
+        <rules>
+            <name>Already_in_Process</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>FlagInProcess</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Prepare_for_Course_Loop</targetReference>
+            </connector>
+            <label>Already in Process</label>
+        </rules>
         <rules>
             <name>Is_Invalid_Contract</name>
             <conditionLogic>and</conditionLogic>
@@ -809,21 +824,6 @@
                 <targetReference>Prepare_for_Course_Loop</targetReference>
             </connector>
             <label>Is NOT PO</label>
-        </rules>
-        <rules>
-            <name>Already_in_Process</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>FlagInProcess</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Prepare_for_Course_Loop</targetReference>
-            </connector>
-            <label>Already in Process</label>
         </rules>
     </decisions>
     <decisions>
@@ -1473,7 +1473,7 @@
             <label>IfReserved</label>
         </rules>
     </decisions>
-    <description>Added Individual Account Record Type Check - added additional fields to sOrder to allow for reducing SOQLs in On Hold Check - Changed Online Order Flow - On Hold no longer included in Available Credit calculation</description>
+    <description>Added Individual Account Record Type Check - added additional fields to sOrder to allow for reducing SOQLs in On Hold Check - Changed Online Order Flow - On Hold no longer included in Available Credit calculation - Modified order of On  Hold bybass</description>
     <formulas>
         <name>AddtoCourse</name>
         <dataType>Number</dataType>

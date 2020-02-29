@@ -812,6 +812,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PHSS_ClassCompletionResponseWrapper</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PHSS_ClassCompletionService</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -6571,6 +6575,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Case.Proof_Of_Payment_Attached__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Purchase_Order__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -17337,6 +17346,10 @@
     <tabVisibilities>
         <tab>Offering__c</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Open_Order_Processing__c</tab>
+        <visibility>DefaultOff</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>PHSS_Certification_Provisioning_Clone__c</tab>

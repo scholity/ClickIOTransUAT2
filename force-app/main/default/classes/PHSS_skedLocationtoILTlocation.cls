@@ -28,6 +28,14 @@ public without sharing class PHSS_skedLocationtoILTlocation {
                 rl.redwing__State__c = parsedAddress[3];
                 rl.redwing__Postal_Code__c = parsedAddress[4];
                 rl.redwing__Country__c = parsedAddress[5];
+
+                if (skld.sked__GeoLocation__Longitude__s != null && skld.sked__GeoLocation__Latitude__s != null) {
+                    rl.GeoLocation__Longitude__s = skld.sked__GeoLocation__Longitude__s;
+                    rl.GeoLocation__Latitude__s = skld.sked__GeoLocation__Latitude__s;
+                    rl.redwing__Directions__c = String.ValueOf(skld.sked__GeoLocation__Longitude__s)+' '+String.ValueOf(skld.sked__GeoLocation__Latitude__s);
+                } else {
+                    rl.redwing__Directions__c = '';
+                }
                 
                 rl.Skedulo_Is_Active__c = skld.Is_Active__c;
                 rl.Name = skld.Name;
@@ -43,11 +51,14 @@ public without sharing class PHSS_skedLocationtoILTlocation {
             Database.upsert(rdILTList, f, false);
 
             // DE2532 - Obtain geocoordinates for this address (if available)
+            // Disabled - Skedulo is performing the same callout when a Skedulo location is created or updated
+            /*
             if (!Test.isRunningTest()) {
                 for (redwing__ILT_Location__c theLocation : rdILTList) {
                     PHSS_Geolocation.getGeocode(theLocation.Id);
                 }
             }
+            */
         }
     }
     

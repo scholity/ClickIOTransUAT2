@@ -207,8 +207,8 @@ private class skedJobToILTClass_Test {
                                                          AND ccrz__PriceList__r.ccrz__Enabled__c = True AND ccrz__PriceList__r.ccrz__Storefront__c = : ccpl.ccrz__Storefront__c];
         System.debug('pricelistITems'+priceListItems);
         
-        //job.Location_Confirmed__c = true; // invoke integration logic to create class and session and ilt instructor     
-        //update job; 
+        job.Location_Confirmed__c = true; // invoke integration logic to create class and session and ilt instructor     
+        update job; 
         job.sked__Job_Status__c = 'Cancelled'; 
         update job;
 
