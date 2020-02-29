@@ -2,8 +2,10 @@
  * Created by jbarker on 2019-12-17.
  */
 
-public with sharing class PHSS_ClassCompletionStudent
+public without sharing class PHSS_ClassCompletionStudent
 {
+    
+    
 
     //private static final String FAILED_TO_FETCH_USERS_BY_EMAIL_ADDRESS = 'Failed to fetch users by email address.';
 
@@ -51,7 +53,7 @@ public with sharing class PHSS_ClassCompletionStudent
             }
 
             List<redwing__Achievement_Assignment__c> AchievementAssignmentList = new List<redwing__Achievement_Assignment__c>();
-
+            
             for (CCS_Batch_Participant__c participant : batchParticipants)
             {    
                 if (mapTrainingPlanWithTrainingPlanAchievements.containskey(learningPlanId))
@@ -76,7 +78,7 @@ public with sharing class PHSS_ClassCompletionStudent
                         if (participant.Mastery_Status__c == 'Successful')
                         {
                             rac.redwing__Status__c                  = 'OnHold';
-                            rac.redwing__Acquisition_Date__c        = System.today();       // Use ILT Class close date
+                            rac.redwing__Acquisition_Date__c        = batchClass.Course_End_Date__c;       // Use ILT Class close date
                         }
                         
                         rac.ILT_Class__c                            = trainingClass.Id;
@@ -88,18 +90,21 @@ public with sharing class PHSS_ClassCompletionStudent
                         AchievementAssignmentList.add(rac);
 
                         System.debug('AchievementAssignmentListvalue '+AchievementAssignmentList);
+                        
                     }
                 }
-            }
-
+            } 
+ 
             if(AchievementAssignmentList.size() > 0)
             {
                 insert AchievementAssignmentList;
             }
+                        
         }
 
 
         //END
+        
 
 /*        List<Contact> students;
 

@@ -312,7 +312,7 @@
             <label>Class Ratio</label>
         </rules>
     </decisions>
-    <description>Updated Instructor Calc added Fulfillment Item Creation</description>
+    <description>Updated Instructor Calc added Fulfillment Item Creation - DE2607 Fixed incorrect quantity</description>
     <formulas>
         <name>fGreatestQty</name>
         <dataType>Number</dataType>
@@ -480,7 +480,7 @@
         <inputAssignments>
             <field>ccrz__OriginalQuantity__c</field>
             <value>
-                <elementReference>outOrderItem.ccrz__Quantity__c</elementReference>
+                <elementReference>fGreatestQty</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -589,7 +589,7 @@
         <inputAssignments>
             <field>Quantity__c</field>
             <value>
-                <elementReference>outOrderItem.ccrz__Quantity__c</elementReference>
+                <elementReference>fGreatestQty</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

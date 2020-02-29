@@ -17,6 +17,9 @@
         } else {
             component.set("v.header", "Login");
             component.set("v.subheader", "To log in, please enter the email address you use for your American Red Cross Training Services account.");
+            component.set("v.disclaimer", "You may need to login to your account before checkout");
+			component.set("v.disclaimertag", "Why do I have to do this?"); 
+            component.set("v.disclaimerhelp", "The email you have entered matches an existing account on the site, to continue you will need to login.  If you don't know your password, please reset the password by clicking \"Forgot password\" link.");
         }
     }
 })

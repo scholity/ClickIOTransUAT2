@@ -301,7 +301,11 @@ public with sharing class phss_cc_OrderUtil {
                 placeOrderRequest.put(ccrz.ccApiCart.TRANSPAYMENTDATA, transactionPaymentData);
                 placeOrderRequest.put(ccrz.ccApiCart.PAYMENTRESULT, paymentResult);
             }
-
+            //DEBUG
+            for(String s : placeOrderRequest.keySet()){
+                system.debug('@@@'+s+': '+placeOrderRequest.get(s));
+            }
+            //DEBUG
             Map<String, Object> placeOrderResponse = ccrz.ccApiCart.place(placeOrderRequest);
             Boolean isSuccess = (Boolean)placeOrderResponse.get(ccrz.ccApi.SUCCESS);
             if (isSuccess) {

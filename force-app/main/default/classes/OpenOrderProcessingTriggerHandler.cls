@@ -50,7 +50,8 @@ public with sharing class OpenOrderProcessingTriggerHandler {
 
         List<Open_Order_Processing__c> invoicedOpenOrderProcessing = new List<Open_Order_Processing__c>();
 
-        for(Id oopId : newOpenOrderProcessingMap.keySet()){
+        for(Id oopId : newOpenOrderProcessingMap.keySet())
+        {
             Open_Order_Processing__c newOOP = newOpenOrderProcessingMap.get(oopId);
             if(OOP_STATUS_INVOICED.equalsIgnoreCase(newOOP.Status__c)){ //check new status = Invoiced
                 Open_Order_Processing__c oldOOP = ( oldOpenOrderProcessingMap != null ? oldOpenOrderProcessingMap.get(oopId) : null );
@@ -61,61 +62,127 @@ public with sharing class OpenOrderProcessingTriggerHandler {
                     invoicedOpenOrderProcessing.add(newOOP);
                 }
             }
-            system.debug('@@@invoicedOpenOrderProcessing: '+invoicedOpenOrderProcessing);
-            if(!invoicedOpenOrderProcessing.isEmpty()){
-                Set<String> ccOrderNames = new Set<String>();
-                Set<Id> accountIds = new Set<Id>();
-                for(Open_Order_Processing__c oop : invoicedOpenOrderProcessing){
-                    ccOrderNames.add(oop.CC_Order__c);
-                    accountIds.add(oop.SFDC_Account__c);
-                }
-                
-                List<ccrz__E_Order__c> ccOrders = new List<ccrz__E_Order__c>([
-                    SELECT Id, Name, ccrz__Account__c, ccrz__TotalAmount__c
-                    FROM ccrz__E_Order__c
-                    WHERE Name IN :ccOrderNames
-                ]);
-                
-                Map<String, ccrz__E_Order__c> ccOrderMap = new Map<String, ccrz__E_Order__c>();
-                for(ccrz__E_Order__c ccOrder : ccOrders){
-                    ccOrderMap.put(ccOrder.Name, ccOrder);
-                }
-                
-                Map<Id, Account> accountMap = new Map<Id, Account>([
-                    SELECT Id, Account_Status__c, Open_Order_Amount__c
-                    FROM Account
-                    WHERE Id IN :accountIds
-                ]);
-                
-                List<Account> accountsToUpdate = new List<Account>();
-                Map<Id, String> oopErrorMap = new Map<Id, String>();
-                List<Id> oopSuccesses = new List<id>();
-                for(Open_Order_Processing__c oop : invoicedOpenOrderProcessing){
-                    if(ccOrderMap.containsKey(oop.CC_Order__c)){ //has an order
-                        if(accountMap.containsKey(oop.SFDC_Account__c)){ //has an account
-                            Account thisAccount = accountMap.get(oop.SFDC_Account__c);
-                            ccrz__E_Order__c thisOrder = ccOrderMap.get(oop.CC_Order__c);
-                            Decimal orderAmount = thisOrder.ccrz__TotalAmount__c == null ? 0 : thisOrder.ccrz__TotalAmount__c;
-                            Decimal accountTotal = thisAccount.Open_Order_Amount__c == null ? 0 : thisAccount.Open_Order_Amount__c;
-                            Decimal newTotal = accountTotal - orderAmount;
-                            thisAccount.Open_Order_Amount__c = newTotal;
-                            accountsToUpdate.add(thisAccount);
-                            oopSuccesses.add(oop.Id);
-                        }
-                        else{ //no account found, add error
-                            oopErrorMap.put(oop.Id, Label.Open_Order_Processing_Error_No_Account);
-                        }
-                    }
-                    else{ //no order found, add error
-                        oopErrorMap.put(oop.Id, Label.Open_Order_Processing_Error_No_Order);
-                    }
-                }
-                if(!accountsToUpdate.isEmpty()){
-                    update accountsToUpdate;
-                }
-                updateOpenOrderProcessingAsync(oopSuccesses, oopErrorMap);
-            }
         }
+
+        system.debug('@@@invoicedOpenOrderProcessing: '+invoicedOpenOrderProcessing);
+        
+        if(!invoicedOpenOrderProcessing.isEmpty())
+        {
+            //Set<String> ccOrderNames = new Set<String>();
+            Set<Id> fiIds                   = new Set<Id>();
+            Map<Id, String> oopErrorMap     = new Map<Id, String>();
+            Map<Id, Id> fiToOopMap          = new Map<Id, Id>();
+
+            for(Open_Order_Processing__c oop : invoicedOpenOrderProcessing)
+            {
+                //ccOrderNames.add(oop.CC_Order__c);
+                if(oop.SFDC_Account__c instanceof Id)
+                {
+                    String sObjName = Id.valueOf(oop.SFDC_Account__c).getSObjectType().getDescribe().getName();
+
+                    system.debug('***sObjName***'+sObjName);
+
+                    if(sObjName == 'Fulfillment_Item__c')
+                    {
+                        fiIds.add(oop.SFDC_Account__c);
+                        fiToOopMap.put(oop.SFDC_Account__c, oop.Id);
+                    }
+                }
+                else
+                {
+                    oopErrorMap.put(oop.Id, Label.Open_Order_Processing_Error_No_Order);
+                }
+            }
+
+            system.debug('***fiIds***' +fiIds);
+            system.debug('***fiToOopMap***' +fiToOopMap);
+
+            List<Fulfillment_Item__c> fulfilementItemList = [SELECT Id,
+                                                                    Order_Item__c,
+                                                                    Order_Item__r.ccrz__ItemTotal__c,
+                                                                    Order__r.ccrz__Account__c,
+                                                                    Order__r.ccrz__Account__r.Open_Order_Amount__c
+                                                               FROM Fulfillment_Item__c
+                                                              WHERE Id IN : fiIds];
+
+
+            List<Account> accountsToUpdate  = new List<Account>();
+            List<Id> oopSuccesses           = new List<id>();
+
+            for(Fulfillment_Item__c fi : fulfilementItemList)
+            {
+                if(fi.Order__r.ccrz__Account__c != null)
+                {
+                    Account thisAccount                 = new Account();
+                    thisAccount.Id                      = fi.Order__r.ccrz__Account__c;
+                    Decimal orderAmount                 = fi.Order_Item__r.ccrz__ItemTotal__c == null ? 0 : fi.Order_Item__r.ccrz__ItemTotal__c;
+                    Decimal accountTotal                = fi.Order__r.ccrz__Account__r.Open_Order_Amount__c == null ? 0 : fi.Order__r.ccrz__Account__r.Open_Order_Amount__c;
+                    Decimal newTotal                    = accountTotal - orderAmount;
+                    thisAccount.Open_Order_Amount__c    = newTotal;
+                    
+                    accountsToUpdate.add(thisAccount);
+                    oopSuccesses.add(fiToOopMap.get(fi.Id));
+                }
+                else
+                {
+                    oopErrorMap.put(fiToOopMap.get(fi.Id), Label.Open_Order_Processing_Error_No_Account);
+                }
+            }
+            
+            /*List<ccrz__E_Order__c> ccOrders = new List<ccrz__E_Order__c>([
+                SELECT Id, Name, ccrz__Account__c, ccrz__TotalAmount__c, ccrz__Account__r.Open_Order_Amount__c
+                FROM ccrz__E_Order__c
+                WHERE Name IN :ccOrderNames
+            ]);
+            
+            Map<String, ccrz__E_Order__c> ccOrderMap = new Map<String, ccrz__E_Order__c>();
+            for(ccrz__E_Order__c ccOrder : ccOrders){
+                ccOrderMap.put(ccOrder.Name, ccOrder);
+            }*/
+            
+            /*Map<Id, Account> accountMap = new Map<Id, Account>([
+                SELECT Id, Account_Status__c, Open_Order_Amount__c
+                FROM Account
+                WHERE Id IN :accountIds
+            ]);
+            
+            //List<Account> accountsToUpdate  = new List<Account>();
+            //Map<Id, String> oopErrorMap     = new Map<Id, String>();
+            //List<Id> oopSuccesses           = new List<id>();
+
+            for(Open_Order_Processing__c oop : invoicedOpenOrderProcessing)
+            {
+                if(oop.SFDC_Account__c != null)
+                { //has an order
+                    //if(accountMap.containsKey(oop.SFDC_Account__c)){ //has an account
+                        //ccrz__E_Order__c thisOrder          = ccOrderMap.get(oop.CC_Order__c);
+                        
+                        Account thisAccount                 = new Account();
+                        //thisAccount.Id                      = thisOrder.ccrz__Account__c;
+                        //Account thisAccount                 = thisOrder.ccrz__Account__c; //accountMap.get(oop.SFDC_Account__c);
+                        //Decimal orderAmount                 = thisOrder.ccrz__TotalAmount__c == null ? 0 : thisOrder.ccrz__TotalAmount__c;
+                        //Decimal accountTotal                = thisOrder.ccrz__Account__r.Open_Order_Amount__c == null ? 0 : thisOrder.ccrz__Account__r.Open_Order_Amount__c;
+                        //Decimal newTotal                    = accountTotal - orderAmount;
+                        
+                        //thisAccount.Open_Order_Amount__c    = newTotal;
+
+                        accountsToUpdate.add(thisAccount);
+                        oopSuccesses.add(oop.Id);
+                    }
+                    else{ //no account found, add error
+                        oopErrorMap.put(oop.Id, Label.Open_Order_Processing_Error_No_Account);
+                    }
+                }
+                else{ //no order found, add error
+                    oopErrorMap.put(oop.Id, Label.Open_Order_Processing_Error_No_Order);
+                }
+            }*/
+            if(!accountsToUpdate.isEmpty()){
+                update accountsToUpdate;
+            }
+            updateOpenOrderProcessingAsync(oopSuccesses, oopErrorMap);
+        }
+        //}
     }
 
     /**
@@ -130,17 +197,18 @@ public with sharing class OpenOrderProcessingTriggerHandler {
         for(Id oopId : successes){
             oopToUpdate.add(
                 new Open_Order_Processing__c(
-                    Id = oopId,
-                    Status__c = OOP_STATUS_UPDATED
+                    Id                  = oopId,
+                    Status__c           = OOP_STATUS_UPDATED,
+                    Error_Message__c    = null
                 )
             );
         }
         for(Id oopId : errors.keySet()){
             oopToUpdate.add(
                 new Open_Order_Processing__c(
-                    Id = oopId,
-                    Status__c = OOP_STATUS_ERROR,
-                    Error_Message__c = errors.get(oopId)
+                    Id                  = oopId,
+                    Status__c           = OOP_STATUS_ERROR,
+                    Error_Message__c    = errors.get(oopId)
                 )
             );
         }

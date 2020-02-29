@@ -12,6 +12,18 @@
     font-family: Arial;
 }
 
+.THIS .disclaimer {
+    font-size: 16px;
+    font-family: Arial;
+}
+
+.THIS .disclaimertag {
+    font-size: 13px;
+    font-family: Arial;
+    text-align: right;
+    color: red;
+}
+
 .THIS.wrapperdiv {
     text-align: center;
     padding-bottom: 40px;

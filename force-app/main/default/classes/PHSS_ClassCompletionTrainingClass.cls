@@ -2,7 +2,7 @@
  * Created by jbarker on 2019-12-16.
  */
 
-public with sharing class PHSS_ClassCompletionTrainingClass
+public without sharing class PHSS_ClassCompletionTrainingClass
 {
 
     private static final String EVENT_SECTION_KEY                   = 'eventSection';
@@ -19,6 +19,7 @@ public with sharing class PHSS_ClassCompletionTrainingClass
     private static final String FAILED_TO_FETCH_EVENT_SECTION_ITEMS = 'Failed to fetch event section items.';
     private static final String FAILED_TO_FETCH_TRAINING_PLAN       = 'Failed to fetch training plan.';
     private static final String FAILED_TO_GET_LOCATION              = 'Failed to get location.';
+    
 
 
     /**
@@ -76,6 +77,7 @@ public with sharing class PHSS_ClassCompletionTrainingClass
         }
         catch (Exception e)
         {
+            //throw new phss_cc_Exception(e.getMessage(), e);
             throw new phss_cc_Exception(FAILED_TO_CREATE_TRAINING_CLASS, e);
         }
 
@@ -122,6 +124,7 @@ public with sharing class PHSS_ClassCompletionTrainingClass
         }
         catch (Exception e)
         {
+            //throw new phss_cc_Exception(e.getMessage(), e);
             throw new phss_cc_Exception(FAILED_TO_CREATE_EVENT_CLASS, e);
         }
 

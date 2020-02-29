@@ -301,6 +301,7 @@
     },
     
     createClass : function(component, event, helper) {
+
         //alert('***Offerings.. '+JSON.stringify(component.get("v.offeringsList")));
         var tempList = component.get("v.offeringsList");
         tempList.forEach(function(offering) {
@@ -319,14 +320,28 @@
                     postCount = postCount + 1;
                     component.set("v.offeringsPosted", postCount);
                     //alert(component.get("v.offeringsPosted") + " == " + component.get("v.offeringId"));
+                    var title = '';
                     if(component.get("v.offeringsPosted") == component.get("v.offeringId")){
                         if(component.get("v.offeringId") > 1){
-                            alert('Class postings created!!!\n\nPlease allow up 48 hours for your Classes to appear on https://www.redcross.org/take-a-class.');
+                            //alert('Class postings created!!!\n\nPlease allow up 48 hours for your Classes to appear on https://www.redcross.org/take-a-class.');
+                        	title = 'Class postings created!!!';
                         } else {
-                            alert('Class posting created!!!\n\nPlease allow up 48 hours for your Class to appear on https://www.redcross.org/take-a-class.');
+                            title = 'Class posting created!!!';
+                            //alert('Class posting created!!!\n\nPlease allow up 48 hours for your Class to appear on https://www.redcross.org/take-a-class.');
                         }
                     }
 
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        title : title,
+                        message: "Please allow up 48 hours for your Class to appear on https://www.redcross.org/take-a-class.",
+                        messageTemplate: 'Record {0} created! See it {1}!',
+                        duration:' 5000',
+                        key: 'info_alt',
+                        type: 'success',
+                        mode: 'dismissible'
+                    });
+                    toastEvent.fire();
                     //alert('Class posted successfully!!!');
                     //component.set("v.stepNumber", "Zero");
                     //this.initializeWrapper(component, event, helper);
@@ -351,6 +366,25 @@
             $A.enqueueAction(action);
         });   
 		//component.set("v.offeringsList", tempList);
+		
+		//CreateSDSjob
+        var opptyId = component.get("v.oppIdParent");
+        //alert("Opportunity Id "+ opptyId);
+        var action = component.get("c.createSDSjob");
+        action.setParams({ opportunityId : opptyId });
+        action.setCallback(this, function(response) {
+            var resp = response.getReturnValue();
+            console.log('response..'+resp);
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                console.log('success');
+                
+            } 
+            else if (state === "ERROR") {
+                alert("Error " + state + "\n" + errors[0].message);
+            }
+        });
+        $A.enqueueAction(action);
     },
 
     getLearningPlanAttributes : function(component, event, helper) {

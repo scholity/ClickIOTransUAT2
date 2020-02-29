@@ -113,3 +113,7 @@
 .THIS .errInput {
     border : 1px solid red;
 }
+
+.THIS .wk_success {
+    width: 180px;
+}

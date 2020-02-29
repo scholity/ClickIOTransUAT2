@@ -1666,14 +1666,14 @@ public without sharing class PHSS_skedJobtoILTClass {
             if (oldValue != newValue) system.debug('***Field Name:'+theString+' Old Value:'+oldValue+' New Value:'+newValue);
         }
 
-        // The following list of fields are all those that impact the structure of the ILT Class and Session records
+        // The following list of fields are all those that impact the structure of the ILT Class and Session records.
         // sked__Job_Status__c is intentionally omitted; a change in status does not require re-traversing the class and
         // session update logic.  This allows a bulk change of jobs to scale as in the case of auto-dispatch.
         // A status change to Cancelled (sic) is caught earlier in the flow.
         String classFields = 'sked__Account__c,sked__Location__c,sked__Type__c,Ready_to_Publish__c,Location_Confirmed__c,';
         classFields += 'Course_Class_Type__c,Is_Stacked_Class__c,Is_Master_Class__c,Course_Code__c,';
         classFields += 'sked__Parent__c,Course_Catalog__c,sked__TimeZone__c,sked__Start__c,sked__Finish__c,';
-        classFields += 'sked__Recurring_Schedule__c,sked__Description__c,Number_of_Instructors__c';
+        classFields += 'sked__Recurring_Schedule__c,sked__Description__c,Number_of_Instructors__c,sked__Address__c';
         List<String> classFieldList = classFields.split(',');
 
         for (String theClassField : classFieldList) {

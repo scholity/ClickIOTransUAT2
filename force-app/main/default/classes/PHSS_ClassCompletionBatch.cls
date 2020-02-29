@@ -2,7 +2,7 @@
  * Created by jbarker on 2019-12-10.
  */
 
-public with sharing class PHSS_ClassCompletionBatch {
+public without sharing class PHSS_ClassCompletionBatch {
 
     private static final Boolean DEBUG_MODE = true;
 
@@ -47,6 +47,7 @@ public with sharing class PHSS_ClassCompletionBatch {
     private static final Integer PARTICIPANT_EVAL_NOTES_FIELD_INDEX = 9;
 
     public static Map<String, Object> placeOrderResult;
+    
 
     // result keys/values
     public static final String SUCCESS_KEY = 'success';
@@ -54,12 +55,10 @@ public with sharing class PHSS_ClassCompletionBatch {
     // error messages
     private static final String INVALID_MASTERY_STATUS_VALUE = 'Invalid value for Mastery Status';
     private static final String MISSING_FIELD_VALUE          = 'Missing field value';
-
-
+    
     private Datetime batchTimestamp;
     private Map<String, CCS_Batch_Class__c> batchMap;
-
-
+    
     /**
      * @description Initializes specific variables for the batch
      */
@@ -131,6 +130,10 @@ public with sharing class PHSS_ClassCompletionBatch {
                 CCS_Batch_Class__c batchClass = batchMap.get(batchName);
 
                 redwing__ILT_Class__c trainingClass = PHSS_ClassCompletionTrainingClass.create(batchClass);
+                
+                batchClass.ILT_Class__c = trainingClass.Id;
+                update batchClass;
+                batchMap.put(batchName,batchClass);
 
                 //todo: remove below
 
@@ -192,7 +195,7 @@ public with sharing class PHSS_ClassCompletionBatch {
             {
                 update orderToUpdate;
             }
-
+            
         } catch (Exception e) {
             Database.rollback(sp);
             throw e;
@@ -431,5 +434,10 @@ public with sharing class PHSS_ClassCompletionBatch {
                                                                                 Evaluation_Notes__c = values[PARTICIPANT_EVAL_NOTES_FIELD_INDEX] );
 
         return participant;
+    }
+    
+    public Map<String, CCS_Batch_Class__c> getBatchMap()
+    {
+        return batchMap;
     }
 }

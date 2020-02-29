@@ -24,7 +24,8 @@ public class TransactionPaymentTriggerHelper
         List<ccrz__E_TransactionPayment__c>  tpList = [SELECT Id,
                                                        		  B2B_Transaction_Reference__c,
                                                        		  ccrz__Amount__c,
-                                                       		  ccrz__CCOrder__c,
+                                                              ccrz__CCOrder__c,
+                                                              ccrz__CCOrder__r.ccrz__Storefront__c,
                                                        		  ccrz__CCOrder__r.Supplemental_Information__c,
                                                        		  ccrz__AccountType__c,
                                                        		  ccrz__PaymentType__c,
@@ -86,7 +87,7 @@ public class TransactionPaymentTriggerHelper
                 }
             }
             
-            if(tPayment.ccrz__TransactionType__c == 'CAPTURE' && tPayment.ccrz__CCOrder__r.NSSCCConnector_from_SFCC__c == false)
+            if(tPayment.ccrz__TransactionType__c == 'CAPTURE' && tPayment.ccrz__CCOrder__r.NSSCCConnector_from_SFCC__c == false && tPayment.ccrz__CCOrder__r.ccrz__Storefront__c != 'CPS')
             {
                 system.debug('Send an email');
                 //Update Credit Card To Complete Add Update Fulfillment Item to Complete FLOW LOGIC

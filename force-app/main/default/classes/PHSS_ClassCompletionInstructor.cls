@@ -2,7 +2,7 @@
  * Created by jbarker on 2019-12-16.
  */
 
-public with sharing class PHSS_ClassCompletionInstructor {
+public without sharing class PHSS_ClassCompletionInstructor {
 
     //  error messages
     private static final String FAILED_TO_CREATE_ALL_INSTRUCTORS = 'Failed to create all instructors.';

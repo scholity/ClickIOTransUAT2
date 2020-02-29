@@ -126,8 +126,11 @@ public class PHSS_VoucherTriggerHandler {
         Set<Id> setNewVouchers = new Set<Id>();
 
         // DE2407 - Exclude vouchers for classes that have been cancelled (SJC - 01-20-2020)
+        // DE2564 - Exclude vouchers for classes that have been closed (SJC - 02-25-2020)
+        // Note: ILT Class record is updated first for close class, prior to voucher status change (this is assumed in this design)
 
         // Determine which vouchers have a change in status and are assigned to active ILT Classes
+
         for (Voucher__c vcr : newVouchers) {
             // Check the status in old map and new map to identify a change in voucher status
             // Vouchers for ILT Classes will have ILT_Class__c lookup populated (online vouchers will not)
@@ -141,21 +144,12 @@ public class PHSS_VoucherTriggerHandler {
                 ILT_Class__r.Skedulo_Parent_Job__r.sked__Job_Status__c
             FROM Voucher__c
             WHERE Id IN :setNewVouchers
-            AND ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled']) {
+            AND ILT_Class__r.Is_Stacked_Class__c = TRUE
+            AND ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled'
+            AND ILT_Class__r.Class_Closed_Date__c = NULL]) {
 
             setUpdatedVoucherClassIds.add(theVoucher.ILT_Class__c);
         }
-
-        /*
-        // Determine which vouchers have a change in status
-        for(Voucher__c vcr : newVouchers){
-            // Check the status in old map and new map to identify the change in voucher status
-            if((newVoucherMap.get(vcr.id).status__c != oldVoucherMap.get(vcr.id).status__c)) {
-                // Vouchers for ILT Classes will have ILT_Class__c lookup populated (online vouchers will not)
-                if (vcr.ILT_Class__c != null) setUpdatedVoucherClassIds.add(vcr.ILT_Class__c);   
-            }
-        } 
-        */
 
         // Continue with the trigger if is any change in voucher status
         if(!setUpdatedVoucherClassIds.isEmpty()){
@@ -167,7 +161,7 @@ public class PHSS_VoucherTriggerHandler {
             // This is assumed and required in the logic below which determines group of related stacked classes which share a common parent job id
             for(redwing__ILT_Class__c iltClass : [select id,Skedulo_Parent_Job__c,Skedulo_Job_Id__c,Is_Stacked_Class__c
                 from redwing__ILT_Class__c
-                where Is_Stacked_Class__c=true and id IN: setUpdatedVoucherClassIds]){
+                where Id IN: setUpdatedVoucherClassIds]) {
                 if (iltClass.Skedulo_Parent_Job__c != null) setParentJobIds.add(iltClass.Skedulo_Parent_Job__c); 
                 if (iltClass.Skedulo_Job_Id__c != null) setJobIds.add(iltClass.Skedulo_Job_Id__c);    
             }

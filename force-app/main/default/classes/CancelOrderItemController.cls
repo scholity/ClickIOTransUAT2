@@ -750,8 +750,6 @@ public class CancelOrderItemController {
         }
         
         system.debug('voucherListIds***'+voucherListIds);
-
-        //DExxxx Perform query on voucher to obtain value of ILT_class.skedulo_status
         
         //DE1496 
         
@@ -783,7 +781,9 @@ public class CancelOrderItemController {
 												 FROM   Voucher__c
 												 WHERE 	Id
 												 IN 	:voucherListIds];
-        
+
+        // DE2491 - SJC - Don't create replacement voucher when ILT Class is in Cancelled (sic) status
+
         List<Voucher__c> vouchers = [SELECT Id, 
                                             Account__c,
                                             CC_Cart_Item__c,
@@ -830,7 +830,9 @@ public class CancelOrderItemController {
         {
             update vouchersToUpdate;
         }
-        
+
+        // DE2491 - SJC - Don't create replacement voucher when ILT Class is in Cancelled (sic) status
+
         if(vouchers.size() > 0 && vouchers[0].ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled')
         {
             for(Voucher__c v : vouchers)
