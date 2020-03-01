@@ -253,7 +253,7 @@
                 <leftValueReference>myVariable_current.redwing__Progress_Percentage__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <numberValue>98.0</numberValue>
+                    <numberValue>100.0</numberValue>
                 </rightValue>
             </conditions>
             <conditions>
@@ -293,8 +293,8 @@
             <label>Online Class Completion</label>
         </rules>
     </decisions>
-    <description>Learning Assignment Controller - Remove Ownership Change</description>
-    <interviewLabel>Learning_Assignment-8_InterviewLabel</interviewLabel>
+    <description>Learning Assignment Controller - Remove Ownership Change- 100</description>
+    <interviewLabel>Learning_Assignment-10_InterviewLabel</interviewLabel>
     <label>Learning Assignment Controller</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -570,7 +570,7 @@
         <object>redwing__Learning_Assignment__c</object>
     </recordUpdates>
     <startElementReference>myDecision</startElementReference>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>

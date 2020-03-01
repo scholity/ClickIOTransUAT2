@@ -425,8 +425,8 @@ public class skedJobHandler {
                     integer startDifferentMinutes = integer.valueOf((skedMasterClass.sked__Start__c.getTime() - oldMasterClass.sked__Start__c.getTime()) / 60000);
                     integer finishDifferentMinutes = integer.valueOf((skedMasterClass.sked__Finish__c.getTime() - oldMasterClass.sked__Finish__c.getTime()) / 60000);
                     
-                    skedSubClass.sked__Start__c = skedDateTimeUtils.addMinutes(skedSubClass.sked__Start__c, startDifferentMinutes, skedSubClass.sked__Timezone__c);
-                    skedSubClass.sked__Finish__c = skedDateTimeUtils.addMinutes(skedSubClass.sked__Finish__c, finishDifferentMinutes, skedSubClass.sked__Timezone__c);
+                    skedSubClass.sked__Start__c = skedSubClass.sked__Start__c.addMinutes(startDifferentMinutes);
+                    skedSubClass.sked__Finish__c = skedSubClass.sked__Finish__c.addMinutes(finishDifferentMinutes);
                     skedSubClass.sked__Duration__c = integer.valueOf((skedSubClass.sked__Finish__c.getTime() - skedSubClass.sked__Start__c.getTime()) / 60000);
                     
                     skedSubClass.sked__Address__c = skedMasterClass.sked__Address__c;
