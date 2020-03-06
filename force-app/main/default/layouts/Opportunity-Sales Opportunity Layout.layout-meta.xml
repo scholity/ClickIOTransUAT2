@@ -83,6 +83,10 @@
                 <behavior>Edit</behavior>
                 <field>FS_Transaction_Sale__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Override_Channel__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

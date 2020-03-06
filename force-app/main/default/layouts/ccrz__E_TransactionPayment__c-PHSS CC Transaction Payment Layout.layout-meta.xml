@@ -152,6 +152,10 @@
                 <behavior>Edit</behavior>
                 <field>ccrz__SoldTo__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Email_To__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

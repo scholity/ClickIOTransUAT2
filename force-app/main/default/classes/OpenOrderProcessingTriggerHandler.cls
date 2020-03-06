@@ -76,6 +76,9 @@ public with sharing class OpenOrderProcessingTriggerHandler {
             for(Open_Order_Processing__c oop : invoicedOpenOrderProcessing)
             {
                 //ccOrderNames.add(oop.CC_Order__c);
+                system.debug('oop***'+oop);
+                system.debug('oop.SFDC_Account__c***'+oop.SFDC_Account__c);
+                
                 if(oop.SFDC_Account__c instanceof Id)
                 {
                     String sObjName = Id.valueOf(oop.SFDC_Account__c).getSObjectType().getDescribe().getName();
@@ -119,7 +122,9 @@ public with sharing class OpenOrderProcessingTriggerHandler {
                     Decimal accountTotal                = fi.Order__r.ccrz__Account__r.Open_Order_Amount__c == null ? 0 : fi.Order__r.ccrz__Account__r.Open_Order_Amount__c;
                     Decimal newTotal                    = accountTotal - orderAmount;
                     thisAccount.Open_Order_Amount__c    = newTotal;
-                    
+                    system.debug('accountTotal>>>'+accountTotal);
+                    system.debug('orderAmount>>>'+orderAmount);
+                    system.debug('newTotal>>>'+newTotal);
                     accountsToUpdate.add(thisAccount);
                     oopSuccesses.add(fiToOopMap.get(fi.Id));
                 }

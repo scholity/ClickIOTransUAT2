@@ -73,10 +73,10 @@ public without sharing class CustomLookUpController {
 
         if (ObjectName == ACCOUNT_OBJECT) {
             if (u.Profile.UserLicense.Name.contains(CUSTOMER_COMMUNITY_USER_LICENSE) || u.Profile.Name == SB_ARC_INSTRUCTOR_PROFILE) {
-                sQuery = 'SELECT Id, Name, BillingAddress FROM Account WHERE Id IN (SELECT AccountId FROM AccountContactRelation WHERE ContactId = \'' + u.ContactId + '\') AND Name LIKE :searchKey ORDER BY Name ASC LIMIT 10';
+                sQuery = 'SELECT Id, Name, BillingAddress FROM Account WHERE Id IN (SELECT AccountId FROM AccountContactRelation WHERE ContactId = \'' + u.ContactId + '\') AND PHSS_Channel__c excludes (\'RCS Retail\',\'RCS Distributor\') AND Name LIKE :searchKey ORDER BY Name ASC LIMIT 10';
 
             } else {
-                sQuery = 'SELECT Id, Name, BillingAddress FROM Account WHERE Name LIKE :searchKey AND (Recordtype.Name = :ORG_ACCT_RECORDTYPE_NAME OR RecordType.Name = :SB_ORG_ACCT_RECORDTYPE_NAME) ORDER BY Name ASC LIMIT 10';
+                sQuery = 'SELECT Id, Name, BillingAddress FROM Account WHERE Name LIKE :searchKey AND (Recordtype.Name = :ORG_ACCT_RECORDTYPE_NAME OR RecordType.Name = :SB_ORG_ACCT_RECORDTYPE_NAME) AND PHSS_Channel__c excludes (\'RCS Retail\',\'RCS Distributor\') ORDER BY Name ASC LIMIT 10';
             }
 
         } else if (ObjectName == USER_OBJECT) {
@@ -85,10 +85,9 @@ public without sharing class CustomLookUpController {
                         ADMINISTRATOR_ROLE, INSTRUCTOR_ROLE
                 };
                 if (u.Profile.Name == SB_PARTNER_COMMUNITY_LOGIN_PROFILE) {
-                    sQuery = 'SELECT Id, Name FROM User WHERE ContactId IN (SELECT ContactId FROM AccountContactRelation WHERE AccountId = \'' + accId + '\' AND Roles IN :ListRolesName) AND Name LIKE :searchKey ORDER BY Name ASC';
-
+                    sQuery = 'SELECT Id, Name FROM User WHERE ContactId IN (SELECT ContactId FROM AccountContactRelation WHERE AccountId = \'' + accId + '\' AND Roles includes (\'Administrator\', \'Instructor\')) AND Name LIKE :searchKey ORDER BY Name ASC';
                 } else {
-                    sQuery = 'SELECT Id, Name FROM User WHERE Id != \'' + UserInfo.getUserId() + '\' AND ContactId IN (SELECT ContactId FROM AccountContactRelation WHERE AccountId = \'' + accId + '\' AND Roles IN: ListRolesName) AND Name LIKE :searchKey ORDER BY Name ASC';
+                    sQuery = 'SELECT Id, Name FROM User WHERE Id != \'' + UserInfo.getUserId() + '\' AND ContactId IN (SELECT ContactId FROM AccountContactRelation WHERE AccountId = \'' + accId + '\' AND Roles includes (\'Administrator\', \'Instructor\')) AND Name LIKE :searchKey ORDER BY Name ASC';
                 }
             }
 

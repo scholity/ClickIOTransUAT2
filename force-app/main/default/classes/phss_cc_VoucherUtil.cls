@@ -143,7 +143,7 @@ public with sharing class phss_cc_VoucherUtil {
      * @param productCartItemMap
      */
     public static void reserveVouchersForOpportunity(Map<Id, Id> productClassIdMap, Map<String, Object> productQuantityMap, Map<String, List<Voucher__c>> voucherMap, String opportunitySfid, Map<String, String> productCartItemMap) {
-
+        System.debug('@@@reserveVouchersForOpportunity start: ' + productClassIdMap);
         for (String productId : productClassIdMap.keySet()) {
             Integer quantity = Integer.valueOf(productQuantityMap.get(productId));
             String classId = productClassIdMap.get(productId);
@@ -156,7 +156,7 @@ public with sharing class phss_cc_VoucherUtil {
                         voucher.RCO_Reservation_Timestamp__c = phss_cc_VoucherUtil.getReservationDatetime();
                         String cartItemId = productCartItemMap.get(productId);
                         voucher.CC_Cart_Item__c = cartItemId;
-                        System.debug('voucher update: ' + voucher);
+                        System.debug('@@@voucher update: ' + voucher);
                         upsert voucher;
                         vouchersClaimed++;
                     } else {
@@ -164,7 +164,7 @@ public with sharing class phss_cc_VoucherUtil {
                         voucher.Opportunity__c = null;
                         voucher.RCO_Reservation_Timestamp__c = null;
                         voucher.CC_Cart_Item__c = null;
-                        System.debug('voucher update: ' + voucher);
+                        System.debug('@@@voucher update: ' + voucher);
                         update voucher;
                     }
                 }

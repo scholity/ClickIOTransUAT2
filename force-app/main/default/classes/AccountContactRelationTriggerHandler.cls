@@ -131,20 +131,25 @@ public without sharing class AccountContactRelationTriggerHandler {
             Map<Id, Id> userToRoleMap = new Map<Id, Id>();
 
             for(AccountContactRelation acr : accountContactRelationsToProcess){
-                User thisUser = contactToUserMap.get(acr.ContactId);
-                Id newProfileId;
-                if(thisUser.UserRoleId == null){
-                    String newRoleName = thisUser.Contact.Account.Owner.Alias+' Customer Person Account';
-                    Id newUserRoleId = userRoleNameMap.get(newRoleName);
-                    userToRoleMap.put(thisUser.Id, newUserRoleId);
+                if(contactToUserMap.containsKey(acr.ContactId)){
+                    User thisUser = contactToUserMap.get(acr.ContactId);
+                    Id newProfileId;
+                    if(thisUser.UserRoleId == null){
+                        String newRoleName = thisUser.Contact.Account.Owner.Alias+' Customer Person Account';
+                        Id newUserRoleId = userRoleNameMap.get(newRoleName);
+                        userToRoleMap.put(thisUser.Id, newUserRoleId);
+                    }
+                    if(acr.Roles.contains(ACR_ROLE_ADMINISTRATOR)){
+                        newProfileId = adminProfile.Id;
+                    }
+                    else if(acr.Roles.contains(ACR_ROLE_INSTRUCTOR)){
+                        newProfileId = instructorProfile.Id;
+                    }
+                    userToProfileMap.put(thisUser.Id, newProfileId);
                 }
-                if(acr.Roles.contains(ACR_ROLE_ADMINISTRATOR)){
-                    newProfileId = adminProfile.Id;
+                else{
+                    acr.addError('A User record related to this Contact could not be found.');
                 }
-                else if(acr.Roles.contains(ACR_ROLE_INSTRUCTOR)){
-                    newProfileId = instructorProfile.Id;
-                }
-                userToProfileMap.put(thisUser.Id, newProfileId);
             }
 
             updateUserRecordsAsync(userToProfileMap, userToRoleMap);

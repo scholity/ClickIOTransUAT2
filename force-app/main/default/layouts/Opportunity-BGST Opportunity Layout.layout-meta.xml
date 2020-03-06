@@ -86,6 +86,10 @@
                 <behavior>Edit</behavior>
                 <field>Highest_Product_Discount__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Override_Channel__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

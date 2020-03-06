@@ -47,6 +47,10 @@
                 <behavior>Edit</behavior>
                 <field>BGST_Activity_Type__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Override_Channel__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

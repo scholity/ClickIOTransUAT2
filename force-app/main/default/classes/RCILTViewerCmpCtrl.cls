@@ -144,7 +144,8 @@ public without sharing class RCILTViewerCmpCtrl {
                     List<String> achievementNames = new List<String>();
 
                     for(redwing__Training_Plan_Achievement__c tpa: course.redwing__Training_Plan_Achievements__r) {
-                        achievementNames.add(tpa.redwing__Achievement__r.Name);
+                        //achievementNames.add(tpa.redwing__Achievement__r.Name);
+                        achievementNames.add(tpa.redwing__Achievement__r.Description__c);
                     }
 
                     this.certificates = String.join(achievementNames, ', ');
@@ -191,7 +192,7 @@ public without sharing class RCILTViewerCmpCtrl {
             String queryString = 'SELECT Id, Name, toLabel(redwing__Language__c), ' +
                     'toLabel(' + RCConstants.APINAME_FIELD_CLASSSETTINGS + '), ' +
                     // DE986 - Insure that achievements displayed are only certificates (not skills or CEUs)
-                    '(SELECT Id, redwing__Achievement__r.Name FROM redwing__Training_Plan_Achievements__r WHERE redwing__Achievement__r.redwing__Type__c = \'Certifications\') ' +
+                    '(SELECT Id, redwing__Achievement__r.Name,redwing__Achievement__r.Description__c FROM redwing__Training_Plan_Achievements__r WHERE redwing__Achievement__r.redwing__Type__c = \'Certifications\') ' +
                     'FROM redwing__Training_Plan__c ' +
                     'WHERE Id = :planId';
 

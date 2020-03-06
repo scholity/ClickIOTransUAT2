@@ -241,6 +241,15 @@
         <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Set_Override_Channel_to_True</fullName>
+        <field>Override_Channel__c</field>
+        <literalValue>1</literalValue>
+        <name>Set Override Channel to True</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Update_Closed_date_on_Opportunity</fullName>
         <field>CloseDate</field>
         <formula>Today()</formula>
@@ -374,6 +383,31 @@
             <value>True</value>
         </criteriaItems>
         <description>When an oppty is created form a lead, the field Opportunity Result will automatically be set to &quot;Open&quot; and Opportunity Detail Result 1 will be set to &quot;Being Worked&quot;</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>Set Override Channel</fullName>
+        <actions>
+            <name>Set_Override_Channel_to_True</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>1 OR 2 OR 3</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.Owner_Profile__c</field>
+            <operation>equals</operation>
+            <value>SB ARC / TSC Agent</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Owner_Profile__c</field>
+            <operation>equals</operation>
+            <value>SB ARC / TSC Manager</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Owner_Profile__c</field>
+            <operation>equals</operation>
+            <value>SB ARC RSG Agent</value>
+        </criteriaItems>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
