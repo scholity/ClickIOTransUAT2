@@ -73,6 +73,11 @@
                 <label>CEPFS</label>
             </value>
             <value>
+                <fullName>COM</fullName>
+                <default>false</default>
+                <label>COM</label>
+            </value>
+            <value>
                 <fullName>Community Branch</fullName>
                 <default>false</default>
                 <label>Community Branch</label>

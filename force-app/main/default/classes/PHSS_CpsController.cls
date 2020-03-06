@@ -367,8 +367,10 @@ public without sharing class PHSS_CpsController {
         
         job.SDOC__Start__c = true;
         
-        job.SDOC__Oid__c = Payment[0].Id; // this will be the transaction payment id from the soql.
-        
+        //if(Payment!=null && !Payment.isEmpty()){
+            job.SDOC__Oid__c = Payment[0].Id; // this will be the transaction payment id from the soql.
+        //}
+        	
         job.SDOC__ObjApiName__c = 'ccrz__E_TransactionPayment__c';
         
         job.SDOC__SendEmail__c = '1';

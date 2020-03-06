@@ -2,10 +2,14 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Zip_Formula__c</fullName>
     <externalId>false</externalId>
-    <formula>IF(  AND(!ISNULL(ILT_Class__c), Order__r.ccrz__Storefront__c &lt;&gt; &quot;CREStore&quot;), 
+    <formula>/*IF(  AND(!ISBLANK(ILT_Class__c), Order__r.ccrz__Storefront__c &lt;&gt; &quot;CREStore&quot;), 
  IF(
-    AND(!ISNULL(ILT_Class__r.Skedulo_Job_Id__c), !ISNULL( ILT_Class__r.Location_ZIP_Code__c )),
-     ILT_Class__r.Location_ZIP_Code__c ,  Order__r.ccrz__Account__r.BillingPostalCode  ) ,Order__r.ccrz__Account__r.BillingPostalCode)</formula>
+    AND(!ISBLANK(ILT_Class__r.Skedulo_Job_Id__c), !ISBLANK( ILT_Class__r.Location_ZIP_Code__c )),
+     ILT_Class__r.Location_ZIP_Code__c ,  Order__r.ccrz__Account__r.BillingPostalCode  ) ,Order__r.ccrz__Account__r.BillingPostalCode)*/
+
+ IF(!ISBLANK(Order__r.ccrz__Account__r.ShippingPostalCode), Order__r.ccrz__Account__r.ShippingPostalCode, 
+  IF(!ISBLANK(Order__r.ccrz__Account__r.BillingPostalCode), Order__r.ccrz__Account__r.BillingPostalCode,
+   IF(!ISBLANK(ILT_Class__r.Location_ZIP_Code__c), ILT_Class__r.Location_ZIP_Code__c, &quot;00000&quot;) ) )</formula>
     <label>Zip Formula</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

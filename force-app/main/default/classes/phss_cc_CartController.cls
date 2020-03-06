@@ -58,7 +58,7 @@ public with sharing class phss_cc_CartController {
         try {
             Map<Id, Id> productClassIdMap = getProductClassIdMap(opportunitySfid);
 
-            System.debug('productClassIdMap: ' + productClassIdMap);
+            System.debug('@@@productClassIdMap: ' + productClassIdMap);
 
             // Request available vouchers BEFORE creating cart line items.
             Map<String, List<Voucher__c>> voucherMap = phss_cc_VoucherUtil.requestVouchersForOpportunity(productClassIdMap, productQuantityMap, opportunitySfid);
@@ -161,6 +161,7 @@ public with sharing class phss_cc_CartController {
                 productClassIdMap.put(theCartItem.ccrz__Product__c, theCartItem.ILT_Class__c);
             }
         }
+        system.debug('@@@productClassIdMap: '+productClassIdMap);
         return productClassIdMap;
     }
 

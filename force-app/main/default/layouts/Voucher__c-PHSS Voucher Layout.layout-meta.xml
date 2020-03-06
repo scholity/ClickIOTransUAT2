@@ -101,6 +101,10 @@
                 <behavior>Edit</behavior>
                 <field>CC_Order_Item__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>DO_NOT_DEPLOY_TEST__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>

@@ -775,6 +775,13 @@
         <fields>Payment_Method__c</fields>
         <relatedList>Associated_Orders__c.Case__c</relatedList>
     </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>RECORDTYPE</fields>
+        <fields>Dish_Request_Status__c</fields>
+        <fields>CREATED_DATE</fields>
+        <relatedList>Dedicated_Internal_Salesforce_Helpdesk__c.Related_Case__c</relatedList>
+    </relatedLists>
     <relatedObjects>ContactId</relatedObjects>
     <relatedObjects>AccountId</relatedObjects>
     <runAssignmentRulesDefault>false</runAssignmentRulesDefault>

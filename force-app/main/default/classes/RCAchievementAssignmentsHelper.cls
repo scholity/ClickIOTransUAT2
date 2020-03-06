@@ -263,7 +263,7 @@ public with sharing class RCAchievementAssignmentsHelper {
                     }
                 }
 
-                if (iltClasses.isEmpty() && tPlans.isEmpty()) {
+                if (iltClasses.isEmpty() && !tPlans.isEmpty()) {
                     expDateForAchievementAssignmentByTerm = getExpDateByAcquiredDateAndExpTerm (
                             newAchievementAssignment.redwing__Acquisition_Date__c, achievementExpirationTerm, achievementExpirationTermBasis);
                 }

@@ -97,11 +97,11 @@ public without sharing class PHSS_CancelEnrollmentController {
 			// DE2491 - Do no generate new (replacement) voucher if student is cancelled out of cancelled class
 			List<Voucher__c> voucherList = new List<Voucher__c>();
 			if (rosterList[0].Voucher_Id__c != null) {
-				voucherList = [Select Id, ILT_Class__r.Skedulo_Job_Status__c From Voucher__c Where Id = :rosterList[0].Voucher_Id__c];
+				voucherList = [Select Id, ILT_Class__r.Request_Type__c, ILT_Class__r.Skedulo_Job_Status__c From Voucher__c Where Id = :rosterList[0].Voucher_Id__c];
 
 			} else {
 				voucherList = [
-						Select Id, ILT_Class__r.Skedulo_Job_Status__c
+						Select Id, ILT_Class__r.Request_Type__c, ILT_Class__r.Skedulo_Job_Status__c
 						From Voucher__c
 						Where User__c = :rosterList[0].redwing__User__c AND
 						Learning_Plan__c = :LearningAssignmentList[0].redwing__Training_Plan__c AND
@@ -129,8 +129,9 @@ public without sharing class PHSS_CancelEnrollmentController {
 	            update updatedVoucher;
 	            
 	            // Generate replacement voucher for seat that has just opened in class - this will keep inventory valid
-				// DE2491 - Do no generate new (replacement) voucher if student is cancelled out of cancelled class
-				if (voucherList[0].ILT_Class__r.Skedulo_Job_Status__c != null && voucherList[0].ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled') {
+				// DE2491 - Do no generate new (replacement) voucher if student is cancelled out of cancelled class (FS/Comm only)
+				if (voucherList[0].ILT_Class__r.Request_Type__c == 'LTP/AP' ||
+						(voucherList[0].ILT_Class__r.Skedulo_Job_Status__c != null && voucherList[0].ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled')) {
 					Voucher__c newVoucher = new Voucher__c();
 					newVoucher.Status__c = 'Issued';
 					newVoucher.Learning_Plan__c = LearningAssignmentList[0].redwing__Training_Plan__c;

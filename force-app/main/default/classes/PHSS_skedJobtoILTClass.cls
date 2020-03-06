@@ -107,16 +107,11 @@ public without sharing class PHSS_skedJobtoILTClass {
             } else {
                 if (!updatedJobs.contains(jobRecord.Id)) {
                     if (checkJobStatus(jobRecord)) {
-                        // Need to open this up; Job is "updated" when new/additional instructor is assigned.
-                        // This update seems to be limited to the job status field (dispatched or pending dispatch)
-                        // ILT Class logic needs to be traversed to issue additional vouchers, if required,
-                        // based on number of instructors (resources) assigned to class (job).  In this case
-                        // no fields are modified in Job record, but the record still needs to be processed.
-
                         // DE2499 - SJC - We need to determine if any field relevant to class and session definition
                         // is being updated.  sked__Job_Status__c is intentionally omitted; the change to Cancelled
                         // is caught above and no other change has an impact on the class or session(s)
                         // Note: A change from Pending Dispatch to Dispatched needs to be omitted for scalability
+                        // from the main processing loop and processed in a separate update
                         if (checkClassJobFields(jobRecord, oldJob)) { //} || checkSessionJobFields(jobRecord, oldJob)) {
                             lstnewRecords.add(jobRecord);
                             updatedJobs.add(jobRecord.Id);
@@ -140,9 +135,6 @@ public without sharing class PHSS_skedJobtoILTClass {
             }       
             cancelRelatedRecords(mapCanceledJobs); 
         }
-
-        // DE1988
-        // sendEmails();
     }
     
     public List<sked__Job__c> addDependentStackedClasses(List<sked__Job__c> jobList, Boolean bCancel) {
@@ -681,6 +673,7 @@ public without sharing class PHSS_skedJobtoILTClass {
         Map<String, Id> orderIdJobIdMap = new Map<String, Id>(); // key: order:orderItem Id, value: skedulo Job Id
         Map<Id, String> jobIdOrderIdMap = new Map<Id, String>(); // key: skedulo Job Id , value: order:orderItem Id
         Map<Id, Set<ccrz__E_OrderItem__c>> jobIdOrderItems = new Map<Id, Set<ccrz__E_OrderItem__c>>(); // skedulo job Id as key, Set of related order items as value
+        Map<Id, Integer> classActiveVouchers = new Map<Id, Integer>();
 
         List<redwing__Learning__c> lstLearning = new List<redwing__Learning__c>();
         List<redwing__Training_Activity__c> lstTrainingActivity = new List<redwing__Training_Activity__c>();
@@ -704,6 +697,7 @@ public without sharing class PHSS_skedJobtoILTClass {
         Set<Id> orderIdSet = new Set<Id>();
         Set<Id> orderItemIdSet = new Set<Id>();
         //Set<redwing__ILT_Instructor__c> SetILTInstructor = new Set<redwing__ILT_Instructor__c>();
+        Set<Id> existingClassIds = new Set<Id>();
 
         Boolean jobst = false; // No longer used
         Boolean recurringJob = false;
@@ -741,7 +735,26 @@ public without sharing class PHSS_skedJobtoILTClass {
         if (updateRecords){
             for(redwing__ILT_Class__c theClass : [Select Id, Skedulo_Job_Id__c, redwing__Max_Seats__c, Available_Seats__c from redwing__ILT_Class__c where Skedulo_Job_Id__c IN: SetJob]) {
                 jobToClassMap.put(theClass.Skedulo_Job_Id__c, theClass);
+                existingClassIds.add(theClass.Id);
             }
+
+            // DExxxx - Calculate number of outstanding vouchers (those that are not Voided) per ILT class in scope
+            List<AggregateResult> activeVoucherCounts = [
+                    Select ILT_Class__c, Count(Id) vCount
+                    From Voucher__c
+                    Where ILT_Class__c In :existingClassIds And Status__c != 'Void'
+                    Group by ILT_Class__c
+            ];
+            System.debug('activeVoucherCounts=' + activeVoucherCounts);
+
+            For (AggregateResult theCount : activeVoucherCounts) {
+                Integer classActiveVoucherCount = (Integer) theCount.get('vCount');
+                Id theClass = (Id) theCount.get('ILT_Class__c');
+                System.debug('classActiveVoucherCount=' + classActiveVoucherCount);
+
+                classActiveVouchers.put(theClass, classActiveVoucherCount);
+            }
+            System.debug('classActiveVouchers='+classActiveVouchers);
         }
 
         // Build Set of recurring schedule Ids that have outstanding ILT Classes
@@ -762,7 +775,7 @@ public without sharing class PHSS_skedJobtoILTClass {
                      
         // Get value from training event to populate Supplement
         if (SetTrainingEvents.size() > 0) {
-            List<Training_Events__c> trainingEvents = [Select Id, Supp_Info__c, Scheduling_Status__c, CC_Order_Item__c, CC_Order__c, CC_Order_Item__r.ccrz__Product__c
+            List<Training_Events__c> trainingEvents = [Select Id, Supp_Info__c, Scheduling_Status__c, CC_Order_Item__c, CC_Order__c, CC_Order_Item__r.ccrz__Product__c, Voucher_Created__c
                 from Training_Events__c Where Id In :SetTrainingEvents];
             for (Training_Events__c theTrainingEvent : trainingEvents) {
                 if (String.isNotBlank(theTrainingEvent.Supp_Info__c)) suppInfoMap.put(theTrainingEvent.Id, theTrainingEvent.Supp_Info__c);
@@ -1358,27 +1371,34 @@ public without sharing class PHSS_skedJobtoILTClass {
 
                 // Skip full service classes:  Vouchers for full service-type classes are created using TE process (they
                 // are created in process builder 'Create Voucher From TE' and associate a new voucher to an order, order line, and TE
+                // Revision - Full Service class vouchers are created if required once the Create Voucher from TE process
+                // has executed which sets the TE Voucher Created flag true
 
                 if (theClass.Request_Type__c != null && (!theClass.Request_Type__c.contains('Full Service')
                     || (theClass.Request_Type__c.contains('Full Service') && theClass.Skedulo_Training_Event__c != null &&
                         trainingEventMap.containsKey(theClass.Skedulo_Training_Event__c) &&
-                        'Completed, Rescheduling'.contains(trainingEventMap.get(theClass.Skedulo_Training_Event__c).Scheduling_Status__c)))) {
+                        trainingEventMap.get(theClass.Skedulo_Training_Event__c).Voucher_Created__c))) {
                     // Insure that the Learning Plan Id will be available if we need to create voucher, otherwise need to skip
                     if (catalogIds.get(jobCatalogMap.get(theClass.Skedulo_Job_Id__c)) != null) {
                         // For new ILT Class records use the previously calculated max seats(number of students) for voucher count
                         // For updated (existing) ILT Class records determine if voucher count is still valid (max seats)
-                        Integer nTotalStudentsOld = 0;
+
+                        // DExxxx - Calculate number of outstanding vouchers (those that are not Voided) per ILT class in scope
+                        Integer nActiveVouchers = 0;
+                        //Integer nTotalStudentsOld = 0;
                         Integer nTotalStudents = 0;
                         if (theClass.redwing__Max_Seats__c != null) {
                             nTotalStudents = Integer.valueOf(theClass.redwing__Max_Seats__c);
                         }
-                        if (jobToClassMap.containsKey(theClass.Skedulo_Job_Id__c)) {
-                            nTotalStudentsOld = Integer.valueOf(jobToClassMap.get(theClass.Skedulo_Job_Id__c).redwing__Max_Seats__c);
+                        if (classActiveVouchers.containsKey(theClass.Id)) {
+                        //if (jobToClassMap.containsKey(theClass.Skedulo_Job_Id__c)) {
+                            nActiveVouchers = classActiveVouchers.get(theClass.Id);
+                            //nTotalStudentsOld = Integer.valueOf(jobToClassMap.get(theClass.Skedulo_Job_Id__c).redwing__Max_Seats__c);
                         }
 
-                        System.debug('*** nTotalStudentsOld=' + nTotalStudentsOld + ' nTotalStudents=' + nTotalStudents);
-                        if (nTotalStudents > nTotalStudentsOld) {
-                            for (Integer i = 0; i < (nTotalStudents - nTotalStudentsOld); i++) {
+                        System.debug('*** nActiveVouchers=' + nActiveVouchers + ' nTotalStudents=' + nTotalStudents);
+                        if (nTotalStudents > nActiveVouchers) {
+                            for (Integer i = 0; i < (nTotalStudents - nActiveVouchers); i++) {
                                 Voucher__c objVoucher = new Voucher__c();
                                 objVoucher.ILT_Class__c = theClass.Id;
                                 objVoucher.Learning_Plan__c = catalogIds.get(jobCatalogMap.get(theClass.Skedulo_Job_Id__c)).LMS_Learning_Plan__c;
@@ -1660,12 +1680,6 @@ public without sharing class PHSS_skedJobtoILTClass {
                 oldValues = oldJob.getPopulatedFieldsAsMap(),
                 newValues = newJob.getPopulatedFieldsAsMap();
 
-        for (String theString : oldValues.keySet()) {
-            object oldValue = oldValues.get(theString);
-            object newValue = newValues.get(theString);
-            if (oldValue != newValue) system.debug('***Field Name:'+theString+' Old Value:'+oldValue+' New Value:'+newValue);
-        }
-
         // The following list of fields are all those that impact the structure of the ILT Class and Session records.
         // sked__Job_Status__c is intentionally omitted; a change in status does not require re-traversing the class and
         // session update logic.  This allows a bulk change of jobs to scale as in the case of auto-dispatch.
@@ -1673,8 +1687,17 @@ public without sharing class PHSS_skedJobtoILTClass {
         String classFields = 'sked__Account__c,sked__Location__c,sked__Type__c,Ready_to_Publish__c,Location_Confirmed__c,';
         classFields += 'Course_Class_Type__c,Is_Stacked_Class__c,Is_Master_Class__c,Course_Code__c,';
         classFields += 'sked__Parent__c,Course_Catalog__c,sked__TimeZone__c,sked__Start__c,sked__Finish__c,';
-        classFields += 'sked__Recurring_Schedule__c,sked__Description__c,Number_of_Instructors__c,sked__Address__c';
+        classFields += 'sked__Recurring_Schedule__c,sked__Description__c,Number_of_Instructors__c,sked__Address__c,';
+        classFields += 'Training_Event__c,sked__Account__c';
         List<String> classFieldList = classFields.split(',');
+
+        for (String theClassField : classFieldList) {
+            if (newValues.containsKey(theClassField) && oldValues.containsKey(theClassField)) {
+                system.debug(theClassField + '=' + newValues.get(theClassField) + ':' + oldValues.get(theClassField));
+            } else if (!(!newValues.containsKey(theClassField) && !oldValues.containsKey(theClassField))) {
+                system.debug(theClassField + '=' + newValues.get(theClassField) + ':' + oldValues.get(theClassField));
+            }
+        }
 
         for (String theClassField : classFieldList) {
             if (newValues.containsKey(theClassField) && oldValues.containsKey(theClassField)) {
@@ -1682,9 +1705,13 @@ public without sharing class PHSS_skedJobtoILTClass {
                     classFieldChange = true;
                     break;
                 }
+                // DE2634 - The following expression is logically equivalent to if (A AND Not B) or (Not A AND B)
+                // where A = newValues and B = oldValues when combined with above if (A AND B)
+            } else if (newValues.containsKey(theClassField) || oldValues.containsKey(theClassField)) {
+                classFieldChange = true;
+                break;
             }
         }
-
         return classFieldChange;
     }
 

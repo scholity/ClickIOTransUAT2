@@ -123,7 +123,9 @@ public class PHSS_VoucherTriggerHandler {
     ************************************************************************************************************************************/
     public void BlockIssuedVouchersAndIssueBlockedVouchers(List<Voucher__c> newVouchers, List<Voucher__c> oldVouchers, Map<Id,Voucher__c> newVoucherMap , Map<ID,Voucher__c> oldVoucherMap){
         Set<Id> setUpdatedVoucherClassIds = new Set<Id>();
+        Set<Id> setUpdatedParentJobIds = new Set<Id>();
         Set<Id> setNewVouchers = new Set<Id>();
+        Set<Id> setStackClosedParentJobIds = new Set<Id>();
 
         // DE2407 - Exclude vouchers for classes that have been cancelled (SJC - 01-20-2020)
         // DE2564 - Exclude vouchers for classes that have been closed (SJC - 02-25-2020)
@@ -131,37 +133,51 @@ public class PHSS_VoucherTriggerHandler {
 
         // Determine which vouchers have a change in status and are assigned to active ILT Classes
 
+        // DE2564 - Enhancement - Insure that load balancing is disabled for ALL classes in a stack in which ANY class is CLOSED
+
         for (Voucher__c vcr : newVouchers) {
             // Check the status in old map and new map to identify a change in voucher status
             // Vouchers for ILT Classes will have ILT_Class__c lookup populated (online vouchers will not)
-            if ((vcr.status__c != oldVoucherMap.get(vcr.id).status__c)
+            // ==> Vouchers for Stacked ILT Classes are the only ones that are load balanced (non-stacked and online are excluded)
+            if ((vcr.Status__c != oldVoucherMap.get(vcr.Id).Status__c)
                 && (vcr.ILT_Class__c != null)) {
                 setNewVouchers.add(vcr.Id);
             }
         }
+
         for (Voucher__c theVoucher : [SELECT Id, ILT_Class__c, ILT_Class__r.Skedulo_Job_Status__c,
-                ILT_Class__r.Is_Master_Class__c, ILT_Class__r.Is_Stacked_Class__c,
-                ILT_Class__r.Skedulo_Parent_Job__r.sked__Job_Status__c
+                ILT_Class__r.Is_Master_Class__c, ILT_Class__r.Is_Stacked_Class__c, ILT_Class__r.Skedulo_Parent_Job__c
             FROM Voucher__c
             WHERE Id IN :setNewVouchers
             AND ILT_Class__r.Is_Stacked_Class__c = TRUE
             AND ILT_Class__r.Skedulo_Job_Status__c != 'Cancelled'
-            AND ILT_Class__r.Class_Closed_Date__c = NULL]) {
+        ]) {
 
             setUpdatedVoucherClassIds.add(theVoucher.ILT_Class__c);
+            setUpdatedParentJobIds.add(theVoucher.ILT_Class__r.Skedulo_Parent_Job__c);
+        }
+
+        for (redwing__ILT_Class__c iltClass : [SELECT Id, Class_Closed_Date__c, Skedulo_Parent_Job__c
+            FROM redwing__ILT_Class__c
+            WHERE Skedulo_Parent_Job__c IN :setUpdatedParentJobIds
+        ]) {
+            if (iltClass.Class_Closed_Date__c != null) {
+                setStackClosedParentJobIds.add(iltClass.Skedulo_Parent_Job__c);
+            }
         }
 
         // Continue with the trigger if is any change in voucher status
         if(!setUpdatedVoucherClassIds.isEmpty()){
-            list<redwing__ILT_Class__c> lstStackedClasses = new list<redwing__ILT_Class__c>();
-            set<id> setParentJobIds = new set<id>();
-            set<id> setJobIds = new set<id>();
+            List<redwing__ILT_Class__c> lstStackedClasses = new List<redwing__ILT_Class__c>();
+            Set<Id> setParentJobIds = new Set<Id>();
+            Set<Id> setJobIds = new Set<Id>();
             // Collect the parent job ids for all the stacked classes for which a change in voucher status has been received
             // Note: Apex class SkedJobtoILTClass populates parent Skedulo job id field for the parent job with its own job Id
             // This is assumed and required in the logic below which determines group of related stacked classes which share a common parent job id
-            for(redwing__ILT_Class__c iltClass : [select id,Skedulo_Parent_Job__c,Skedulo_Job_Id__c,Is_Stacked_Class__c
-                from redwing__ILT_Class__c
-                where Id IN: setUpdatedVoucherClassIds]) {
+            for(redwing__ILT_Class__c iltClass : [SELECT Id,Skedulo_Parent_Job__c,Skedulo_Job_Id__c,Is_Stacked_Class__c
+                FROM redwing__ILT_Class__c
+                WHERE Id IN: setUpdatedVoucherClassIds
+            ]) {
                 if (iltClass.Skedulo_Parent_Job__c != null) setParentJobIds.add(iltClass.Skedulo_Parent_Job__c); 
                 if (iltClass.Skedulo_Job_Id__c != null) setJobIds.add(iltClass.Skedulo_Job_Id__c);    
             }
@@ -170,45 +186,45 @@ public class PHSS_VoucherTriggerHandler {
             
             // Obtain set of classes related to every parentid and put them in map
             if(!setParentJobIds.isEmpty()){
-                map<id,list<redwing__ILT_Class__c>> mapStackedParentJobIdToListClasses = new map<id,list<redwing__ILT_Class__c>>();
-                map<id,integer> mapStackedParentWithMinMaxNoOfStudents = new map<id,integer>();
-                for(redwing__ILT_Class__c iltClass : [select id,Skedulo_Parent_Job__c,Skedulo_Job_Id__c,Is_Stacked_Class__c,redwing__Max_Seats__c,
+                Map<Id,List<redwing__ILT_Class__c>> mapStackedParentJobIdToListClasses = new Map<Id,List<redwing__ILT_Class__c>>();
+                Map<Id,Integer> mapStackedParentWithMinMaxNoOfStudents = new Map<Id,Integer>();
+                for(redwing__ILT_Class__c iltClass : [SELECT Id,Skedulo_Parent_Job__c,Skedulo_Job_Id__c,Is_Stacked_Class__c,redwing__Max_Seats__c,
                         Cloud_Craze_Product__c,Cloud_Craze_Product__r.Course_Catalog__c,Cloud_Craze_Product__r.Course_Catalog__r.Number_of_Students__c
-                    from redwing__ILT_Class__c
-                    where Skedulo_Parent_Job__c IN: setParentJobIds]){
+                    FROM redwing__ILT_Class__c
+                    WHERE Skedulo_Parent_Job__c IN: setParentJobIds]){
                     lstStackedClasses.add(iltClass);
                     if(mapStackedParentJobIdToListClasses.containsKey(iltClass.Skedulo_Parent_Job__c)){
-                        list<redwing__ILT_Class__c> existinglstcls = mapStackedParentJobIdToListClasses.get(iltClass.Skedulo_Parent_Job__c);
+                        List<redwing__ILT_Class__c> existinglstcls = mapStackedParentJobIdToListClasses.get(iltClass.Skedulo_Parent_Job__c);
                         existinglstcls.add(iltClass);    
                         mapStackedParentJobIdToListClasses.put(iltClass.Skedulo_Parent_Job__c,existinglstcls);
                     } else {
-                        list<redwing__ILT_Class__c> lstcls = new list<redwing__ILT_Class__c>();
+                        List<redwing__ILT_Class__c> lstcls = new List<redwing__ILT_Class__c>();
                         lstcls.add(iltClass);
                         mapStackedParentJobIdToListClasses.put(iltClass.Skedulo_Parent_Job__c,lstcls);
                     }
                 } 
                 System.debug('mapStackedParentJobIdToListClasses='+mapStackedParentJobIdToListClasses);
                 
-                map<id,integer> mapStackedParentIdWithNoOfClaimedVouchers = new map<id,integer>();
-                map<id,integer> mapJobWithNoOfClaimedVouchers = new map<id,integer>();
-                map<id,integer> mapStackedPArentIdWithMinNoOfStudents = new map<id,integer>();
-                list<string> ClaimedStatuses = system.label.ClaimedVoucherTypes.split(';');
+                Map<Id,Integer> mapStackedParentIdWithNoOfClaimedVouchers = new Map<Id,Integer>();
+                Map<Id,Integer> mapJobWithNoOfClaimedVouchers = new Map<Id,Integer>();
+                Map<Id,Integer> mapStackedParentIdWithMinNoOfStudents = new Map<Id,Integer>();
+                List<String> ClaimedStatuses = system.Label.ClaimedVoucherTypes.split(';');
                 
                 // Count the number of claimed vouchers for every stacked job
-                list<voucher__c> lstvchrs = [select id, status__c, User__c, ILT_Class__r.Skedulo_Job_Id__c, ILT_Class__r.Skedulo_Parent_Job__c
-                    from voucher__c
-                    where ILT_Class__r.Skedulo_Parent_Job__c IN :setParentJobIds];
+                List<Voucher__c> lstvchrs = [SELECT Id, Status__c, User__c, ILT_Class__r.Skedulo_Job_Id__c, ILT_Class__r.Skedulo_Parent_Job__c
+                    FROM Voucher__c
+                    WHERE ILT_Class__r.Skedulo_Parent_Job__c IN :setParentJobIds];
                 System.debug('+++lstvchrs='+lstvchrs);
 
                 // Initialize number of claimed vouchers to zero
-                for(id theParentJobId : setParentJobIds){
+                for(Id theParentJobId : setParentJobIds){
                     mapStackedParentIdWithNoOfClaimedVouchers.put(theParentJobId, 0);
                 }
-                for(voucher__c ar : lstvchrs){
-                    if(ClaimedStatuses.contains(ar.status__c)){
+                for(Voucher__c ar : lstvchrs){
+                    if(ClaimedStatuses.contains(ar.Status__c)){
                     	if (ar.ILT_Class__r.Skedulo_Parent_Job__c != null) {
-	                        if(mapStackedParentIdWithNoOfClaimedVouchers.containskey(ar.ILT_Class__r.Skedulo_Parent_Job__c)){
-	                           integer i = mapStackedParentIdWithNoOfClaimedVouchers.get(ar.ILT_Class__r.Skedulo_Parent_Job__c)+1;
+	                        if(mapStackedParentIdWithNoOfClaimedVouchers.containsKey(ar.ILT_Class__r.Skedulo_Parent_Job__c)){
+	                           Integer i = mapStackedParentIdWithNoOfClaimedVouchers.get(ar.ILT_Class__r.Skedulo_Parent_Job__c)+1;
 	                           mapStackedParentIdWithNoOfClaimedVouchers.put(ar.ILT_Class__r.Skedulo_Parent_Job__c,i);
 	                        } else{
 	                           mapStackedParentIdWithNoOfClaimedVouchers.put(ar.ILT_Class__r.Skedulo_Parent_Job__c,1); 
@@ -218,16 +234,16 @@ public class PHSS_VoucherTriggerHandler {
                 }
                 
                 // Determine minimum maximum no of students for the stacked classes for every parent job id
-                for(id theParentJobId : setParentJobIds){
+                for(Id theParentJobId : setParentJobIds){
                     for(redwing__ILT_Class__c iltClass : mapStackedParentJobIdToListClasses.get(theParentJobId)){
                     	if(iltClass.Skedulo_Parent_Job__c != null) {
-	                        if(mapStackedParentIdWithMinNoOfStudents.containskey(iltClass.Skedulo_Parent_Job__c)){
+	                        if(mapStackedParentIdWithMinNoOfStudents.containsKey(iltClass.Skedulo_Parent_Job__c)){
 	                            if(mapStackedParentIdWithMinNoOfStudents.get(iltClass.Skedulo_Parent_Job__c) > iltClass.redwing__Max_Seats__c){  
-	                                mapStackedParentIdWithMinNoOfStudents.put(iltClass.Skedulo_Parent_Job__c,integer.valueOf(iltClass.redwing__Max_Seats__c));
+	                                mapStackedParentIdWithMinNoOfStudents.put(iltClass.Skedulo_Parent_Job__c,Integer.valueOf(iltClass.redwing__Max_Seats__c));
 	                            }
 	                        }  else{
 	                        	// Note: iltClass.redwing__Max_Seats__c *should* contain value of Cloud_Craze_Product__r.Course_Catalog__r.Number_of_Students__c when record is created
-	                            mapStackedParentIdWithMinNoOfStudents.put(iltClass.Skedulo_Parent_Job__c,integer.valueOf(iltClass.redwing__Max_Seats__c));
+	                            mapStackedParentIdWithMinNoOfStudents.put(iltClass.Skedulo_Parent_Job__c,Integer.valueOf(iltClass.redwing__Max_Seats__c));
 	                        }  
                     	}
                     }
@@ -235,7 +251,7 @@ public class PHSS_VoucherTriggerHandler {
                 
                 set<id> OversoldParentJobIds = new set<id>();
                 set<id> UndersoldParentJobIds = new set<id>();               
-                map<id, integer> numberOfRemainingSeatsToSell = new map<id, integer>();    
+                map<id, Integer> numberOfRemainingSeatsToSell = new map<id, Integer>();
                     
                 // Calculate number of open seats per stacked class remaining to sell                             
                 // Determine whether minimum no of maximum students is greater than number of claimed vouchers
@@ -282,11 +298,15 @@ public class PHSS_VoucherTriggerHandler {
                 	}
                 }
                 
-                list<voucher__c> lstVouchersToUpdate = new list<voucher__c>();
+                List<Voucher__c> lstVouchersToUpdate = new List<Voucher__c>();
 
-                for(voucher__c vcr : lstvchrs){
+                for(Voucher__c vcr : lstvchrs){
+                    // DE2564 - Enhancement - Insure that load balancing is disabled for ALL classes in a stack in which ANY class is CLOSED
+                    // In this case we update class inventory (above) but do NOT load balance vouchers (modify their status)
+                    if (setStackClosedParentJobIds.contains(vcr.ILT_Class__r.Skedulo_Parent_Job__c)) continue;
+
                     Boolean updateVoucher = false;
-                    voucher__c theUpdatedVoucher = new voucher__c();
+                    Voucher__c theUpdatedVoucher = new Voucher__c();
 
                     // Hot Fix - SJC - Dynamically change voucher status from Void to Blocked for regression purposes for load balancing
                     // Vouchers should be in Blocked not Void status if not assigned to a student

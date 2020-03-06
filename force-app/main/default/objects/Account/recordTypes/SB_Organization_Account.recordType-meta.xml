@@ -793,6 +793,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>COM</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Community Branch</fullName>
             <default>false</default>
         </values>
