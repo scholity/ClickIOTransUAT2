@@ -79,6 +79,10 @@
     </layoutSections>
     <relatedLists>
         <fields>NAME</fields>
+        <relatedList>redwing__Achievement_Assignment__c.Online_Class__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
         <relatedList>redwing__ILT_Event__c.redwing__Learning__c</relatedList>
     </relatedLists>
     <relatedLists>

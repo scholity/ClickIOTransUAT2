@@ -36,9 +36,9 @@ public with sharing class RCAchievementAssignmentsHelper {
     }
 
     public static void processBeforeUpdateAchievementAssignment(Map<Id, redwing__Achievement_Assignment__c> oldAssignmentsMap, List<redwing__Achievement_Assignment__c> newAchievementAssignments) {
+        setAchievementStatus(newAchievementAssignments, oldAssignmentsMap);
         setAcquiredDate(newAchievementAssignments, oldAssignmentsMap);
         setExpDate(newAchievementAssignments, oldAssignmentsMap);
-        setAchievementStatus(newAchievementAssignments, oldAssignmentsMap);
         sendEmail(newAchievementAssignments, oldAssignmentsMap);
     }
 
@@ -97,6 +97,14 @@ public with sharing class RCAchievementAssignmentsHelper {
 
             system.debug('oldAAEvaluationResults***'+oldAAEvaluationResults);
             system.debug('newAAEvaluationResults***'+newAAEvaluationResults);
+            
+            //DE2434 - For online only class when status chagnes to Pending Assignment it needs to go to Acquired
+            if(aa.redwing__Status__c == 'Pending Assignment' && aa.Online_Class__c != null)
+            {
+                aa.redwing__Status__c           = 'Acquired';
+                aa.Evaluation_Result__c         = 'Successful';
+                aa.redwing__Acquisition_Date__c = Date.today(); 
+            }
 
             if(oldAAEvaluationResults != newAAEvaluationResults)
             {
@@ -116,12 +124,13 @@ public with sharing class RCAchievementAssignmentsHelper {
 
                 else if(aa.Evaluation_Result__c != null && aa.redwing__Status__c == 'Pending Assignment')
                 {
-                    if(aa.Evaluation_Result__c == 'Successful' && aa.Online_Class__c != null)
+                    //DE2434 - removed below
+                    /*if(aa.Evaluation_Result__c == 'Successful' && aa.Online_Class__c != null)
                     {
                         aa.redwing__Status__c = 'Acquired';
-                    }
+                    }*/
                     
-                    else if(aa.Evaluation_Result__c != 'Successful' && aa.Online_Class__c != null)
+                    if(aa.Evaluation_Result__c != 'Successful' && aa.Online_Class__c != null)
                     {
                         aa.redwing__Status__c = 'Eligible';
                     }

@@ -147,7 +147,7 @@
                 <leftValueReference>sAccountContactRelationship.ContactId</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>frmContactId</elementReference>
+                    <elementReference>sContact.Id</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -181,6 +181,7 @@
             <label>Is Blank</label>
         </rules>
     </decisions>
+    <description>Updated to Contact 18 Char</description>
     <formulas>
         <name>NewAccountName</name>
         <dataType>String</dataType>
@@ -328,7 +329,13 @@
         <locationY>586</locationY>
         <inputReference>sContact</inputReference>
     </recordUpdates>
-    <startElementReference>Get_Contact</startElementReference>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Get_Contact</targetReference>
+        </connector>
+    </start>
     <status>Active</status>
     <variables>
         <name>frmAccountFlow</name>

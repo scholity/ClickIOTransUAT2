@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Block_Certificate_Export_to_AWS__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Check (set true) is certificates for this account are NOT to be exported to AWS.</description>
+    <externalId>false</externalId>
+    <label>Block Certificate Export to AWS</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

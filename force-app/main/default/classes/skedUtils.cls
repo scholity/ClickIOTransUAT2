@@ -203,7 +203,7 @@ public class skedUtils {
         string queryString = 'SELECT ' + string.join(fields, ', ') +
                              ' FROM sked__Resource__c ' +
                              ' WHERE ' + string.join(conditions, ' AND ');
-                             
+        
         List<sked__Resource__c> skedResources = (List<sked__Resource__c>)Database.query(queryString);
 
         List<sked__Resource__c> matchedSkedResources = new List<sked__Resource__c>();

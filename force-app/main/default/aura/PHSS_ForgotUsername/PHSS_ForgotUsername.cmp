@@ -1,0 +1,111 @@
+<aura:component implements = "force:appHostable,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:lightningQuickAction,flexipage:availableForRecordHome,force:hasSObjectName" access="global"
+                controller = "PHSS_ForgotUsernameController"> 
+    <aura:attribute name="email" type="String"/>
+    <aura:attribute name="searchBool" type="Boolean"/>
+    <aura:attribute name="userRecord" type="User"/>
+    <aura:attribute name = "stepNumber"	type = "String" default = "Zero" />
+    <!--
+    <lightning:card iconName="standard:event" title="Forgot Username">
+	    <lightning:formattedText class="slds-p-left_small" value="This is the target page"/>
+    </lightning:card>
+	-->
+    
+    
+    <aura:if isTrue="{!v.stepNumber == 'Zero'}" >
+        <div id="cpsDiv"> 
+            <a href="javascript:void(0)" onclick="{!c.showForgotUsername}"> Forgot Username </a>
+        </div>
+    <aura:set attribute="else">
+            <section role			  = "dialog"
+                 tabindex		  = "-1"
+                 class			  = "slds-modal slds-fade-in-open slds-modal_medium"
+                 aria-labelledby  = "header43" 
+                 aria-modal		  = "true"
+                 aria-describedby = "modal-content-id-1">
+            
+            <div class = "slds-modal__container">
+                
+                    <!--Header - Start -->
+    
+                    <header class="slds-modal__header">
+                        <button class	= "slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title	= "Close"
+                                onclick = "{!c.cancel}">
+                            
+                            <lightning:icon iconName="utility:close" class = "white"/>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id		= "header43"
+                            class	= "slds-text-heading_medium">
+                            Red Cross Forgot Username
+                        </h2>
+                        <br/>
+                    </header>        
+        			<div id="cpsDiv">
+                        <aura:if isTrue="{!v.stepNumber == 'One'}" >
+                            <div class="slds-grid slds-grid_vertical slds-grid_vertical-align-center" style="padding: 2rem;background-color: white;">
+                                
+                                
+                                
+                                <div class="slds-col">
+                                    <span>Enter your email address</span>
+                                </div>
+                                <div class="slds-col">
+                                    <span><lightning:input type="text" value="{!v.email}"/><br/></span>
+                                </div>
+                                <div class="slds-col">
+                                     <span>                                  
+                                            <button class="slds-button slds-button_neutral customButton"
+                                                    onclick="{!c.findUser}" >
+                                                Find My Username
+                                            </button>  
+                                     </span>
+                                </div>
+                                
+                                
+                                
+                            </div>
+                        <aura:set attribute="else">
+                             <div class="slds-grid slds-grid_vertical slds-grid_vertical-align-center" style="background-color: white;">
+                                <div class="slds-col">
+                                    <span>
+                                     <br/>
+                                     <br/>
+                                     <aura:if isTrue="{!v.searchBool}">
+                                            <aura:if isTrue="{!v.userRecord}">
+                                                <b>
+                                                Your Username is {!v.userRecord.Username}.
+                                                <!-- User Active? {!v.userRecord.IsActive} -->
+                                                </b>
+                                            <aura:set attribute="else">
+                                                    <b>Please contact the TSC for further assistance!</b>
+                                            </aura:set>
+                                            </aura:if>
+                                         <br />
+                                         <br />
+                                        </aura:if>
+                                     <br/>
+                                     <br/>
+                                    </span>
+                                </div>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                	</div>
+					<footer class="slds-modal__footer slds-grid slds-grid_align-spread">
+                    
+                    <div class="slds-col">
+                    	<button aura:id="cancelButton" class="slds-button slds-button_neutral customButtonRed" onclick="{!c.cancel}">Cancel</button>
+                    </div>
+                    
+                </footer>                
+                
+                
+                
+                
+                </div>
+        </section>
+
+    </aura:set>    
+    </aura:if>
+</aura:component>

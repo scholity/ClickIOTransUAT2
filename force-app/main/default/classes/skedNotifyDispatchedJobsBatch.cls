@@ -17,7 +17,7 @@ global class skedNotifyDispatchedJobsBatch implements Database.Batchable<sObject
             allocationIds.add(allocation.Id);
         }
         if (!allocationIds.isEmpty()) {
-            skedSkeduloApiManager.dispatchJobAllocations(allocationIds);
+            //skedSkeduloApiManager.dispatchJobAllocations(allocationIds);
         }        
     }
     

@@ -62,6 +62,10 @@
                 <behavior>Edit</behavior>
                 <field>Override_Channel__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Contract_Term__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

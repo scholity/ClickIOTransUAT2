@@ -141,20 +141,24 @@ public class TransactionPaymentTriggerHelper
             {   
                 for(ccrz__E_OrderItem__c  oi : tpToOrderItemsMap.get(oId))
                 {
-                    Fulfillment_Item__c  fi 		= new Fulfillment_Item__c ();
+                    if(oi.ccrz__Product__c != null)
+                    {
+                        Fulfillment_Item__c  fi 		= new Fulfillment_Item__c ();
                     
-                    fi.Fulfillment__c 				= orderToFulflmntMap.get(oId).Id;
-                    fi.Order__c 					= oId;
-                    fi.Order_Item__c				= oi.Id;
-                    fi.CC_Product__c  				= oi.ccrz__Product__c;
-                    fi.Status__c					= 'Invoiced';
-                    fi.ILT_Class__c					= oi.ILT_Class__c;
-                    fi.Quantity__c					= oi.ccrz__Quantity__c;
-                    fi.Transaction_Date__c			= system.Date.today();
-                    fi.Supplemental_Information__c	= oi.Supplemental_Information__c;
-                    fi.Fulfillment_Date__c			= system.Date.today();
+                        fi.Fulfillment__c 				= orderToFulflmntMap.get(oId).Id;
+                        fi.Order__c 					= oId;
+                        fi.Order_Item__c				= oi.Id;
+                        fi.CC_Product__c  				= oi.ccrz__Product__c;
+                        fi.Status__c					= 'Invoiced';
+                        fi.ILT_Class__c					= oi.ILT_Class__c;
+                        fi.Quantity__c					= oi.ccrz__Quantity__c;
+                        fi.Transaction_Date__c			= system.Date.today();
+                        fi.Supplemental_Information__c	= oi.Supplemental_Information__c;
+                        fi.Fulfillment_Date__c			= system.Date.today();
+                        
+                        fiList.add(fi);
+                    }
                     
-                    fiList.add(fi);
                 }
             }
             

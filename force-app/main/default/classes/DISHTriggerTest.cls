@@ -7,9 +7,9 @@ private class DISHTriggerTest
 		
 		User runningUser 	= getTestuser1();
 		
-		User requestedById 	= [SELECT Id FROM User WHERE Profile.Name = 'ARC BGST Sales User' AND IsActive = true LIMIT 1];
+		User requestedById 	= [SELECT Id FROM User WHERE Profile.Name = 'SB ARC BGST Sales User' AND IsActive = true LIMIT 1];
 		
-		User userToDatvId 	= [SELECT Id FROM User WHERE Profile.Name = 'ARC BGST Sales User' AND IsActive = true AND Id != :requestedById.Id LIMIT 1];
+		User userToDatvId 	= [SELECT Id FROM User WHERE Profile.Name = 'SB ARC BGST Sales User' AND IsActive = true AND Id != :requestedById.Id LIMIT 1];
 		
 		system.runAs (runningUser)
 		{
@@ -29,7 +29,7 @@ private class DISHTriggerTest
 	
 	public static User getTestuser1()
     {
-        Profile pId = [SELECT Id FROM Profile WHERE Name = 'ARC BGST Sales Admin' LIMIT 1];
+        Profile pId = [SELECT Id FROM Profile WHERE Name = 'SB ARC BGST Sales Admin' LIMIT 1];
         
         User u1 = new User(Alias 			= 'jja', 
                           Email				= 'test@redcross.org', 

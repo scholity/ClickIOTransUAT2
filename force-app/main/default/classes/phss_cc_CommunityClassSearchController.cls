@@ -94,7 +94,8 @@ public with sharing class phss_cc_CommunityClassSearchController {
             Date endDate = (Date) JSON.deserialize(endDateStr, Date.class);
 
             Map<String, Object> courses = searchCommunityCourses(opportunityId, searchTerm);
-            List<redwing__ILT_Class__c> trainingClasses = fetchTrainingClasses(courses.keySet(), startDate, endDate);
+            Geo_Location__c anchorPoint = getCoordinates(city, state, postalCode);
+            List<redwing__ILT_Class__c> trainingClasses = fetchTrainingClasses(courses.keySet(), startDate, endDate, range, anchorPoint);
 
             Map<Id, Id> jobCourses = new Map<Id, Id>();
             if (trainingClasses != null) {
@@ -120,7 +121,7 @@ public with sharing class phss_cc_CommunityClassSearchController {
 
 
     @testVisible 
-    private static List<redwing__ILT_Class__c> fetchTrainingClasses(Set<String> productIds, Date startDate, Date endDate) {
+    private static List<redwing__ILT_Class__c> fetchTrainingClasses(Set<String> productIds, Date startDate, Date endDate, Integer distanceVal, Geo_Location__c anchorPoint) {
         if (productIds == null || productIds.size() == 0 || startDate == null || endDate == null) {
             return null;
         }
@@ -128,6 +129,8 @@ public with sharing class phss_cc_CommunityClassSearchController {
         List<redwing__ILT_Class__c> trainingClasses;
 
         try {
+            distanceVal = distanceVal + 1; //DISTANCE function only supports < and >, adding 1 so query grabs values that are equal to the original distanceVal
+            
             trainingClasses = [
                     SELECT
                             Cloud_Craze_Product__c,
@@ -144,12 +147,14 @@ public with sharing class phss_cc_CommunityClassSearchController {
                             redwing__ILT_Class__c
                     WHERE
                             Cloud_Craze_Product__c IN :productIds
-                            AND redwing__Start_Date__c >= :startDate
-                            AND redwing__Start_Date__c <= :endDate
+                                AND redwing__Start_Date__c >= :startDate
+                                AND redwing__Start_Date__c <= :endDate
+                                AND DISTANCE(redwing__Location__r.Skedulo_Location__r.sked__GeoLocation__c, :anchorPoint.Coordinates__c, 'mi') < :distanceVal
                     ORDER BY
                             redwing__Start_Date__c
+                    LIMIT 50000
             ];
-
+            system.debug('@@@fetchTrainingClasses trainingClasses size: '+trainingClasses.size());
         } catch (Exception e) {
             throw new phss_cc_Exception(FAILED_TO_FETCH_TRAINING_CLASSES, e);
         }
@@ -260,10 +265,11 @@ public with sharing class phss_cc_CommunityClassSearchController {
     private static Map<Id, sked__Job__c> getNearbyJobs(Map<Id, sked__Job__c> jobs, String city, String state, String postalCode, Integer range) {
 
         Map<Id, sked__Job__c> nearbyJobs = new Map<Id, sked__Job__c>();
-        Set<Location> locations = getCoordinates(city, state, postalCode);
+        //Set<Location> locations = getCoordinates(city, state, postalCode);
 
         for (Id id : jobs.keySet()) {
             sked__Job__c job = jobs.get(id);
+            /*
             for (Location location : locations) {
                 if (job.sked__Location__c != null && job.sked__Location__r.sked__GeoLocation__c != null) {
                     Double distance = job.sked__Location__r.sked__GeoLocation__c.getDistance(location, DISTANCE_IN_MILES_KEY);
@@ -273,8 +279,10 @@ public with sharing class phss_cc_CommunityClassSearchController {
                     }
                 }
             }
+            */
+            nearbyJobs.put(id, job);
         }
-
+        system.debug('@@@nearbyJobs count: '+nearbyJobs.size());
         return nearbyJobs;
     }
 
@@ -288,12 +296,11 @@ public with sharing class phss_cc_CommunityClassSearchController {
      * @return
      */
     @testVisible
-    private static Set<Location> getCoordinates(String city, String state, String postalCode) {
-
-        Set<Location> coordinates = new Set<Location>();
-
+    private static Geo_Location__c getCoordinates(String city, String state, String postalCode) {
+        //May need function to find central postal code when a city/state supplied and no postal code
+        Geo_Location__c locationOfInterest;
+        List<Geo_Location__c> locations = new List<Geo_Location__c>();
         try {
-            List<Geo_Location__c> locations = new List<Geo_Location__c>();
             if (String.isNotBlank(postalCode)) {
                 if (String.isNotBlank(state)) {
                     if (String.isNotBlank(city)) {
@@ -302,7 +309,7 @@ public with sharing class phss_cc_CommunityClassSearchController {
                                 FROM Geo_Location__c
                                 WHERE City_UC__c = :city.toUpperCase()
                                 AND State_Abbreviation__c = :state
-                                AND Postal_Code__c = :postalCode
+                                AND Postal_Code__c LIKE :postalCode
                         ];
                     }
                     else {
@@ -330,16 +337,13 @@ public with sharing class phss_cc_CommunityClassSearchController {
                         AND State_Abbreviation__c = :state
                 ];
             }
-
-            for (Geo_Location__c location : locations) {
-                coordinates.add(location.Coordinates__c);
-            }
-
         } catch (Exception e) {
             throw new phss_cc_Exception(FAILED_TO_GET_LOCATION_COORDINATES, e);
         }
-
-        return coordinates;
+        if(!locations.isEmpty()){
+            locationOfInterest = locations[0]; //we need to choose a single location to use lat/long value from in the DISTANCE query params
+        }
+        return locationOfInterest;
     }
 
     /**

@@ -2,8 +2,12 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
     public Boolean exportAllClasses = false;
     public String processFlags = 'CLIPS';
     public DateTime RunTime = DateTime.Now();
-    public DateTime lastRunDate = DateTime.Now();
+    public DateTime lastRunDate = RunTime;
+    public DateTime lastPricebookRunDate = RunTime;
+    public DateTime lastLocationRunDate = RunTime;
     public String incrementalExport = '';
+    public String incrementalPricebookExport = '';
+    public String incrementalLocationExport = '';
     public Integer CourseClassXMLSequenceNumber = 0;
     public Integer CPSXMLSequenceNumber = 0;
     public Integer LocationXMLSequenceNumber = 0;
@@ -431,6 +435,30 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             List<Integration_Files__c> integrationFiles = [
                     Select Id, CreatedDate
                     From Integration_Files__c
+                    Where File_Name__c Like 'ARC_Pricebook%'
+                    Order By CreatedDate Desc
+                    Limit 1
+            ];
+            if (integrationFiles.size() != null && integrationFiles.size() > 0) {
+                lastPricebookRunDate = integrationFiles[0].CreatedDate;
+                incrementalPricebookExport = 'And LastModifiedDate > :lastPricebookRunDate';
+            }
+
+            integrationFiles = [
+                    Select Id, CreatedDate
+                    From Integration_Files__c
+                    Where File_Name__c Like 'ARC_Location%'
+                    Order By CreatedDate Desc
+                    Limit 1
+            ];
+            if (integrationFiles.size() != null && integrationFiles.size() > 0) {
+                lastLocationRunDate = integrationFiles[0].CreatedDate;
+                incrementalLocationExport = 'Where LastModifiedDate > :lastLocationRunDate';
+            }
+
+            integrationFiles = [
+                    Select Id, CreatedDate
+                    From Integration_Files__c
                     Where File_Name__c Like 'ARC_LMS_Master%'
                     Or File_Name__c Like 'ARC_Master%'
                     Order By CreatedDate Desc
@@ -443,7 +471,10 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         }
         System.debug('lastRunDate=' + lastRunDate);
         System.debug('incrementalExport=' + incrementalExport);
+        System.debug('incrementalPricebookExport=' + incrementalPricebookExport);
+        System.debug('incrementalLocationExport=' + incrementalLocationExport);
         System.debug('exportAllClasses=' + exportAllClasses);
+
 
         // Build list of all learning plans (complete refresh to be pushed in each export - will be
         // complemented later with an incremental refresh)
@@ -603,9 +634,9 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
 
         activeCommunityLocations = [
                 Select Id, Name, redwing__Address_1__c, redwing__Address_2__c, redwing__City__c,
-                        redwing__State__c, redwing__Postal_Code__c, redwing__Country__c, Skedulo_Location__r.sked__GeoLocation__c,
-                        Skedulo_Location__r.sked__Account__r.Billing_Contact_email__c, Skedulo_Location__r.sked__Account__r.Billing_Contact_phone__c,
-                        GeoLocation__c
+                        redwing__State__c, redwing__Postal_Code__c, redwing__Country__c, GeoLocation__c, Skedulo_Location__r.sked__GeoLocation__c,
+                        Skedulo_Location__c, Skedulo_Location__r.sked__Account__c,
+                        Skedulo_Location__r.sked__Account__r.Billing_Contact_email__c, Skedulo_Location__r.sked__Account__r.Billing_Contact_phone__c
                 From redwing__ILT_Location__c
                 Where Id IN :locationSet
         ];
@@ -785,7 +816,10 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         Map<Id, String> siteCatalogXMLMap = new Map<Id, String>();
         List<String> inventoryXMLList = new List<String>();
         List<String> pricebookXMLList = new List<String>();
+        List<String> updatedPricebookXMLList = new List<String>();
         Map<Id, Double> classPriceMap = new Map<Id, Double>();
+        Map<Id, Double> classUpdatedPriceMap = new Map<Id, Double>();
+        Map<Id, String> updatedLocationXMLMap = new Map<Id, String>();
 
         //classXMLList = new List<String>(); // Reinitialize all maps and lists for each community class chunk
         //onlineClassXMLList = new List<String>();
@@ -816,7 +850,11 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         activeOnlineClasses = Database.query(theOnlineQuery);
         System.debug('# OnlineClasses=' + activeOnlineClasses.size());
 
-        classPriceMap = getClassPrice(activeCommunityClasses, activeOnlineClasses);
+        classPriceMap = getClassPrice(activeCommunityClasses, activeOnlineClasses); // activeCommunityClasses is null here
+        // DE2507 - Generate Pricebook XML for all Classes Which Have Recently Changed
+        classUpdatedPriceMap = getUpdatedClassPrices();
+        // DE2507 - Generate Location XML for all Locations Which Have Recently Changed
+        updatedLocationXMLMap = getUpdatedLocations();
 
         // ***************************************************************************
         // Iterate Through Each Active Online Class to Generate XML Definitions
@@ -890,9 +928,22 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
             }
         }
 
+        // DE2507 - Generate Pricebook XML for all Classes Which Have Had Their Price Recently Modified - Classroom + Blended
+        for (redwing__ILT_Class__c theClass : [Select Id From redwing__ILT_Class__c Where Id In :classUpdatedPriceMap.keySet()]) {
+            updatedPricebookXMLList.add(getPricebookXml(theClass, classUpdatedPriceMap.get(theClass.Id)));
+        }
+        // DE2507 - Generate Pricebook XML for all Classes Which Have Had Their Price Recently Modified - Online
+        for (redwing__Learning__c theLearningObject : [Select Id From redwing__Learning__c Where Id In :classUpdatedPriceMap.keySet()]) {
+            updatedPricebookXMLList.add(getPricebookXml(theLearningObject, classUpdatedPriceMap.get(theLearningObject.Id)));
+        }
+
         if (processFlags.contains('C')) generateCourseClassXmlFile(courseXMLMap.values(), onlineClassXMLList);
+        // DE2507 - Generate Location XML for all Locations Which Have Been Recently Modified
+        if (processFlags.contains('L')) generateLocationXmlFile(updatedlocationXMLMap.values());
         if (processFlags.contains('I')) generateInventoryXmlFile(inventoryXMLList);
         if (processFlags.contains('P')) generatePricebookXmlFile(pricebookXMLList);
+        // DE2507 - Generate Pricebook XML for all Prices Which Have Been Recently Modified
+        if (processFlags.contains('P')) generatePricebookXmlFile(updatedPricebookXMLList);
         if (processFlags.contains('S')) generateSiteCatalogXmlFile(siteCatalogXMLMap.values());
 
         if (processFlags.contains('C')) generateCourseClassXmlFileTrailer();
@@ -1585,7 +1636,7 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         // the same learning plan, hence a reverse lookup by learning plan was incorrect)
 
         // Fetch retail pricing and write to productPriceMap (retail pricing is by product (course))
-        List<ccrz__E_PriceListItem__c> priceItemList = [Select Id, ccrz__Price__c, ccrz__Product__r.LMS_Learning_Plan__c
+        List<ccrz__E_PriceListItem__c> priceItemList = [Select Id, ccrz__Product__c, ccrz__Price__c, ccrz__Product__r.LMS_Learning_Plan__c
             From ccrz__E_PriceListItem__c
             Where ccrz__Pricelist__r.Name = 'Retail Price List'
             And ccrz__Product__c In :communityProductSet];
@@ -1616,6 +1667,84 @@ public without sharing class PHSS_eCommerceIntegrationFilesBatch implements Data
         system.debug('*** classPriceMap.size()='+classPriceMap.size());
 
         return classPriceMap;
+    }
+
+    // DE2507 - Retrieve Updated Prices by Class (ILT, Blended, and Online)
+
+    private Map<Id, Double> getUpdatedClassPrices() {
+        List<ccrz__E_PriceListItem__c> priceItemList = new List<ccrz__E_PriceListItem__c>();
+        Map<Id, Double> productPriceMap = new Map<Id, Double>();
+        Map<Id, Double> learningPlanPriceMap = new Map<Id, Double>();
+        Map<Id, Double> classPriceMap = new Map<Id, Double>();
+
+        List<Recordtype> theRecordTypeList = [select Id from Recordtype where Name = 'Media' LIMIT 1];
+        Id recordTypeId = theRecordTypeList[0].Id;
+
+        // Fetch retail pricing and write to productPriceMap (retail pricing is by product (course))
+        String priceListItemQuery = 'Select Id, ccrz__Product__c, ccrz__Price__c, ccrz__Product__r.LMS_Learning_Plan__c ';
+        priceListItemQuery += 'From ccrz__E_PriceListItem__c ';
+        priceListItemQuery += 'Where ccrz__Pricelist__r.Name = \'Retail Price List\' ';
+        priceListItemQuery += 'And ccrz__Product__r.LMS_Learning_Plan__c != null ';
+        priceListItemQuery += incrementalPricebookExport;
+        priceItemList = Database.query(priceListItemQuery);
+        system.debug('*** priceItemList.size='+priceItemList.size());
+
+        for (ccrz__E_PriceListItem__c thePriceListItem : priceItemList) {
+            productPriceMap.put(thePriceListItem.ccrz__Product__c, thePriceListItem.ccrz__Price__c);
+            learningPlanPriceMap.put(thePriceListItem.ccrz__Product__r.LMS_Learning_Plan__c, thePriceListItem.ccrz__Price__c);
+        }
+        system.debug('*** productPriceMap.size()'+productPriceMap.size());
+        system.debug('*** learningPlanPriceMap.size()'+learningPlanPriceMap.size());
+
+        // Create pricing map by class (classroom, and blended)
+        for (redwing__ILT_Class__c theClass: [Select Id, Price_Override__c, Cloud_Craze_Product__c
+            From redwing__ILT_Class__c
+            Where Request_Type__c IN ('Community','Nurse Assistant Testing')
+            AND Skedulo_Job_Active__c = true
+            AND redwing__End_Date__c >= Today
+            And Cloud_Craze_Product__c In :productPriceMap.keySet()]) {
+            if (theClass.Price_Override__c == null) {
+                classPriceMap.put(theClass.Id, productPriceMap.get(theClass.Cloud_Craze_Product__c));
+            }
+        }
+
+        // Create pricing map by class (online)
+        for (redwing__Training_Plan_Section_Item__c theTPSI: [Select Id, redwing__Learning__c, redwing__Training_Plan_Section__r.redwing__Training_Plan__c
+            From redwing__Training_Plan_Section_Item__c
+            Where redwing__Learning__r.RecordTypeId = :recordTypeId
+            And redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Classroom_Setting__c = 'Online'
+            And redwing__Training_Plan_Section__r.redwing__Training_Plan__r.redwing__Status__c = 'Active'
+            And redwing__Training_Plan_Section__r.redwing__Training_Plan__c In :learningPlanPriceMap.keySet()]) {
+            classPriceMap.put(theTPSI.redwing__Learning__c, learningPlanPriceMap.get(theTPSI.redwing__Training_Plan_Section__r.redwing__Training_Plan__c));
+        }
+        system.debug('*** classPriceMap.size()='+classPriceMap.size());
+
+        return classPriceMap;
+    }
+
+    private Map<Id, String> getUpdatedLocations() {
+        List <redwing__ILT_Location__c> locationList = new List<redwing__ILT_Location__c>();
+        Map<Id, String> locationXMLMap = new Map<Id, String>();
+
+        // Fetch updated locations
+        String locationQuery = 'Select Id, Name, redwing__Address_1__c, redwing__Address_2__c, redwing__City__c, ';
+        locationQuery += 'redwing__State__c, redwing__Postal_Code__c, redwing__Country__c, ';
+        locationQuery += 'GeoLocation__c, Skedulo_Location__r.sked__GeoLocation__c, ';
+        locationQuery += 'Skedulo_Location__c, Skedulo_Location__r.sked__Account__c, ';
+        locationQuery += 'Skedulo_Location__r.sked__Account__r.Billing_Contact_email__c, Skedulo_Location__r.sked__Account__r.Billing_Contact_phone__c ';
+        locationQuery += 'From redwing__ILT_Location__c ';
+        locationQuery += incrementalLocationExport;
+        system.debug('*** locationQuery='+locationQuery);
+        system.debug('*** locationList.size='+locationList.size());
+
+        locationList = Database.query(locationQuery);
+
+        for (redwing__ILT_Location__c theLocation : locationList) {
+            String thePhoneNumber = '';
+            locationXMLMap.put(theLocation.Id, getLocationXML(theLocation, thePhoneNumber));
+        }
+
+        return locationXMLMap;
     }
 
     private Map<Id, Integer> getClassInventory(List<redwing__ILT_Class__c> communityClassList) {
