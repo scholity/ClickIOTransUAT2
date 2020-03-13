@@ -38,7 +38,22 @@ public without sharing class CCOrderItemTriggerHandler {
         setUnitCodeAndLoc(newCCOrderItems, orderIds, productIds, classIds);   
 
     }
-    
+
+    @TestVisible
+    private Boolean validatePostalCode(String postalCode) {
+        Boolean validPostalCode = false;
+        if (String.isNotBlank(postalCode)) {
+            String editedPostalCode = postalCode.replace('-', '').deleteWhitespace(); // Remove embedded hyphens for numeric check
+            Pattern zipPatternUS = Pattern.compile('^[0-9]{5,}'); // Zip must have at least 5 numeric digits
+            Matcher zipMatcher = zipPatternUS.matcher(editedPostalCode);
+            if (zipMatcher.matches()) {
+                validPostalCode = true;  // Return true if valid postal code
+            }
+        }
+
+        return validPostalCode;
+    }
+
     public void setUnitCodeAndLoc(List<ccrz__E_OrderItem__c > newCCOrderItems, Set<Id> orderIds, Set<Id> productIds, Set<Id> classIds) {
         Set<String> zipCodeSet = new Set<String>();
         Map<Id,ccrz__E_Order__c> orderMap = new Map<Id,ccrz__E_Order__c>();
@@ -62,11 +77,15 @@ public without sharing class CCOrderItemTriggerHandler {
             {
                 system.debug(classMap.get(oi.ILT_Class__c).Location_ZIP_Code__c);
                      
-            	zipCodeSet.add(String.valueOf(classMap.get(oi.ILT_Class__c).Location_ZIP_Code__c));
+            	String locationZipCode = String.valueOf(classMap.get(oi.ILT_Class__c).Location_ZIP_Code__c);
+                if (validatePostalCode(locationZipCode)) zipCodeSet.add(locationZipCode);
+                //zipCodeSet.add(String.valueOf(classMap.get(oi.ILT_Class__c).Location_ZIP_Code__c));
                 
                 if(orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode != null)
                 {
-                    zipCodeSet.add(String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode));
+                    String billingZipCode = String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode);
+                    if (validatePostalCode(billingZipCode)) zipCodeSet.add(billingZipCode);
+                    //zipCodeSet.add(String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode));
                 }
                   
             } else if(productMap.containsKey(oi.ccrz__Product__c) && 
@@ -75,12 +94,16 @@ public without sharing class CCOrderItemTriggerHandler {
                       orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__c!=null &&
 					  orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__r.ccrz__PostalCode__c!=null)
             {
-            		  zipCodeSet.add(String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__r.ccrz__PostalCode__c));
+                      String shipToZipCode = String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__r.ccrz__PostalCode__c);
+                      if (validatePostalCode(shipToZipCode)) zipCodeSet.add(shipToZipCode);
+            		  //zipCodeSet.add(String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__r.ccrz__PostalCode__c));
             } else if(orderMap.containsKey(oi.ccrz__Order__c) && 
                       orderMap.get(oi.ccrz__Order__c).ccrz__Account__c!=null && 
                       orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode!=null)
             {
-            		  zipCodeSet.add(String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode));
+            		  String billingZipCode = String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode);
+                      if (validatePostalCode(billingZipCode)) zipCodeSet.add(billingZipCode);
+                      //zipCodeSet.add(String.valueOf(orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode));
             }
             else
             {
@@ -130,7 +153,9 @@ public without sharing class CCOrderItemTriggerHandler {
                    classMap.containsKey(oi.ILT_Class__c) &&
                    classMap.get(oi.ILT_Class__c).Location_ZIP_Code__c != null)
                 {
-                    zip = classMap.get(oi.ILT_Class__c).Location_ZIP_Code__c;
+                    String locationZipCode = classMap.get(oi.ILT_Class__c).Location_ZIP_Code__c;
+                    if (validatePostalCode(locationZipCode)) zip = locationZipCode;
+                    //zip = classMap.get(oi.ILT_Class__c).Location_ZIP_Code__c;
                     
                     Boolean containsZip = glMap.containsKey(zip);
 
@@ -138,7 +163,9 @@ public without sharing class CCOrderItemTriggerHandler {
                     if(!containsZip && orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode != null)
                     {
                     	system.debug('***orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode***'+orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode);
-                        zip = orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode;
+                        String billingZipCode = orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode;
+                        if (validatePostalCode(billingZipCode)) zip = billingZipCode;
+                        //zip = orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode;
                     }
                 }
                 else if(productMap.containsKey(oi.ccrz__Product__c) && 
@@ -147,13 +174,17 @@ public without sharing class CCOrderItemTriggerHandler {
                       	orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__c!=null &&
 					  	orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__r.ccrz__PostalCode__c!=null)
                 {
-                    zip = orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__r.ccrz__PostalCode__c;
+                    String shiptoZipCode = orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__r.ccrz__PostalCode__c;
+                    if (validatePostalCode(shiptoZipCode)) zip = shiptoZipCode;
+                    //zip = orderMap.get(oi.ccrz__Order__c).ccrz__ShipTo__r.ccrz__PostalCode__c;
                 }
                 else if(orderMap.containsKey(oi.ccrz__Order__c) && 
                         orderMap.get(oi.ccrz__Order__c).ccrz__Account__c!=null && 
                         orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode!=null)
                 {
-                    zip = orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode;
+                    String billingZipCode = orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode;
+                    if (validatePostalCode(billingZipCode)) zip = billingZipCode;
+                    //zip = orderMap.get(oi.ccrz__Order__c).ccrz__Account__r.BillingPostalCode;
                 }
 
                 if (String.isEmpty(zip)) {
@@ -190,7 +221,7 @@ public without sharing class CCOrderItemTriggerHandler {
      */
     @TestVisible
     private String getPaymentPostalCodeForOrder(String orderId) {
-        String postalCode;
+        String postalCode = '';
         ccrz__E_Order__c order = [
                 SELECT
                         Id,
@@ -203,7 +234,9 @@ public without sharing class CCOrderItemTriggerHandler {
                         1
         ];
         if (order != null) {
-            postalCode = order.ccrz__OriginatedCart__r.Payment_Postal_Code__c;
+            String paymentZipCode = order.ccrz__OriginatedCart__r.Payment_Postal_Code__c;
+            if (validatePostalCode(paymentZipCode)) postalCode = paymentZipCode;
+            //postalCode = order.ccrz__OriginatedCart__r.Payment_Postal_Code__c;
         }
 
         return postalCode;

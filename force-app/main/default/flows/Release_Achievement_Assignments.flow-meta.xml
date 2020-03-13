@@ -60,6 +60,13 @@
                 <stringValue>Acquired</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sAchievementAssighments.Comments__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>RAA</stringValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Check_Achievement_Type</targetReference>
         </connector>
@@ -292,7 +299,7 @@
         <name>Get_Achievement_Assignments</name>
         <label>Get Achievement Assignments</label>
         <locationX>360</locationX>
-        <locationY>219</locationY>
+        <locationY>220</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Loop_through_Achievements</targetReference>
@@ -309,6 +316,7 @@
         <queriedFields>Id</queriedFields>
         <queriedFields>redwing__Status__c</queriedFields>
         <queriedFields>Achievement_Type__c</queriedFields>
+        <queriedFields>Comments__c</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_Fulfillment_Item</name>

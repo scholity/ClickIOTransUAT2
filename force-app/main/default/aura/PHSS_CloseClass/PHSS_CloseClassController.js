@@ -54,9 +54,9 @@
    
     
     onclickNext : function(component,event,helper){ 
+        component.set("v.errorMessage","");
+        component.set("v.showError",false);        
         var currentSN = component.get("v.stepNumber");
-           
-                   
                 
         if(currentSN == "One")
         {
@@ -102,9 +102,8 @@
                      $A.enqueueAction(action2);
                         }
                     });
-                    $A.enqueueAction(action);
-
-
+                    $A.enqueueAction(action);                    
+ 
                     // Show/hide credit card info
                     //Will fetch AccountContactRelation record on the basis of loggedin user's ContactId and selected account id
                     //console.log('action1..');
@@ -121,9 +120,36 @@
                     });
                     $A.enqueueAction(action1);
                 }
-            
+
+                // DE2628 - Validate whether or not class has already been closed before moving on to Step 2
+
+                var actionCC = component.get("c.getClassClosedStatus");
+
+                actionCC.setParams({classId  : component.get("v.recordId")}); 
+                
+        		helper.serverPromise(component,actionCC).then(
+            		function(response) {
+                        var classClosed = response;
+                        if (classClosed) {
+                            component.set("v.errorMessage",'Class has already been closed by another user');
+                            component.set("v.showError",true); 
+                            alert(classClosed);
+                        } else {
+                            component.set("v.stepNumber", "Two");
+                        }                      
+            		}
+        		).catch(
+            		function(error) {
+                		component.set("v.errorMessage" ,error ) ; 
+                        component.set("v.showError",true);
+                		console.log(error);
+            		}
+        		);                              
+               
                 //Navigate to Step 2
-                component.set("v.stepNumber", "Two");
+                //if (!component.get("v.showError")) {
+                //	component.set("v.stepNumber", "Two");
+                //}
             
             //} 
             }

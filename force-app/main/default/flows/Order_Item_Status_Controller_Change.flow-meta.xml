@@ -993,7 +993,7 @@
  {!myVariable_current.Class_Setting__c}= &#39;Online&#39;
 )</expression>
     </formulas>
-    <interviewLabel>Order_Item_Status_Controller_Change-30_InterviewLabel</interviewLabel>
+    <interviewLabel>Order_Item_Status_Controller_Change-31_InterviewLabel</interviewLabel>
     <label>Order Item Status Controller - Change</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -1114,6 +1114,42 @@
                 <stringValue>OnHold</stringValue>
             </value>
         </filters>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>String</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Comments</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue/>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>String</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>Comments__c</field>
+            <value>
+                <stringValue>OISC-CHG</stringValue>
+            </value>
+        </inputAssignments>
         <inputAssignments>
             <processMetadataValues>
                 <name>dataType</name>

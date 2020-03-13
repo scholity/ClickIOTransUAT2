@@ -261,6 +261,15 @@
     </profileActionOverrides>
     <profileActionOverrides>
         <actionName>View</actionName>
+        <content>PHSS_CC_Order_Item_Admin_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>ccrz__E_OrderItem__c</pageOrSobjectType>
+        <recordType>ccrz__E_OrderItem__c.CC_Order_Item</recordType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
         <content>Live_Chat_Transcript_Record_Page_INV</content>
         <formFactor>Large</formFactor>
         <pageOrSobjectType>LiveChatTranscript</pageOrSobjectType>

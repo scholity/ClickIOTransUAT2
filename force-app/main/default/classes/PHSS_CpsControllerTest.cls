@@ -90,9 +90,7 @@ private class PHSS_CpsControllerTest {
             
             Map<String, Object> testData = phss_cc_TestDataFactory.setupAccountAndProducts();
 			Account testAccount = (Account) testData.get(phss_cc_TestDataFactory.TEST_ACCOUNT);
-			Opportunity testOpportunity = phss_cc_TestDataFactory.createInsertTestOpportunity(testAccount);
-			
-
+			//Opportunity testOpportunity = phss_cc_TestDataFactory.createInsertTestOpportunity(testAccount);
             
             String jsonStr = '{'+
                                 ' "accId": "' + testAcc.Id +'",'+
@@ -138,9 +136,10 @@ private class PHSS_CpsControllerTest {
                                 
                 PHSS_CpsController.initWrapper();
 
-                String oppId = PHSS_CpsController.createOppForCCUpdate(testAcc.Id, 'CPS', testOpportunity.Id);
+                //String oppId = PHSS_CpsController.createOppForCCUpdate(testAcc.Id, 'CPS', testOpportunity.Id);
+                String oppId = PHSS_CpsController.createOppForCCUpdate(testAcc.Id, 'CPS', null);
                 
-                //PHSS_CpsController.updateCartProducts(testOpportunity.Id, lPlan.CC_Product__c, '1');
+                //PHSS_CpsController.updateCartProducts(oppId, lPlan.CC_Product__c, '1');
                 Map<String, Object> testMap = PHSS_CpsController.initProductQuantityMap();
                 testMap = PHSS_CpsController.updateProductQuantityMap(testMap,lPlan.CC_Product__c, '1');
                 testMap = PHSS_CpsController.updateCartProducts(ccprod.Id,testMap);
@@ -154,7 +153,9 @@ private class PHSS_CpsControllerTest {
                 
                 PHSS_CpsController.postClass(jsonStr);
                 
-                PHSS_CpsController.createSDSjob(oppId);
+                Opportunity sjobOpp = [SELECT Id, Source_System__c FROM Opportunity Where Source_System__c = 'CPS' Limit 1];
+                
+                PHSS_CpsController.createSDSjob(sjobOpp.Id);
 
             }
             Test.stopTest();

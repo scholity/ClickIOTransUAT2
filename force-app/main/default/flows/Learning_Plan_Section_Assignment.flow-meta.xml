@@ -1,53 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <assignments>
-        <name>myVariable_waitStartTimeAssignment</name>
-        <label>myVariable_waitStartTimeAssignment</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>myVariable_waitStartTimeVariable</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>$Flow.CurrentDateTime</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>myPreWaitDecision_myWait_myRule_1</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>myWaitAssignment_myWait_myRule_1</name>
-        <label>myWaitAssignment_myWait_myRule_1</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>cancelWaits</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>myWait_myRule_1</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>myDecision</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>myWaitEvent_myWait_myRule_1_event_0_postWaitExecutionAssignment</name>
-        <label>myWaitEvent_myWait_myRule_1_event_0_postWaitExecutionAssignment</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>myWaitEvent_myWait_myRule_1_event_0_postActionExecutionVariable</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>myWait_myRule_1</targetReference>
-        </connector>
-    </assignments>
     <decisions>
         <processMetadataValues>
             <name>index</name>
@@ -64,75 +16,55 @@
             <name>myRule_1</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>formula_myRule_1</leftValueReference>
+                <processMetadataValues>
+                    <name>inputDataType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>leftHandSideType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>operatorDataType</name>
+                    <value>
+                        <stringValue>String</stringValue>
+                    </value>
+                </processMetadataValues>
+                <processMetadataValues>
+                    <name>rightHandSideType</name>
+                    <value>
+                        <stringValue>Picklist</stringValue>
+                    </value>
+                </processMetadataValues>
+                <leftValueReference>myVariable_current.redwing__Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <booleanValue>true</booleanValue>
+                    <stringValue>Completed</stringValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>myWait_myRule_1</targetReference>
+                <targetReference>myRule_1_A1</targetReference>
             </connector>
-            <label>No Criteria</label>
+            <label>Is Complete</label>
         </rules>
     </decisions>
-    <decisions>
-        <name>myPostWaitDecision_myWaitEvent_myWait_myRule_1_event_0</name>
-        <label>myPostWaitDecision_myWaitEvent_myWait_myRule_1_event_0</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>myWaitEvent_myWait_myRule_1_event_0_postWaitExecutionAssignment</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>default</defaultConnectorLabel>
-        <rules>
-            <name>myPostWaitRule_myWaitEvent_myWait_myRule_1_event_0</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>myVariable_current.CreatedDate</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>myWaitEvent_myWait_myRule_1_event_0_SA1</targetReference>
-            </connector>
-            <label>myPostWaitRule_myWaitEvent_myWait_myRule_1_event_0</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>myPreWaitDecision_myWait_myRule_1</name>
-        <label>myPreWaitDecision_myWait_myRule_1</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>myWaitAssignment_myWait_myRule_1</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>default</defaultConnectorLabel>
-        <rules>
-            <name>myPreWaitRule_myWait_myRule_1</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>formula_myRule_1</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>myDecision</targetReference>
-            </connector>
-            <label>myPreWaitRule_myWait_myRule_1</label>
-        </rules>
-    </decisions>
-    <description>Changes Owner</description>
+    <description>Update Status</description>
     <formulas>
-        <name>formula_myRule_1</name>
-        <dataType>Boolean</dataType>
-        <expression>true</expression>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>TODAY()</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_2_myRule_1_A1_0386208748</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
     </formulas>
-    <interviewLabel>Learning_Plan_Section_Assignment-1_InterviewLabel</interviewLabel>
+    <interviewLabel>Learning_Plan_Section_Assignment-6_InterviewLabel</interviewLabel>
     <label>Learning Plan Section Assignment</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -155,7 +87,7 @@
     <processMetadataValues>
         <name>TriggerType</name>
         <value>
-            <stringValue>onCreateOnly</stringValue>
+            <stringValue>onAllChanges</stringValue>
         </value>
     </processMetadataValues>
     <processType>Workflow</processType>
@@ -178,19 +110,16 @@
         <processMetadataValues>
             <name>reference</name>
             <value>
-                <stringValue>[redwing__Training_Plan_Section_Assignment__c]</stringValue>
+                <stringValue>[redwing__Training_Plan_Section_Assignment__c].Learning Plan Assignment</stringValue>
             </value>
         </processMetadataValues>
         <processMetadataValues>
             <name>referenceTargetField</name>
         </processMetadataValues>
-        <name>myWaitEvent_myWait_myRule_1_event_0_SA1</name>
-        <label>Update Owner</label>
+        <name>myRule_1_A1</name>
+        <label>Update LPA</label>
         <locationX>100</locationX>
         <locationY>200</locationY>
-        <connector>
-            <targetReference>myWaitEvent_myWait_myRule_1_event_0_postWaitExecutionAssignment</targetReference>
-        </connector>
         <filters>
             <processMetadataValues>
                 <name>implicit</name>
@@ -201,14 +130,14 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>myVariable_current.Id</elementReference>
+                <elementReference>myVariable_current.redwing__Training_Plan_Assignment__c</elementReference>
             </value>
         </filters>
         <inputAssignments>
             <processMetadataValues>
                 <name>dataType</name>
                 <value>
-                    <stringValue>ID</stringValue>
+                    <stringValue>Date</stringValue>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -220,37 +149,102 @@
             <processMetadataValues>
                 <name>leftHandSideLabel</name>
                 <value>
-                    <stringValue>Owner ID</stringValue>
+                    <stringValue>Completed On</stringValue>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue>Group;User</stringValue>
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
                 <name>rightHandSideType</name>
                 <value>
-                    <stringValue>Reference</stringValue>
+                    <stringValue>Formula</stringValue>
                 </value>
             </processMetadataValues>
-            <field>OwnerId</field>
+            <field>redwing__Completed_On__c</field>
             <value>
-                <elementReference>myVariable_current.redwing__User__r.Id</elementReference>
+                <elementReference>formula_2_myRule_1_A1_0386208748</elementReference>
             </value>
         </inputAssignments>
-        <object>redwing__Training_Plan_Section_Assignment__c</object>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>Number</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Progress %</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue/>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Number</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>redwing__Progress_Percentage__c</field>
+            <value>
+                <numberValue>100.0</numberValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <processMetadataValues>
+                <name>dataType</name>
+                <value>
+                    <stringValue>Picklist</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>isRequired</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Status</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue/>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Picklist</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>redwing__Status__c</field>
+            <value>
+                <stringValue>Completed</stringValue>
+            </value>
+        </inputAssignments>
+        <object>redwing__Training_Plan_Assignment__c</object>
     </recordUpdates>
-    <startElementReference>myVariable_waitStartTimeAssignment</startElementReference>
-    <status>Obsolete</status>
-    <variables>
-        <name>cancelWaits</name>
-        <dataType>String</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>true</isOutput>
-    </variables>
+    <startElementReference>myDecision</startElementReference>
+    <status>Active</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>
@@ -267,83 +261,4 @@
         <isOutput>false</isOutput>
         <objectType>redwing__Training_Plan_Section_Assignment__c</objectType>
     </variables>
-    <variables>
-        <name>myVariable_waitStartTimeVariable</name>
-        <dataType>DateTime</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <elementReference>$Flow.CurrentDateTime</elementReference>
-        </value>
-    </variables>
-    <variables>
-        <name>myWaitEvent_myWait_myRule_1_event_0_postActionExecutionVariable</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <booleanValue>false</booleanValue>
-        </value>
-    </variables>
-    <waits>
-        <name>myWait_myRule_1</name>
-        <label>myWait_myRule_1</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnectorLabel>defaultLabel</defaultConnectorLabel>
-        <waitEvents>
-            <processMetadataValues>
-                <name>inputParameterType</name>
-                <value>
-                    <stringValue>referenced</stringValue>
-                </value>
-            </processMetadataValues>
-            <name>myWaitEvent_myWait_myRule_1_event_0</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>myWaitEvent_myWait_myRule_1_event_0_postActionExecutionVariable</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>myPostWaitDecision_myWaitEvent_myWait_myRule_1_event_0</targetReference>
-            </connector>
-            <eventType>DateRefAlarmEvent</eventType>
-            <inputParameters>
-                <name>TimeTableColumnEnumOrId</name>
-                <value>
-                    <stringValue>redwing__Training_Plan_Section_Assignment__c</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>EntityObjectId</name>
-                <value>
-                    <elementReference>myVariable_current.Id</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>TimeOffsetUnit</name>
-                <value>
-                    <stringValue>Days</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>TimeOffset</name>
-                <value>
-                    <numberValue>0.0</numberValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>TimeFieldColumnEnumOrId</name>
-                <value>
-                    <stringValue>CreatedDate</stringValue>
-                </value>
-            </inputParameters>
-            <label>myWaitEvent_myWait_myRule_1_event_0</label>
-        </waitEvents>
-    </waits>
 </Flow>

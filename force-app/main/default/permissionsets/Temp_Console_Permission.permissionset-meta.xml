@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <applicationVisibilities>
+        <application>TEMP_Console</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <description>To give access to Temp Console App</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Temp Console Permission</label>
+</PermissionSet>

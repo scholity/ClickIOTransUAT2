@@ -86,6 +86,11 @@
         <visible>false</visible>
     </applicationVisibilities>
     <applicationVisibilities>
+        <application>TEMP_Console</application>
+        <default>false</default>
+        <visible>false</visible>
+    </applicationVisibilities>
+    <applicationVisibilities>
         <application>TSC_Agent_Console</application>
         <default>false</default>
         <visible>true</visible>
@@ -856,6 +861,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PHSS_CpsController_Backup</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PHSS_CpsWrapper</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -881,6 +890,14 @@
     </classAccesses>
     <classAccesses>
         <apexClass>PHSS_FetchCompletionRestServiceTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>PHSS_ForgotUsernameController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>PHSS_ForgotUsernameControllerTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -961,6 +978,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>PHSS_Logger_TEST</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>PHSS_PostError</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -2252,6 +2273,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>testClass</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>updateInvCaseSubTypeTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -2506,6 +2531,11 @@
         <editable>false</editable>
         <field>Account.Billing_Street_Custom__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Block_Certificate_Export_to_AWS__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -11146,6 +11176,11 @@
         <editable>false</editable>
         <field>Opportunity.Contract_Opportunity__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Opportunity.Contract_Term__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>

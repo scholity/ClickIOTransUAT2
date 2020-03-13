@@ -53,6 +53,7 @@ public with sharing class phss_cc_ProductUtil {
             Boolean isSuccess = (Boolean) response.get(ccrz.ccAPI.SUCCESS);
             if (isSuccess) {
                 searchResults = (Set<String>) response.get(ccrz.ccService.SEARCHRESULTS);
+                system.debug('@@@doSearch searchResults size: '+searchResults.size());
             }
         } catch (Exception e) {
             throw new phss_cc_Exception(FAILED_TO_PERFORM_SEARCH_REQUEST);

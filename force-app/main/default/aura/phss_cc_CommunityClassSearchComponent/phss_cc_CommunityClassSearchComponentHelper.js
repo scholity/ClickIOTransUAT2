@@ -136,6 +136,7 @@
      * @returns {*}
      */
 	isUserInputValid : function(component) {
+        
         var result = { success: false };
 
         var searchTerm = component.find('searchTermField').get('v.value');
@@ -153,9 +154,21 @@
         var endDate = component.find('endDateField').get('v.value');
         var startDate = component.find('startDateField').get('v.value');
         if (!startDate || !endDate || endDate < startDate) {
-            result.error = 'Please specify a start and end date before attempting to search.';
+            result.error = 'Please specify a valid start and end date before attempting to search.';
             return result;
         }
+
+        /* uncomment this block of code to enforce a max number of days between start and end dates
+        
+        var daysBetweenDates = this.getDaysBetweenDates(startDate, endDate);
+        if(!daysBetweenDates || daysBetweenDates > 60){
+            result.error = 'Start and end date must be within 60 days of eachother.';
+            if(daysBetweenDates){
+                result.error += ' Currently, there are '+daysBetweenDates+' days between the start and end date';
+            }
+            return result;
+        }
+        */
 
         var state = component.find('stateField').get('v.value');
         var city = component.find('cityField').get('v.value');
@@ -223,6 +236,20 @@
             cart[classId] = cartItem;
         }
         component.set('v.cart', cart);
-	}
+    },
+
+    /**
+     * @description calculates the time in days between 2 dates
+     * @param startDate
+     * @param endDate
+     * @returns Integer days between dates
+     */
+    getDaysBetweenDates : function(startDate, endDate){
+        var startDt = new Date(startDate);
+        var endDt = new Date(endDate);
+        let daysBetween = Math.floor( (endDt - startDt) / (1000 * 60 * 60 * 24) ); // (milliseconds * seconds * minutes * hours)
+        console.log('@@@dayeBetween:', daysBetween);
+        return daysBetween;
+    }
 
 })

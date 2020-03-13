@@ -93,6 +93,7 @@ public with sharing class RCILTViewerCmpCtrlTest {
 
 
         Test.startTest();
+        RCILTViewerCmpCtrl.ResultData my_result = RCILTViewerCmpCtrl.getRecord(String.valueOf(iltClass.Id), String.valueOf(plan.Id));
         RCOnlineCompletionCtrl.ResultData result = RCOnlineCompletionCtrl.getData(String.valueOf(iltClass.Id), String.valueOf(plan.Id));
         Test.stopTest();
 
