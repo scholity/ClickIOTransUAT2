@@ -1,4 +1,4 @@
-trigger ReducePOAmountOnTransactionPaymentInsert on ccrz__E_TransactionPayment__c (after insert) {
+trigger ReducePOAmountOnTransactionPaymentInsert on ccrz__E_TransactionPayment__c (before insert, before update, after insert) {
     for (ccrz__E_TransactionPayment__c transactionPayment : Trigger.new)
     {
         if (transactionPayment.ccrz__AccountType__c == 'po' && String.isNotBlank(transactionPayment.ccrz__StoredPayment__c))
@@ -20,6 +20,10 @@ trigger ReducePOAmountOnTransactionPaymentInsert on ccrz__E_TransactionPayment__
         {
             TransactionPaymentTriggerHelper.OnAfterInsert(Trigger.New);
         }
-    }
         
+        if(Trigger.isInsert && Trigger.isBefore)
+        {
+            TransactionPaymentTriggerHelper.setEmailRecipient(Trigger.New);
+        }
+    }   
 }

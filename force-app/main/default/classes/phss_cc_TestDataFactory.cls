@@ -590,6 +590,12 @@ public with sharing class phss_cc_TestDataFactory {
         }
 
         insert cartItems;
+        
+        for(ccrz__E_CartItem__c item : cartItems){
+            item.ccrz__ItemLabel__c = 'cart_item_id:'+item.Id; //necessary to properly relate a cart item to an order item
+		}
+        
+        update cartItems;
 
         return testCarts;
     }

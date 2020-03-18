@@ -17,6 +17,16 @@ private class PHSS_ClassCompletionServiceTest {
                           Name != 'Salesforce Automation Account' And UserRoleId != NULL
                           And Profile.Name = 'System Administrator' Limit 1];
         
+        List<BGST_Profiles__c> ProfilesList = new List<BGST_Profiles__c>();
+        
+        BGST_Profiles__c indiv = new BGST_Profiles__c( name  = 'Owner Profile',
+        
+        Sales_User__c   = 'ARC BGST Sales User');
+        
+        ProfilesList.add(indiv);
+        
+        insert ProfilesList;
+        
         System.RunAs(runAsUser) {
             test.startTest();
             // Create the mock response based on a static resource
@@ -47,7 +57,7 @@ private class PHSS_ClassCompletionServiceTest {
             
             
             
-            //PHSS_ClassCompletionService testService = new PHSS_ClassCompletionService();
+            /*
             
             PHSS_ClassCompletionBatch testBatchService = new PHSS_ClassCompletionBatch();
             
@@ -55,11 +65,14 @@ private class PHSS_ClassCompletionServiceTest {
             records.add('001d000001QuLKHAA3|0005|a3J21000000HXXX|A|001d000001QuLKHAA3|Cardio Partners, Inc.|My Test PO|AP-HSSBBP101|02/11/2020|02/11/2020|2|Cardio Partners, Inc. HQ|6105 Rockwell Dr. NE|Cedar Rapids|IA|52402');
             records.add('001d000001QuLKHAA3|0005|a3J21000000HXXX|B|christian.hernandez@cardiopartners.com.transuat|Christian|Hernandez|christian.hernandez@cardiopartners.com.transuat');
             records.add('001d000001QuLKHAA3|0005|a3J21000000HXXX|C|Isaac|Barker||800-345-4444|Successful||ibarker123@maildrop.cc');
-            records.add('001d000001QuLKHAA3|0005|a3J21000000HXXX|C|Suzanne|Miller||800-123-4444|Successful|smiller123@maildrop.cc\n');
+            records.add('001d000001QuLKHAA3|0005|a3J21000000HXXX|C|Suzanne|Miller||800-123-4444|Successful|smiller123@maildrop.cc');
 
             testBatchService.processData(records);
+
+            */
             
             test.stopTest();
+			
         }
    
     }   

@@ -208,7 +208,17 @@ public class PHSS_VoucherTriggerHandler {
                 Map<Id,Integer> mapStackedParentIdWithNoOfClaimedVouchers = new Map<Id,Integer>();
                 Map<Id,Integer> mapJobWithNoOfClaimedVouchers = new Map<Id,Integer>();
                 Map<Id,Integer> mapStackedParentIdWithMinNoOfStudents = new Map<Id,Integer>();
-                List<String> ClaimedStatuses = system.Label.ClaimedVoucherTypes.split(';');
+
+                String claimedVoucherStatusCodes = '';
+                List<PHSS_Custom_Settings__c> allSettings = PHSS_Custom_Settings__c.getAll().values();
+
+                if(!allSettings.isEmpty() && allSettings.get(0).Claimed_Voucher_Status_Codes__c != null
+                        && String.isNotBlank(allSettings.get(0).Claimed_Voucher_Status_Codes__c)) {
+                    claimedVoucherStatusCodes = allSettings.get(0).Claimed_Voucher_Status_Codes__c;
+                }
+
+                List<String> ClaimedStatuses = claimedVoucherStatusCodes.split(';');
+                //List<String> ClaimedStatuses = system.Label.ClaimedVoucherTypes.split(';');
                 
                 // Count the number of claimed vouchers for every stacked job
                 List<Voucher__c> lstvchrs = [SELECT Id, Status__c, User__c, ILT_Class__r.Skedulo_Job_Id__c, ILT_Class__r.Skedulo_Parent_Job__c
@@ -423,7 +433,17 @@ public class PHSS_VoucherTriggerHandler {
             }
 
             // DE2019 - Insure that claimed status values are those that are defined at system level
-            List<String> ClaimedStatuses = System.label.ClaimedVoucherTypes.split(';');
+
+            String claimedVoucherStatusCodes = '';
+            List<PHSS_Custom_Settings__c> allSettings = PHSS_Custom_Settings__c.getAll().values();
+
+            if(!allSettings.isEmpty() && allSettings.get(0).Claimed_Voucher_Status_Codes__c != null
+                    && String.isNotBlank(allSettings.get(0).Claimed_Voucher_Status_Codes__c)) {
+                claimedVoucherStatusCodes = allSettings.get(0).Claimed_Voucher_Status_Codes__c;
+            }
+
+            List<String> ClaimedStatuses = claimedVoucherStatusCodes.split(';');
+            //List<String> ClaimedStatuses = System.label.ClaimedVoucherTypes.split(';');
 
             List<AggregateResult> iltAggregateResults = [SELECT ILT_Class__c, COUNT(Id) claimedSeats
                 FROM Voucher__c

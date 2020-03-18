@@ -21,22 +21,30 @@ public class TransactionPaymentTriggerHelper
             ccOrderIdsList.add(tp.ccrz__CCOrder__c);
         }
         
-        List<ccrz__E_TransactionPayment__c>  tpList = [SELECT Id,
-                                                       		  B2B_Transaction_Reference__c,
-                                                       		  ccrz__Amount__c,
-                                                              ccrz__CCOrder__c,
-                                                              ccrz__CCOrder__r.ccrz__Storefront__c,
-                                                       		  ccrz__CCOrder__r.Supplemental_Information__c,
-                                                       		  ccrz__AccountType__c,
-                                                       		  ccrz__PaymentType__c,
-                                                       		  ccrz__CCOrder__r.NSSCCConnector_SFCC_Order_Number__c,
-                                                       		  ccrz__CCOrder__r.NSSCCConnector_from_SFCC__c, 
-                                                       		  ccrz__TransactionType__c,
-                                                       		  ccrz__Account__r.Open_Order_Amount__c
-                                                        FROM  ccrz__E_TransactionPayment__c
-                                                        WHERE Id IN: tpToAccountMap.keySet()];
+        List<ccrz__E_TransactionPayment__c>  tpList = [SELECT   Id,
+                                                       		    B2B_Transaction_Reference__c,
+                                                       		    ccrz__Amount__c,
+                                                                ccrz__CCOrder__c,
+                                                                ccrz__CCOrder__r.ccrz__Storefront__c,
+                                                                ccrz__CCOrder__r.Opportunity_Order__c,
+                                                                ccrz__CCOrder__r.Opportunity_Order__r.Case__c,
+                                                                ccrz__CCOrder__r.Opportunity_Order__r.Case__r.Contact.Email,
+                                                                ccrz__CCOrder__r.Owner.Email,
+                                                       		    ccrz__CCOrder__r.Supplemental_Information__c,
+                                                       		    ccrz__AccountType__c,
+                                                       		    ccrz__PaymentType__c,
+                                                       		    ccrz__CCOrder__r.NSSCCConnector_SFCC_Order_Number__c,
+                                                       		    ccrz__CCOrder__r.NSSCCConnector_from_SFCC__c, 
+                                                       		    ccrz__TransactionType__c,
+                                                                ccrz__Account__r.Open_Order_Amount__c,
+                                                                ccrz__Account__r.Billing_Contact__r.Email
+                                                                //ccrz__Account__r.Restrict_Order_Confirmation_Email__c
+                                                        FROM    ccrz__E_TransactionPayment__c
+                                                        WHERE   Id IN: tpToAccountMap.keySet()];
         
         system.debug('***tpList***'+tpList);
+
+        TransactionPaymentTriggerHelper.setEmailRecipient(tpList); //DE2559
         
         if(ccOrderIdsList.size() > 0)
         {
@@ -87,7 +95,9 @@ public class TransactionPaymentTriggerHelper
                 }
             }
             
-            if(tPayment.ccrz__TransactionType__c == 'CAPTURE' && tPayment.ccrz__CCOrder__r.NSSCCConnector_from_SFCC__c == false && tPayment.ccrz__CCOrder__r.ccrz__Storefront__c != 'CPS')
+            if((tPayment.ccrz__TransactionType__c == 'CAPTURE' || tPayment.ccrz__AccountType__c == 'po') &&
+                tPayment.ccrz__CCOrder__r.NSSCCConnector_from_SFCC__c == false &&
+                tPayment.ccrz__CCOrder__r.ccrz__Storefront__c != 'CPS')
             {
                 system.debug('Send an email');
                 //Update Credit Card To Complete Add Update Fulfillment Item to Complete FLOW LOGIC
@@ -181,6 +191,93 @@ public class TransactionPaymentTriggerHelper
         if(fiToUpdate.size() > 0)
         {
             update fiToUpdate;
+        }
+    }
+
+    //DE2559
+    public static void setEmailRecipient(List<ccrz__E_TransactionPayment__c> tPaymentRecords)
+    {
+        system.debug('***tPaymentRecords***'+tPaymentRecords);
+        
+        List<ccrz__E_TransactionPayment__c>  tpList = [SELECT   Id,
+                                                       			Owner.Email,
+                                                       			B2B_Transaction_Reference__c,
+                                                       		    ccrz__Amount__c,
+                                                                ccrz__CCOrder__c,
+                                                                ccrz__CCOrder__r.ccrz__Storefront__c,
+                                                                ccrz__CCOrder__r.Opportunity_Order__c,
+                                                                ccrz__CCOrder__r.Opportunity_Order__r.Case__c,
+                                                                ccrz__CCOrder__r.Opportunity_Order__r.Case__r.Contact.Email,
+                                                       			ccrz__CCOrder__r.Opportunity_Order__r.Customer_Contact__r.Email, 
+                                                                ccrz__CCOrder__r.Owner.Email,
+                                                       		    ccrz__CCOrder__r.Supplemental_Information__c,
+                                                       		    ccrz__AccountType__c,
+                                                       		    ccrz__PaymentType__c,
+                                                       		    ccrz__CCOrder__r.NSSCCConnector_SFCC_Order_Number__c,
+                                                       		    ccrz__CCOrder__r.NSSCCConnector_from_SFCC__c, 
+                                                       		    ccrz__TransactionType__c,
+                                                                ccrz__Account__r.Open_Order_Amount__c,
+                                                                ccrz__Account__r.Billing_Contact__r.Email,
+                                                                ccrz__Account__r.Restrict_Order_Confirmation_Email__c
+                                                        FROM    ccrz__E_TransactionPayment__c
+                                                        WHERE   Id IN: tPaymentRecords];
+        
+        List<ccrz__E_TransactionPayment__c> tPaymentList = new List<ccrz__E_TransactionPayment__c>();
+        
+        Id profileId= userinfo.getProfileId();
+		String profileName = [Select Id,Name from Profile where Id=:profileId].Name;
+		system.debug('ProfileName'+profileName);
+        
+        //tPayment.ccrz__TransactionType__c == 'CAPTURE'
+        
+        for(ccrz__E_TransactionPayment__c tpay : tpList)
+        {
+            if(tpay.ccrz__CCOrder__r.ccrz__Storefront__c == 'GeneralStore')
+            {
+                //get case from the order opportunity case contact email address set it to Email_To__c
+                // check if it's an RGS order                    
+                if(tpay.ccrz__CCOrder__r.Opportunity_Order__c != null && 
+                   tpay.ccrz__CCOrder__r.Opportunity_Order__r.Case__c != null &&
+                   tpay.ccrz__CCOrder__r.Opportunity_Order__r.Case__r.Contact.Email != null)
+                {
+                    tpay.Email_To__c = tpay.ccrz__CCOrder__r.Opportunity_Order__r.Case__r.Contact.Email;
+                    
+                    tPaymentList.add(tpay);
+                }
+                else
+                {
+                    if(tpay.ccrz__CCOrder__r.Opportunity_Order__r.Customer_Contact__r.Email != null)
+                    {
+                        tpay.Email_To__c = tpay.ccrz__CCOrder__r.Opportunity_Order__r.Customer_Contact__r.Email;
+                    
+                    	tPaymentList.add(tpay);
+                    }
+                }
+            }
+
+            if(tpay.ccrz__CCOrder__r.ccrz__Storefront__c != 'GeneralStore')
+            {
+                //get cc order owner user email
+                if(tpay.ccrz__Account__r.Restrict_Order_Confirmation_Email__c == true)
+                {
+                    tpay.Email_To__c = tpay.ccrz__Account__r.Billing_Contact__r.Email;
+                    tPaymentList.add(tpay);
+                }
+                else
+                {
+                    // if it's entered by an agent don't send email
+                    if(profileName != 'SB ARC / TSC Agent' && profileName != 'SB ARC / TSC Manager')
+                    {
+                        tpay.Email_To__c = tpay.ccrz__CCOrder__r.Owner.Email;
+                    	tPaymentList.add(tpay);
+                    }
+                }
+            }
+        }
+        
+        if(tPaymentList.size() > 0)
+        {
+            update tPaymentList;
         }
     }
 }

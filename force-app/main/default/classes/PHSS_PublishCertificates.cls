@@ -59,6 +59,7 @@ public class PHSS_PublishCertificates {
         System.debug('incrementalExport='+incrementalExport);
         System.debug('exportAllCertificates='+exportAllCertificates);
 
+        /*
         // DE2591 - Apply list of accounts which are to be blocked from sending acquired certificates to AWS
         List<PHSS_Custom_Settings__c> allSettings = PHSS_Custom_Settings__c.getAll().values();
         List<String> blockedAccountList = new List<String>();
@@ -76,12 +77,12 @@ public class PHSS_PublishCertificates {
             blockedAccounts = 'AND Account__c NOT IN ('+blockedAccountFormattedList+')';
         }
         System.debug('blockedAccounts'+blockedAccounts);
-            
+        */
+
         String theAssignmentQuery = 'SELECT Id, Name, Firstname__c, Lastname__c, Email__c, Account__c, ';
         	theAssignmentQuery += 'ILT_Class__c, Evaluation_Result__c,redwing__Acquisition_Date__c,redwing__status__c, redwing__Achievement__c, QR_Code_Identifier__c ';
         	theAssignmentQuery += 'FROM redwing__Achievement_Assignment__c WHERE Achievement_Type__c = \'Certifications\' AND redwing__status__c = \'Acquired\' ';
         	theAssignmentQuery += 'AND Firstname__c != null AND Lastname__c != null ';
-            theAssignmentQuery += blockedAccounts;
         	theAssignmentQuery += incrementalExport;
         	theAssignmentQuery += 'ORDER BY Name';
         	

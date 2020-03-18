@@ -27,7 +27,8 @@ public with sharing class phss_cc_hk_OrderTest {
         testCartItems = [
                 SELECT  ccrz__Product__r.ccrz__SKU__c,
                         ILT_Class__c,
-                        ccrz__Coupon__c
+                        ccrz__Coupon__c,
+            			ccrz__ItemLabel__c
                 FROM    ccrz__E_CartItem__c
                 WHERE   ccrz__Cart__c = :testCart.Id
         ];
@@ -53,7 +54,8 @@ public with sharing class phss_cc_hk_OrderTest {
                     ccrz__Order__c = testOrder.Id,
                     ccrz__Price__c = 100,
                     ccrz__Quantity__c = 100.00,
-                    ccrz__SubAmount__c = 100.00
+                    ccrz__SubAmount__c = 100.00,
+                	ccrz__ItemLabel__c = item.ccrz__ItemLabel__c //necessary for the code to properly relate the cart item to the order item
             );
             testOrderItems.add(orderItem);
         }

@@ -133,7 +133,6 @@
                         if (classClosed) {
                             component.set("v.errorMessage",'Class has already been closed by another user');
                             component.set("v.showError",true); 
-                            alert(classClosed);
                         } else {
                             component.set("v.stepNumber", "Two");
                         }                      

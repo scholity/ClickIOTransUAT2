@@ -11,6 +11,16 @@
         <valueSetDefinition>
             <sorted>true</sorted>
             <value>
+                <fullName>AA</fullName>
+                <default>false</default>
+                <label>AA</label>
+            </value>
+            <value>
+                <fullName>AE</fullName>
+                <default>false</default>
+                <label>AE</label>
+            </value>
+            <value>
                 <fullName>AK</fullName>
                 <default>true</default>
                 <label>AK</label>
@@ -21,9 +31,19 @@
                 <label>AL</label>
             </value>
             <value>
+                <fullName>AP</fullName>
+                <default>false</default>
+                <label>AP</label>
+            </value>
+            <value>
                 <fullName>AR</fullName>
                 <default>false</default>
                 <label>AR</label>
+            </value>
+            <value>
+                <fullName>AS</fullName>
+                <default>false</default>
+                <label>AS</label>
             </value>
             <value>
                 <fullName>AZ</fullName>
@@ -61,9 +81,19 @@
                 <label>FL</label>
             </value>
             <value>
+                <fullName>FM</fullName>
+                <default>false</default>
+                <label>FM</label>
+            </value>
+            <value>
                 <fullName>GA</fullName>
                 <default>false</default>
                 <label>GA</label>
+            </value>
+            <value>
+                <fullName>GU</fullName>
+                <default>false</default>
+                <label>GU</label>
             </value>
             <value>
                 <fullName>HI</fullName>
@@ -121,6 +151,11 @@
                 <label>ME</label>
             </value>
             <value>
+                <fullName>MH</fullName>
+                <default>false</default>
+                <label>MH</label>
+            </value>
+            <value>
                 <fullName>MI</fullName>
                 <default>false</default>
                 <label>MI</label>
@@ -134,6 +169,11 @@
                 <fullName>MO</fullName>
                 <default>false</default>
                 <label>MO</label>
+            </value>
+            <value>
+                <fullName>MP</fullName>
+                <default>false</default>
+                <label>MP</label>
             </value>
             <value>
                 <fullName>MS</fullName>
@@ -206,6 +246,16 @@
                 <label>PA</label>
             </value>
             <value>
+                <fullName>PR</fullName>
+                <default>false</default>
+                <label>PR</label>
+            </value>
+            <value>
+                <fullName>PW</fullName>
+                <default>false</default>
+                <label>PW</label>
+            </value>
+            <value>
                 <fullName>RI</fullName>
                 <default>false</default>
                 <label>RI</label>
@@ -239,6 +289,11 @@
                 <fullName>VA</fullName>
                 <default>false</default>
                 <label>VA</label>
+            </value>
+            <value>
+                <fullName>VI</fullName>
+                <default>false</default>
+                <label>VI</label>
             </value>
             <value>
                 <fullName>VT</fullName>

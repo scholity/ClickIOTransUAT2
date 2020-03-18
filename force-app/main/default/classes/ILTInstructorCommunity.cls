@@ -1859,7 +1859,16 @@ public without sharing class ILTInstructorCommunity{
         // *** US1517 - Deactivate all remaining (unused) vouchers for this class
         
         // Generate list of unused vouchers for this class
-        List<String> ClaimedStatuses = System.label.ClaimedVoucherTypes.split(';');   
+        String claimedVoucherStatusCodes = '';
+        List<PHSS_Custom_Settings__c> allSettings = PHSS_Custom_Settings__c.getAll().values();
+
+        if(!allSettings.isEmpty() && allSettings.get(0).Claimed_Voucher_Status_Codes__c != null
+                && String.isNotBlank(allSettings.get(0).Claimed_Voucher_Status_Codes__c)) {
+            claimedVoucherStatusCodes = allSettings.get(0).Claimed_Voucher_Status_Codes__c;
+        }
+
+        List<String> ClaimedStatuses = claimedVoucherStatusCodes.split(';');
+        //List<String> ClaimedStatuses = System.label.ClaimedVoucherTypes.split(';');
         List<Voucher__c> lstVouchersToUpdate = new List<Voucher__c>();    
         
         if (iltClassid != null)
@@ -2117,12 +2126,25 @@ public without sharing class ILTInstructorCommunity{
             System.debug('fetchContact - creating new account and contact');
             // The custom label named UserID contains the user name to be used for new account ownership
             // (this block avoids the runtime error community user owner must not have a role assigned)
-            id userId;
-            if(Label.UserID == 'blank'){
-                userId = [Select id from user where UserRoleId != null and profile.Name = 'System Administrator' and isActive=true limit 1].Id;    
+
+            // DE2646 - Determine owner of new accounts by way of username field rather than name field
+            String accountOwnerUserName = '';
+            List<PHSS_Custom_Settings__c> allSettings = PHSS_Custom_Settings__c.getAll().values();
+
+            if(!allSettings.isEmpty() && allSettings.get(0).Account_Owner_User_Name__c != null
+                    && String.isNotBlank(allSettings.get(0).Account_Owner_User_Name__c)) {
+                accountOwnerUserName = allSettings.get(0).Account_Owner_User_Name__c;
             }
-            else 
-                userId = [Select id from user where Name =: Label.UserId limit 1].Id;
+
+            Id userId;
+            //if(Label.UserID == 'blank'){
+            if (String.isBlank(accountOwnerUserName)) {
+                userId = [SELECT Id FROM User WHERE UserRoleId != null and profile.Name = 'System Administrator' and isActive=true limit 1].Id;
+            }
+            else {
+                userId = [SELECT Id FROM User WHERE UserName = :accountOwnerUserName LIMIT 1].Id;
+                //userId = [Select id from user where Name =: Label.UserId limit 1].Id;
+            }
                 
             Account acc = new Account();
             acc.DM_External_Id__c = (student.LastName+student.FirstName+student.Email).toLowerCase();

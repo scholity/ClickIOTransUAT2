@@ -20,7 +20,7 @@
         <name>Assign_Case_Values</name>
         <label>Assign Case Values</label>
         <locationX>493</locationX>
-        <locationY>665</locationY>
+        <locationY>663</locationY>
         <assignmentItems>
             <assignToReference>sCase.RecordTypeId</assignToReference>
             <operator>Assign</operator>
@@ -180,10 +180,159 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Assign_Case_Values_0</name>
+        <label>Assign Case Values</label>
+        <locationX>581</locationX>
+        <locationY>568</locationY>
+        <assignmentItems>
+            <assignToReference>sCase.RecordTypeId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>rtServiceCase</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Case_Sub_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Course Change</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Type</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Community Course Registration</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Origin</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Community</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.ContactId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>sVoucher.Related_Order_Contact_2__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Subject</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fMissingCaseSubject</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Priority</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Medium</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Description</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fMissingOrder</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>rtQueueName</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Primary_Reason_for_Update__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Other</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Course_Requested__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Other</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Preferred_Location__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Within 25 miles</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Time_Frame__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Next 31 days</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Day_of_the_Week__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Any Day</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Course_Format__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Any</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Offering_ID__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>sILT_Class.Offering_Id__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Other__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Course Cancellation </stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>New</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.Transferred_to_RSG__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sCase.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>cCaseQueue</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Add_to_Case_Output</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Matched_Set_with_Voucher_Info</name>
         <label>Matched Set with Voucher Info</label>
-        <locationX>727</locationX>
-        <locationY>668</locationY>
+        <locationX>733</locationX>
+        <locationY>665</locationY>
         <assignmentItems>
             <assignToReference>lastOrderNumber</assignToReference>
             <operator>Assign</operator>
@@ -195,7 +344,7 @@
             <assignToReference>lastOrderItem</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>sCase.CC_Order_Item__c</elementReference>
+                <elementReference>sVoucher.CC_Order_Item__c</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -308,12 +457,34 @@
     <decisions>
         <name>Is_Voucher_Match</name>
         <label>Is Voucher Match</label>
-        <locationX>729</locationX>
-        <locationY>512</locationY>
+        <locationX>731</locationX>
+        <locationY>509</locationY>
         <defaultConnector>
             <targetReference>Voucher_loop</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Missing_Order</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>sVoucher.CC_Order__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sVoucher.CC_Order_Item__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Case_Values_0</targetReference>
+            </connector>
+            <label>Missing Order</label>
+        </rules>
         <rules>
             <name>NotMatch</name>
             <conditionLogic>and</conditionLogic>
@@ -329,6 +500,20 @@
                 <operator>NotEqualTo</operator>
                 <rightValue>
                     <elementReference>lastOrderItem</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sVoucher.CC_Order__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sVoucher.CC_Order_Item__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -432,6 +617,7 @@
             <label>CEP QUeue</label>
         </rules>
     </decisions>
+    <description>Added Missing Order Check</description>
     <formulas>
         <description>Subject for Case</description>
         <name>fCaseSubject</name>
@@ -442,6 +628,17 @@
         <name>fDescriptio</name>
         <dataType>String</dataType>
         <expression>&quot;Order: &quot; &amp; {!sVoucher.CC_Order__r.Name} &amp;&quot; Course: &quot; &amp; {!sILT_Class.Learning_Plan__r.Name} &amp; &quot; has been cancelled.  Class Details: &quot; &amp; &quot; Date Range: &quot; &amp; TEXT({!sILT_Class.redwing__Start_Date__c}) &amp; &quot;-&quot; &amp;  TEXT({!sILT_Class.redwing__End_Date__c})  &amp; &quot; Time:&quot; &amp; ({!sILT_Class.redwing__Start_Time__c}) &amp; &quot;-&quot; &amp; ({!sILT_Class.redwing__End_Time__c}) 
+  &amp; &quot; Location: &quot; &amp;  {!sILT_Class.redwing__Location__r.Name} &amp; &quot; Zip: &quot; &amp; ({!sILT_Class.Location_ZIP_Code__c})</expression>
+    </formulas>
+    <formulas>
+        <name>fMissingCaseSubject</name>
+        <dataType>String</dataType>
+        <expression>&quot;Missing Order - Class  Cancelled:  &quot; &amp; {!sILT_Class.Learning_Plan__r.Name} &amp; &quot; Reason: &quot; &amp; {!sILTRoster.Cancellation_Reason__c}</expression>
+    </formulas>
+    <formulas>
+        <name>fMissingOrder</name>
+        <dataType>String</dataType>
+        <expression>&quot;Order: MISSING&quot;  &amp;&quot; Course: &quot; &amp; {!sILT_Class.Learning_Plan__r.Name} &amp; &quot; has been cancelled.  Class Details: &quot; &amp; &quot; Date Range: &quot; &amp; TEXT({!sILT_Class.redwing__Start_Date__c}) &amp; &quot;-&quot; &amp;  TEXT({!sILT_Class.redwing__End_Date__c})  &amp; &quot; Time:&quot; &amp; ({!sILT_Class.redwing__Start_Time__c}) &amp; &quot;-&quot; &amp; ({!sILT_Class.redwing__End_Time__c}) 
   &amp; &quot; Location: &quot; &amp;  {!sILT_Class.redwing__Location__r.Name} &amp; &quot; Zip: &quot; &amp; ({!sILT_Class.Location_ZIP_Code__c})</expression>
     </formulas>
     <interviewLabel>Create Mass Cancellation Cases {!$Flow.CurrentDateTime}</interviewLabel>
@@ -527,7 +724,7 @@
         <name>Get_Claimed_Vouchers</name>
         <label>Get Claimed Vouchers</label>
         <locationX>618</locationX>
-        <locationY>262</locationY>
+        <locationY>261</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Voucher_loop</targetReference>
@@ -673,7 +870,13 @@
         <sortField>CC_Order__c</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
-    <startElementReference>Get_Queue_Community_Cancelation_Queue</startElementReference>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Get_Queue_Community_Cancelation_Queue</targetReference>
+        </connector>
+    </start>
     <status>Active</status>
     <variables>
         <name>cCaseQueue</name>
