@@ -145,7 +145,7 @@ public with sharing class OpenOrderProcessingTriggerHandlerTest {
         testOrder = [SELECT Id, Name, ccrz__TotalAmount__c FROM ccrz__E_Order__c WHERE Id = :testOrder.Id];
 
         testOOP 			= new Open_Order_Processing__c(
-            Name 			= 'Test OOP',
+            //Name 			= 'Test OOP',
             Invoice_Date__c = Date.today(),
             SFDC_Account__c = string.valueOf(testFulfillmentItem.Id),
             CC_Order__c 	= testOrder.Name,
@@ -153,14 +153,14 @@ public with sharing class OpenOrderProcessingTriggerHandlerTest {
         );  
 
         testOOP2 			= new Open_Order_Processing__c(
-            Name 			= 'Test OOP2',
+            //Name 			= 'Test OOP2',
             Invoice_Date__c = Date.today(),
             SFDC_Account__c = null,
             CC_Order__c		= null,
             Status__c 		= 'New'
         );
         testOOP3 			= new Open_Order_Processing__c(
-            Name 			= 'Test OOP3',
+            //Name 			= 'Test OOP3',
             Invoice_Date__c = Date.today(),
             SFDC_Account__c = string.valueOf(testFulfillmentItem1.Id),
             CC_Order__c		= null,

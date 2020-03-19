@@ -30,6 +30,7 @@
     <aura:attribute name="label_Company"                        type="String" default="Company"/>
     <aura:attribute name="label_Location"                       type="String" default="Location"/>
     <aura:attribute name="label_Class_Settings"                 type="String" default="Class Setting"/>
+    <aura:attribute name="label_Class_Id"        	            type="String" default="Class Id"/>
     <aura:attribute name="label_Status"                         type="String" default="Status"/>
     <aura:attribute name="label_Items"                          type="String" default="items"/>
     <aura:attribute name="label_Item"                           type="String" default="item"/>
@@ -152,12 +153,22 @@
                                     </th>
                                     <th scope="col">
                                         <div class="slds-truncate slds-grid">
+                                            <span class="table-title slds-truncate">{!v.label_Class_Id}</span>
+                                            <div class="slds-show_inline-block" onclick="{!c.sortField}" data-array="current" data-field="classOfferingId" data-order="{!v.sortField == 'classOfferingId' ? (v.sortOrder == 'asc' ? 'desc' : 'asc') : 'asc'}">
+                                                <lightning:buttonIcon iconName="{!v.sortField == 'classOfferingId' ? (v.sortOrder == 'asc' ? 'utility:arrowdown' : 'utility:arrowup') : 'utility:arrowdown'}" size="medium" variant="bare" class="btn-sort"/>
+                                            </div>
+                                        </div>
+                                    </th>
+									<!--                                    
+                                    <th scope="col">
+                                        <div class="slds-truncate slds-grid">
                                             <span class="table-title slds-truncate">{!v.label_Class_Settings}</span>
                                             <div class="slds-show_inline-block" onclick="{!c.sortField}" data-array="current" data-field="classSettings" data-order="{!v.sortField == 'classSettings' ? (v.sortOrder == 'asc' ? 'desc' : 'asc') : 'asc'}">
                                                 <lightning:buttonIcon iconName="{!v.sortField == 'classSettings' ? (v.sortOrder == 'asc' ? 'utility:arrowdown' : 'utility:arrowup') : 'utility:arrowdown'}" size="medium" variant="bare" class="btn-sort"/>
                                             </div>
                                         </div>
                                     </th>
+									-->
                                     <th scope="col" style="width: 90px;">
                                         <div class="slds-truncate slds-grid">
                                             <span class="table-title slds-truncate">{!v.label_Status}</span>
@@ -214,9 +225,14 @@
                                                                             class="slds-truncate address-link" />
                                             </div>
                                         </td>
+                                        <td data-label="{!v.label_Class_Id}">
+                                            <div class="slds-truncate">{!class.classOfferingId}</div>
+                                        </td>
+                                        <!--
                                         <td data-label="{!v.label_Class_Settings}">
                                             <div class="slds-truncate">{!class.classSettings}</div>
-                                        </td>
+                                        </td>  
+										-->                                      
                                         <td data-label="{!v.label_Status}">
                                             <div class="slds-truncate">{!class.status}</div>
                                         </td>

@@ -16,19 +16,20 @@
     <aura:attribute name="relatedReport" type="String" description="S-Doc based on Related Report" access="global"/>
     <aura:attribute name="additionalFilters" type="String" description="Related Report SOQL Where Clause ex. and redwing__Achievement__r.redwing__Type__c = 'Certifications'" access="global"/>
     <aura:attribute name="whereClause" type="String" description="Related Report SOQL Where Clause ex. and redwing__Achievement__r.redwing__Type__c = 'Certifications'" access="global"/>
+    <aura:attribute name="manualDisable" type="Boolean" description="disables the button when set to true" access="global" default="false"/>
 
              
   <!--   <p>Message:  {!v.sdocURL}</p>
 -->
-     <div >
-                  <lightning:button 
-                          variant="brand" 
-                          aura:id="address" 
-                          class="buttonStyle" 
-                          onclick="{!c.handleClick}" 
-                          value="{!v.sdocURL}">
-                          {!v.buttonTitle}
-              </lightning:button>  
-             </div>
+  <div >
+    <lightning:button variant="brand" 
+                      aura:id="address" 
+                      class="buttonStyle" 
+                      onclick="{!c.handleClick}" 
+                      value="{!v.sdocURL}"
+                      disabled="{!v.manualDisable}">
+      {!v.buttonTitle}
+    </lightning:button>  
+  </div>
     
  </aura:component>

@@ -38,7 +38,6 @@
     <aura:attribute name = "Students" 				type = "Integer"  	default = ""/>
     <aura:attribute name = "Instructor1" 			type = "String"  	default = ""/>
     <aura:attribute name = "Instructor2" 			type = "String"  	default = ""/>
-    <aura:attribute name = "AdditionalInstructors" 	type = "User[]"  	default = ""/>
     <aura:attribute name = "isAddInstructors"       type = "Boolean"    default = "false"/>
     <aura:attribute name = "StudentInstructorRatio" type = "Integer"  	default = ""/>
     <aura:attribute name = "Location" 				type = "String"  	default = ""/>
@@ -120,6 +119,8 @@
     <aura:attribute name = "formattedStartTime" type = "String" />
     <aura:attribute name = "formattedEndTime" type = "String" />
     <aura:attribute name = "zoneError"      type = "Boolean"    default = "false"/>
+    
+    <aura:attribute name = "AdditionalInstructors" 	type = "User[]"  	default = ""/>    
 
     <aura:handler name="change" value="{!v.CCProductId}" action="{!c.calculateStudentInstructorRatio}" />
     <aura:handler name="change" value="{!v.Students}" action="{!c.calculateStudentInstructorRatio}" />

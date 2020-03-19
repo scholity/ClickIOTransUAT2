@@ -116,17 +116,26 @@ public with sharing class OpenOrderProcessingTriggerHandler {
             {
                 if(fi.Order__r.ccrz__Account__c != null)
                 {
-                    Account thisAccount                 = new Account();
-                    thisAccount.Id                      = fi.Order__r.ccrz__Account__c;
-                    Decimal orderAmount                 = fi.Order_Item__r.ccrz__ItemTotal__c == null ? 0 : fi.Order_Item__r.ccrz__ItemTotal__c;
-                    Decimal accountTotal                = fi.Order__r.ccrz__Account__r.Open_Order_Amount__c == null ? 0 : fi.Order__r.ccrz__Account__r.Open_Order_Amount__c;
-                    Decimal newTotal                    = accountTotal - orderAmount;
-                    thisAccount.Open_Order_Amount__c    = newTotal;
-                    system.debug('accountTotal>>>'+accountTotal);
-                    system.debug('orderAmount>>>'+orderAmount);
-                    system.debug('newTotal>>>'+newTotal);
-                    accountsToUpdate.add(thisAccount);
-                    oopSuccesses.add(fiToOopMap.get(fi.Id));
+                    if(fi.Order_Item__r.ccrz__ItemTotal__c > 0)
+                    {
+                        Account thisAccount                 = new Account();
+                        thisAccount.Id                      = fi.Order__r.ccrz__Account__c;
+                        Decimal orderAmount                 = fi.Order_Item__r.ccrz__ItemTotal__c == null ? 0 : fi.Order_Item__r.ccrz__ItemTotal__c;
+                        Decimal accountTotal                = fi.Order__r.ccrz__Account__r.Open_Order_Amount__c == null ? 0 : fi.Order__r.ccrz__Account__r.Open_Order_Amount__c;
+                        Decimal newTotal                    = accountTotal - orderAmount;
+                        thisAccount.Open_Order_Amount__c    = newTotal;
+                        
+                        system.debug('accountTotal>>>'+accountTotal);
+                        system.debug('orderAmount>>>'+orderAmount);
+                        system.debug('newTotal>>>'+newTotal);
+                        
+                        accountsToUpdate.add(thisAccount);
+                        oopSuccesses.add(fiToOopMap.get(fi.Id));
+                    }
+                    else
+                    {
+                        oopErrorMap.put(fiToOopMap.get(fi.Id), Label.Open_Order_Processing_Error_Return_Order);
+                    }
                 }
                 else
                 {

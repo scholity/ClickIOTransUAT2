@@ -69,9 +69,15 @@
         </aura:if>
         <div class="slds-float_right slds-p-around_small">
             <aura:if isTrue="{!not(empty(v.Listss))}">
-                <lightning:button label="Export" onclick="{!c.exportDocument}" />
-                <lightning:button label="Print" onclick="{!c.downloadDocument}" />
-            </aura:if> 
+                <!--lightning:button label="Export" onclick="{!c.exportDocument}" />
+                <lightning:button label="Print" onclick="{!c.downloadDocument}" /-->
+                <c:phss_sdoc_community buttonTitle="Export All"
+                                       manualDisable="{! empty(v.selectedAccount) }" 
+                                       recordId="{!v.selectedAccount}" 
+                                       object="Account"
+                                       prepMail="0"
+                                       doclist="{!$Label.c.InsctructorwithCertifications_ExportAll_SDOC_List}"/>
+</aura:if> 
         </div>
     </aura:if>   
     

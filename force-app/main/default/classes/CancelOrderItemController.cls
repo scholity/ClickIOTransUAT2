@@ -372,6 +372,7 @@ public class CancelOrderItemController {
 												ccrz__OrderStatus__c,
 												ccrz__CurrencyISOCode__c,
 												ccrz__Storefront__c,
+                                        		NSSCCConnector_from_SFCC__c,
 												FOCIS_Category__c,
 												
 												(SELECT Id

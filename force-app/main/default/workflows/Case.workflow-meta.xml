@@ -1891,17 +1891,7 @@ Learn To Swim Facility Registration - Account Name</description>
         </actions>
         <active>true</active>
         <description>When Billing Web Request Type = AR Exception Needed,Increase Credit Limit,Restore Invoicing Privileges,Submit Customer PO Form and Temporary collections hold the WF sets up Invoice Case Sub Type = AR Exception, Case Owner = Customer Ops</description>
-        <formula>AND(
-OR(
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;AR Exception Needed&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Increase Credit Limit&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Restore Invoicing Privileges&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Submit Customer PO Form&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Temporary Collections Hold&quot;)
-),  
-CreatedBy.FirstName = &quot;BillingRequestForm&quot;, 
-ISPICKVAL(Origin, &quot;Web to Case&quot;), 
- $Setup.Workflow_Rules__c.Bypass_Rules__c = False)</formula>
+        <formula>AND( OR( ISPICKVAL( Billing_Web_Request_Type__c ,&quot;AR Exception Needed&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Increase Credit Limit&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Restore Invoicing Privileges&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Submit Customer PO Form&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Temporary Collections Hold&quot;) ),   CreatedBy.FirstName = &quot;BillingRequestForm&quot;,  ISPICKVAL(Origin, &quot;Web to Case&quot;),   $Setup.Workflow_Rules__c.Bypass_Rules__c = False)</formula>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
@@ -1934,11 +1924,7 @@ ISPICKVAL(Origin, &quot;Web to Case&quot;),
         </actions>
         <active>true</active>
         <description>When Billing Web Request Type =Bankruptcy Notice Received the WF sets up Case Owner = FIN Collections</description>
-        <formula>AND(
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Bankruptcy Notice Received&quot;), 
-CreatedBy.FirstName = &quot;BillingRequestForm&quot;,
- ISPICKVAL(Origin, &quot;Web to Case&quot;), 
- $Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
+        <formula>AND( ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Bankruptcy Notice Received&quot;),  CreatedBy.FirstName = &quot;BillingRequestForm&quot;,  ISPICKVAL(Origin, &quot;Web to Case&quot;),   $Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
@@ -1949,16 +1935,7 @@ CreatedBy.FirstName = &quot;BillingRequestForm&quot;,
         </actions>
         <active>true</active>
         <description>When Billing Web Request Type =Change Invoice Delivery Method To Email,portal,Update Billing Info,Update Tax Exemption Status the WF sets up Case Owner = FIN Customer Mntce</description>
-        <formula>AND(
-OR(
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Change Invoice Delivery Method To Email&quot;), 
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Change Invoice Delivery Method To Portal&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Update Billing Info&quot;), 
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Update Tax Exemption Status&quot;)
-),
-CreatedBy.FirstName = &quot;BillingRequestForm&quot;,
- ISPICKVAL(Origin, &quot;Web to Case&quot;), 
- $Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
+        <formula>AND( OR( ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Change Invoice Delivery Method To Email&quot;),  ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Change Invoice Delivery Method To Portal&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Update Billing Info&quot;),  ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Update Tax Exemption Status&quot;) ), CreatedBy.FirstName = &quot;BillingRequestForm&quot;,  ISPICKVAL(Origin, &quot;Web to Case&quot;),   $Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
@@ -1991,21 +1968,7 @@ CreatedBy.FirstName = &quot;BillingRequestForm&quot;,
         </actions>
         <active>true</active>
         <description>When Billing Web Request Type =Duplicate Invoice Issue,Invoice Presentation Issue,Missing Payment Issue,Refund Credit Balance,Request Billing/Payment History,Request Copy Of Invoice Or Credit Memo,Request, the WF sets up Case Owner = FIN Billing.</description>
-        <formula>AND( 
-OR(
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Duplicate Invoice Issue&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Invoice Presentation Issue&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Missing Payment Issue&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Refund Credit Balance&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Request Billing/Payment History&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Request Copy Of Invoice Or Credit Memo&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Request Order Details For Invoice&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Wrong Organization Charged&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Other&quot;)
-), 
-CreatedBy.FirstName = &quot;BillingRequestForm&quot;, 
-ISPICKVAL(Origin, &quot;Web to Case&quot;), 
-$Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
+        <formula>AND(  OR( ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Duplicate Invoice Issue&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Invoice Presentation Issue&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Missing Payment Issue&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Refund Credit Balance&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Request Billing/Payment History&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Request Copy Of Invoice Or Credit Memo&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Request Order Details For Invoice&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Wrong Organization Charged&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Other&quot;) ),  CreatedBy.FirstName = &quot;BillingRequestForm&quot;,  ISPICKVAL(Origin, &quot;Web to Case&quot;),  $Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
@@ -2049,13 +2012,7 @@ $Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
         </actions>
         <active>true</active>
         <description>When Billing Web Request Type =Manual Billing Form Submission,Request To Pay By ACH, the WF sets up Case Owner = FIN Acct Mgmt.</description>
-        <formula>AND(
-OR(
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Manual Billing Form Submission&quot;),
-ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Request To Pay By ACH&quot;)), 
-CreatedBy.FirstName = &quot;BillingRequestForm&quot;,
- ISPICKVAL(Origin, &quot;Web to Case&quot;), 
- $Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
+        <formula>AND( OR( ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Manual Billing Form Submission&quot;), ISPICKVAL( Billing_Web_Request_Type__c ,&quot;Request To Pay By ACH&quot;)),  CreatedBy.FirstName = &quot;BillingRequestForm&quot;,  ISPICKVAL(Origin, &quot;Web to Case&quot;),   $Setup.Workflow_Rules__c.Bypass_Rules__c = False )</formula>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
@@ -2270,19 +2227,7 @@ At day 31 of being open, the case will close.  If the case is closed through thi
         <active>false</active>
         <description>If Type = Invoice, Case status is Open, Case Subtype = AR Exception. Then assign the case to BOS Queue
 At day 31 of being open, the case will close.  If the case is closed through this business rule, there will be an automatic notification sent to the ow</description>
-        <formula>AND( 
-ISPICKVAL( Type , &quot;Invoicing&quot;), 
-ISPICKVAL( Dispute_Issue__c , &quot;AR Exception&quot;),
-OwnerId  = &quot;005d0000001XNW9&quot;, 
- 
-OR(ISPICKVAL( Status , &quot;New&quot;),  
-ISPICKVAL(Status, &quot;New - Assigned&quot;),  
-ISPICKVAL(Status, &quot;On Hold - Internal&quot;),   
-ISPICKVAL(Status, &quot;On Hold - Customer&quot;),  
-ISPICKVAL(Status, &quot;Follow Up - New Email&quot;), 
-ISPICKVAL(Status, &quot;Agent Follow Up&quot;),   
-ISPICKVAL(Status, &quot;On Hold - Sales Rep&quot;),   
-ISPICKVAL(Status, &quot;On Hold - Sales Admin&quot;)),   $Setup.Validation_Rules__c.Bypass_Rules__c =False)</formula>
+        <formula>AND(  ISPICKVAL( Type , &quot;Invoicing&quot;),  ISPICKVAL( Dispute_Issue__c , &quot;AR Exception&quot;), OwnerId  = &quot;005d0000001XNW9&quot;,    OR(ISPICKVAL( Status , &quot;New&quot;),   ISPICKVAL(Status, &quot;New - Assigned&quot;),   ISPICKVAL(Status, &quot;On Hold - Internal&quot;),    ISPICKVAL(Status, &quot;On Hold - Customer&quot;),   ISPICKVAL(Status, &quot;Follow Up - New Email&quot;),  ISPICKVAL(Status, &quot;Agent Follow Up&quot;),    ISPICKVAL(Status, &quot;On Hold - Sales Rep&quot;),    ISPICKVAL(Status, &quot;On Hold - Sales Admin&quot;)),   $Setup.Validation_Rules__c.Bypass_Rules__c =False)</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
         <workflowTimeTriggers>
             <actions>
@@ -2336,21 +2281,7 @@ ISPICKVAL(Status, &quot;On Hold - Sales Admin&quot;)),   $Setup.Validation_Rules
         </actions>
         <active>true</active>
         <description>This workflow is meant to update the case to a closed status</description>
-        <formula>AND( 
-
-OR( 
-AND( 
-Owner:Queue.QueueName = &#39;AutoCloseQueue&#39;, 
-SuppliedEmail = &#39;Classes-Notify@usa.redcross.org&#39;), 
-
-Owner:Queue.QueueName = &#39;AutoCloseQueue&#39; 
-), 
-AND( 
-Owner:Queue.QueueName != &#39;LTP on RCO&#39;), 
-OR( 
-!CONTAINS(Account.Name,&#39;Instructors Corner Account&#39;),ISNULL(Account.Name),ISBLANK(Account.Name)), 
-
-$Setup.Workflow_Rules__c.Bypass_Rules__c != True )</formula>
+        <formula>AND(   OR(  AND(  Owner:Queue.QueueName = &#39;AutoCloseQueue&#39;,  SuppliedEmail = &#39;Classes-Notify@usa.redcross.org&#39;),   Owner:Queue.QueueName = &#39;AutoCloseQueue&#39;  ),  AND(  Owner:Queue.QueueName != &#39;LTP on RCO&#39;),  OR(  !CONTAINS(Account.Name,&#39;Instructors Corner Account&#39;),ISNULL(Account.Name),ISBLANK(Account.Name)),   $Setup.Workflow_Rules__c.Bypass_Rules__c != True )</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -2512,9 +2443,7 @@ $Setup.Workflow_Rules__c.Bypass_Rules__c != True )</formula>
         </actions>
         <active>true</active>
         <description>This workflow will change the owner of the case to the Queue designated in the follow up picklist value.</description>
-        <formula>AND(
-ISPICKVAL( Follow_Up_Group__c, &quot;Course Records&quot;) ,
- $Setup.Workflow_Rules__c.Bypass_Rules__c =false)</formula>
+        <formula>AND( ISPICKVAL( Follow_Up_Group__c, &quot;Course Records&quot;) ,  $Setup.Workflow_Rules__c.Bypass_Rules__c =false)</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -3205,18 +3134,7 @@ ISPICKVAL( Follow_Up_Group__c, &quot;Course Records&quot;) ,
         </actions>
         <active>true</active>
         <description>Wflow sends an email to contact with a link to a web survey. Wflow checks if contact on case has been sent a survey within the last X amount of hours.</description>
-        <formula>AND(
-OR(RecordTypeId = &quot;012d000000097TD&quot;, RecordTypeId = &quot;012d000000097TC&quot;), 
-IsClosed = true,  PRIORVALUE(IsClosed ) = false ,   
-Contact.Hours_Since_Last_Survey_Sent__c &lt;   $Setup.Survey_Settings__c.Hours_Threshold__c  ,    
-
-$Setup.ETL_Configuration__c.Is_ETL_User__c = false,
-
- $Setup.Survey_Settings__c.Is_Closed_Case_Survey_Active__c,
-
- $Setup.Workflow_Rules__c.Bypass_Rules__c = false
-
-)</formula>
+        <formula>AND( OR(RecordTypeId = &quot;012d000000097TD&quot;, RecordTypeId = &quot;012d000000097TC&quot;),  IsClosed = true,  PRIORVALUE(IsClosed ) = false ,    Contact.Hours_Since_Last_Survey_Sent__c &lt;   $Setup.Survey_Settings__c.Hours_Threshold__c  ,      $Setup.ETL_Configuration__c.Is_ETL_User__c = false,   $Setup.Survey_Settings__c.Is_Closed_Case_Survey_Active__c,   $Setup.Workflow_Rules__c.Bypass_Rules__c = false  )</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -3718,38 +3636,14 @@ $Setup.ETL_Configuration__c.Is_ETL_User__c = false,
         </actions>
         <active>true</active>
         <description>Wflow sends an email to contact with a link to a web survey. Wflow checks if contact on case has been sent a survey within the last X amount of hours.</description>
-        <formula>AND
-( OR(RecordTypeId = &quot;012d000000097TD&quot;, RecordTypeId = &quot;012d000000097TC&quot;,RecordTypeId = &quot;0120V000001pNvg&quot;,RecordTypeId = &quot;012d0000001cm4l&quot;),  PRIORVALUE(IsClosed ) = false , IsClosed = true, OR ( Contact.Hours_Since_Last_Survey_Sent__c &gt;= $Setup.Survey_Settings__c.Hours_Threshold__c , ISBLANK(Contact.Hours_Since_Last_Survey_Sent__c) ), $Setup.ETL_Configuration__c.Is_ETL_User__c = false, $Setup.Survey_Settings__c.Is_Closed_Case_Survey_Active__c = true, Contact.HasOptedOutOfEmail = false, $Setup.Workflow_Rules__c.Bypass_Rules__c = false )</formula>
+        <formula>AND ( OR(RecordTypeId = &quot;012d000000097TD&quot;, RecordTypeId = &quot;012d000000097TC&quot;,RecordTypeId = &quot;0120V000001pNvg&quot;,RecordTypeId = &quot;012d0000001cm4l&quot;),  PRIORVALUE(IsClosed ) = false , IsClosed = true, OR ( Contact.Hours_Since_Last_Survey_Sent__c &gt;= $Setup.Survey_Settings__c.Hours_Threshold__c , ISBLANK(Contact.Hours_Since_Last_Survey_Sent__c) ), $Setup.ETL_Configuration__c.Is_ETL_User__c = false, $Setup.Survey_Settings__c.Is_Closed_Case_Survey_Active__c = true, Contact.HasOptedOutOfEmail = false, $Setup.Workflow_Rules__c.Bypass_Rules__c = false )</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
         <fullName>Send Survey Upon Case Close %28for Invoicing Cases%29</fullName>
         <active>false</active>
         <description>Wflow sends an email to contact with a link to a web survey. Wflow checks if contact on case has been sent a survey within the last X amount of hours.</description>
-        <formula>AND( 
-
-OR(RecordTypeId = &quot;012d000000097TD&quot;, RecordTypeId = &quot;012d000000097TC&quot;),
-
-PRIORVALUE(IsClosed ) = false , 
-
-IsClosed = true,   
-
-OR ( 	Contact.Hours_Since_Last_Survey_Sent__c &gt;=  $Setup.Survey_Settings__c.Hours_Threshold__c ,    
-
-        ISBLANK(Contact.Hours_Since_Last_Survey_Sent__c)
-),
-	
-$Setup.ETL_Configuration__c.Is_ETL_User__c = false,  
-
- $Setup.Survey_Settings__c.Is_Closed_Case_Survey_Active__c = true,
-
-Contact.HasOptedOutOfEmail = false,
-
-ISPICKVAL( Type,&quot;Invoicing&quot;),
-
- $Setup.Workflow_Rules__c.Bypass_Rules__c = false  
-
-)</formula>
+        <formula>AND(   OR(RecordTypeId = &quot;012d000000097TD&quot;, RecordTypeId = &quot;012d000000097TC&quot;),  PRIORVALUE(IsClosed ) = false ,   IsClosed = true,     OR ( 	Contact.Hours_Since_Last_Survey_Sent__c &gt;=  $Setup.Survey_Settings__c.Hours_Threshold__c ,              ISBLANK(Contact.Hours_Since_Last_Survey_Sent__c) ), 	 $Setup.ETL_Configuration__c.Is_ETL_User__c = false,     $Setup.Survey_Settings__c.Is_Closed_Case_Survey_Active__c = true,  Contact.HasOptedOutOfEmail = false,  ISPICKVAL( Type,&quot;Invoicing&quot;),   $Setup.Workflow_Rules__c.Bypass_Rules__c = false    )</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -3815,15 +3709,7 @@ ISPICKVAL( Type,&quot;Invoicing&quot;),
         </actions>
         <active>true</active>
         <description>This workflow will be used to update the service case subject line</description>
-        <formula>AND(  RecordType.Name = &#39;Service Cases&#39;,  
-OR(     
-NOT(ISPICKVAL(Origin , &#39;Email&#39;)),     
-NOT(ISPICKVAL(Origin , &#39;Online - LMS&#39;)),     
-NOT(ISPICKVAL(Origin , &#39;Web&#39;)),     
-NOT(ISPICKVAL(Origin , &#39;Web to Case&#39;))     
-),  
-ISBLANK(SuppliedEmail),
-$Setup.Workflow_Rules__c.Bypass_Rules__c = FALSE  )</formula>
+        <formula>AND(  RecordType.Name = &#39;Service Cases&#39;,   OR(      NOT(ISPICKVAL(Origin , &#39;Email&#39;)),      NOT(ISPICKVAL(Origin , &#39;Online - LMS&#39;)),      NOT(ISPICKVAL(Origin , &#39;Web&#39;)),      NOT(ISPICKVAL(Origin , &#39;Web to Case&#39;))      ),   ISBLANK(SuppliedEmail), $Setup.Workflow_Rules__c.Bypass_Rules__c = FALSE  )</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -4604,11 +4490,7 @@ $Setup.Workflow_Rules__c.Bypass_Rules__c = FALSE  )</formula>
     <rules>
         <fullName>Update Change Invoice new Status Boolea</fullName>
         <active>false</active>
-        <formula>ISPICKVAL( Status , &quot;New&quot;) &amp;&amp; 
-RecordType.DeveloperName = &quot;Service_Cases&quot; &amp;&amp; 
-ISPICKVAL (Type, &quot;Invoicing&quot;) &amp;&amp; 
-$Setup.Validation_Rules__c.Bypass_Rules__c = false &amp;&amp; 
-Change_Invoice_New_Status__c = FALSE</formula>
+        <formula>ISPICKVAL( Status , &quot;New&quot;) &amp;&amp;  RecordType.DeveloperName = &quot;Service_Cases&quot; &amp;&amp;  ISPICKVAL (Type, &quot;Invoicing&quot;) &amp;&amp;  $Setup.Validation_Rules__c.Bypass_Rules__c = false &amp;&amp;  Change_Invoice_New_Status__c = FALSE</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
         <workflowTimeTriggers>
             <actions>

@@ -865,6 +865,14 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>PHSS_CpsDashboardController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>PHSS_CpsDashboardControllerTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PHSS_CpsWrapper</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -894,7 +902,7 @@
     </classAccesses>
     <classAccesses>
         <apexClass>PHSS_ForgotUsernameController</apexClass>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>PHSS_ForgotUsernameControllerTest</apexClass>
@@ -3354,6 +3362,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.nk_billto_org_id__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.sfxId__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -7988,6 +8001,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Contact.sfxId__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Contact.sked__Region__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -8684,6 +8702,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Course_Catalog__c.Type__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Course_Catalog__c.sfxId__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -9748,6 +9771,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Fulfillment_Item__c.sfxId__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Fulfillment__c.Account__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -9814,6 +9842,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Fulfillment__c.Type__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Fulfillment__c.sfxId__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -15249,6 +15282,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Voucher__c.Voucher_Claim__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Voucher__c.sfxId__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

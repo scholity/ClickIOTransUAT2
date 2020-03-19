@@ -45,7 +45,7 @@
         }
         else {
            sdocURL = baseURL+'/apex/SDRelatedListDocuments?parentId='+recordId+'&childObjName='+childObjName+'&LookupFieldName='+lookUpField+'&doclist='+doclist+'&allowEmail='+prepMail+'&combineAll='+combineAll+'&autoRedirect='+autoRedirect+'&additionalFilters='+additionalFilters+'&uiLanguage=English';
-        };
+        }
         console.log("sdocURL: " + sdocURL );
         
         component.set("v.sdocURL", sdocURL);

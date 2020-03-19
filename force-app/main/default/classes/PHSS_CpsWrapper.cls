@@ -1,6 +1,14 @@
 public class PHSS_CpsWrapper {
     @AuraEnabled
+    public String startDate {get;set;}
+    @AuraEnabled
+    public String iltClassId {get;set;}
+    @AuraEnabled
     public String offeringId {get;set;}
+	@AuraEnabled
+    public String clsId {get;set;}
+    @AuraEnabled
+    public String timeZone {get;set;}
 	@AuraEnabled
     public String accName {get;set;}
     @AuraEnabled
@@ -69,6 +77,8 @@ public class PHSS_CpsWrapper {
         this.geoLng = '';
         this.regType = '';
         this.quantity = '1';
+        this.clsId='';
+        this.timeZone='';
     }    
     
     public class SessionWrapper {

@@ -53,6 +53,7 @@ public with sharing class phss_cc_TransactionPaymentUtil {
                             ccrz__TransactionTS__c,
                             ccrz__TransactionType__c,
                             ccrz__User__c,
+                            Email_To__c,
                             Name
                     FROM    ccrz__E_TransactionPayment__c
                     WHERE   Id = :transactionPaymentId
@@ -180,19 +181,23 @@ public with sharing class phss_cc_TransactionPaymentUtil {
             ccrz__E_TransactionPayment__c authTxnPmt = fetchTransactionPayment(authTransactionPaymentId);
 
             ccrz__E_TransactionPayment__c captureTxnPmt = new ccrz__E_TransactionPayment__c();
-            captureTxnPmt.ccrz__Account__c = authTxnPmt.ccrz__Account__c;
-            captureTxnPmt.ccrz__AccountType__c = authTxnPmt.ccrz__AccountType__c;
-            captureTxnPmt.ccrz__Amount__c = authTxnPmt.ccrz__Amount__c;
-            captureTxnPmt.ccrz__BillTo__c = authTxnPmt.ccrz__BillTo__c;
-            captureTxnPmt.ccrz__CCOrder__c = authTxnPmt.ccrz__CCOrder__c;
-            captureTxnPmt.ccrz__Contact__c = authTxnPmt.ccrz__Contact__c;
-            captureTxnPmt.ccrz__CurrencyISOCode__c = authTxnPmt.ccrz__CurrencyISOCode__c;
-            captureTxnPmt.ccrz__SoldTo__c = authTxnPmt.ccrz__SoldTo__c;
+
+            captureTxnPmt.ccrz__Account__c                  = authTxnPmt.ccrz__Account__c;
+            captureTxnPmt.ccrz__AccountType__c              = authTxnPmt.ccrz__AccountType__c;
+            captureTxnPmt.ccrz__Amount__c                   = authTxnPmt.ccrz__Amount__c;
+            captureTxnPmt.ccrz__BillTo__c                   = authTxnPmt.ccrz__BillTo__c;
+            captureTxnPmt.ccrz__CCOrder__c                  = authTxnPmt.ccrz__CCOrder__c;
+            captureTxnPmt.ccrz__Contact__c                  = authTxnPmt.ccrz__Contact__c;
+            captureTxnPmt.ccrz__CurrencyISOCode__c          = authTxnPmt.ccrz__CurrencyISOCode__c;
+            captureTxnPmt.ccrz__SoldTo__c                   = authTxnPmt.ccrz__SoldTo__c;
             captureTxnPmt.ccrz__SourceTransactionPayment__c = authTxnPmt.Id;
-            captureTxnPmt.ccrz__Storefront__c = authTxnPmt.ccrz__Storefront__c;
-            captureTxnPmt.ccrz__TransactionType__c = CAPTURE_TRANSACTION_TYPE;
-            captureTxnPmt.ccrz__User__c = authTxnPmt.ccrz__User__c;
+            captureTxnPmt.ccrz__Storefront__c               = authTxnPmt.ccrz__Storefront__c;
+            captureTxnPmt.ccrz__TransactionType__c          = CAPTURE_TRANSACTION_TYPE;
+            captureTxnPmt.ccrz__User__c                     = authTxnPmt.ccrz__User__c;
+            captureTxnPmt.Email_To__c                       = authTxnPmt.Email_To__c;
+            
             insert captureTxnPmt;
+            
             return captureTxnPmt;
 
         } catch (Exception e) {
