@@ -439,27 +439,24 @@
         var action = component.get("c.getLearningPlanAttributesByName");
         action.setParams({LPName : component.get("v.cpsWrap.courseName")});
         action.setCallback(this, function(response) {
-            //var state = response.getState();
-            //if (state === "SUCCESS") {
+           
+            var state = response.getState();
 
+            //if (state === "SUCCESS") {   
+                
                 var getResponse = response.getReturnValue();
-
                 var learningPlan = getResponse.LMS_Learning_Plan__c;
-            //alert(getResponse.ccrz__ProductId__c);
-            //alert('ok');
-				//component.set("v.cpsWrap.CCProductId",getResponse.ccrz__ProductId__c);
                 if (learningPlan != undefined) {
                     var courseName = getResponse.LMS_Learning_Plan__r.Name;
                     var courseFormat = getResponse.LMS_Learning_Plan__r.Classroom_Setting__c;
                     var courseDuration = getResponse.LMS_Learning_Plan__r.redwing__Duration__c;
-                    //alert("LP Defined CourseDuration " + courseDuration);
                     var hours = 0;
                     if(courseDuration < 60){
                         hours = courseDuration; 
                     } else {
                         var hours = Math.floor(courseDuration / 60); 
                     }
- 					
+                    
                 	console.log("Hours: " + hours);
                     component.set("v.LPDuration", hours);
                     component.set("v.LPName", courseName);
@@ -482,7 +479,9 @@
                     component.set("v.cpsWrap.classDuration", '');
                     //alert("LP Not Defined CourseDuration " + courseDuration);
                 }
-            //}
+           // }
+
+            
         });
         $A.enqueueAction(action);
     },
@@ -529,7 +528,7 @@
 	
     },
     requiredSchedule : function(component,event,helper){
-        //alert('requiredSchedule');
+        //alert(JSON.stringify(component.get('v.cpsWrap')));
         //alert('classDuration'+component.get('v.cpsWrap.classDuration'));
         // Required Time Counter decrement value
         var classFormat = component.get('v.cpsWrap.classFormat');
@@ -741,41 +740,26 @@ if("America/Puerto_Rico"
    
    deleteClass : function(component) {
        
-		 var action = component.get('c.deleteClass');
-	
-       //alert('ok'+component.get("v.cpsWrap.iltClassId"));
-         //    return false;
-      
+		var action = component.get('c.deleteClass');
+       
         action.setParams({
             iltClassId: component.get("v.cpsWrap.iltClassId")
         });
-	   	    
-           //alert('d');
-        action.setCallback(this, function(response) {
-            //alert('aa4');
+       
+       action.setCallback(this, function(response) {
             var state = response.getState();
-            alert('aa');
+    	
             if (state === 'SUCCESS') {
-                alert('deleted');
-                //var storeResponse = response.getReturnValue();
-                //alert("Location ID "+storeResponse);
+                alert('Please wait 24 hours to see your class removed from Redcross.org.');
+                $A.get("e.force:refreshView").fire();
             }
             else if (state === "ERROR") {
-                    var errors = response.getError();
-                    //component.set("v.offeringsPosted", false);
-                    alert("Error " + state + "\n" + errors[0].message);
-                    
-                    if (errors) {
-                        if (errors[0] && errors[0].message) {
-                            console.log("Error message: " + errors[0].message);
-                            component.set("v.showError","true");
-                            component.set("v.errorMessage",errors[0].message);	
-                        }
-                    } else {
-                        console.log("Unknown error");
-                    }
-                }
+                alert('Something went wrong. Please try again.');
+            }
         });
+
+         $A.enqueueAction(action);
+
     },
     
     getOfferings : function(component) {

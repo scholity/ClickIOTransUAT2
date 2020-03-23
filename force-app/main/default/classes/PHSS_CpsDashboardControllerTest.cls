@@ -167,6 +167,7 @@ private class PHSS_CpsDashboardControllerTest {
                 PHSS_CpsDashboardController.createIltLocation(testAcc.Id, 'test site', 'add2', 'add1', '54321', 'NY', 'test city', '38.894878', '-77.0413765');
                 PHSS_CpsDashboardController.postClass(jsonStr);
                 PHSS_CpsDashboardController.updateClass(jsonStr);
+                PHSS_CpsDashboardController.deleteClass(jsonStr);
                 //PHSS_CpsDashboardController.getOfferings(testAcc.Id, 'Army West');
                 
                 //Test CPS Dashboard

@@ -403,7 +403,7 @@
             <targetReference>Get_Fulfillment_Item</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Obsolete</status>
     <variables>
         <name>colAchievementAssignment</name>
         <dataType>SObject</dataType>

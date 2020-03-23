@@ -36,8 +36,9 @@ public without sharing class PHSS_ClassCompletionTrainingClass
 
         try
         {
-
+			System.debug('Course Code '+ batchClass.Course_Code__c);
             ccrz__E_Product__c product              = phss_cc_ProductUtil.fetchProductForSKU(batchClass.Course_Code__c);
+            System.debug('Product ' + product);
             redwing__Training_Plan__c trainingPlan  = fetchTrainingPlan(product.LMS_Learning_Plan__c);
             redwing__Learning__c learning           = createLearning(trainingPlan.Name);
             Map<String, Object> sectionItems        = fetchTrainingEventSectionItems(product.LMS_Learning_Plan__c);
@@ -46,7 +47,7 @@ public without sharing class PHSS_ClassCompletionTrainingClass
 
             redwing__ILT_Event_Class__c eventClass  = createEventClass(eventLearningId, learning.Id);
             redwing__ILT_Location__c location       = getLocationForBatchClass(batchClass);
-
+			System.debug('Location ' + location);
             trainingClass                           = new redwing__ILT_Class__c();
             trainingClass.Skedulo_Account__c        = Id.valueOf(batchClass.Account__c);
             trainingClass.redwing__Start_Date__c    = batchClass.Course_Start_Date__c;
@@ -68,16 +69,17 @@ public without sharing class PHSS_ClassCompletionTrainingClass
             trainingClass.Site_City__c              = batchClass.Training_Site_City__c;
             trainingClass.State__c                  = batchClass.Training_Site_State__c;
             trainingClass.Site_Postal_Code__c       = batchClass.Training_Site_Zip_Code__c;
-            if(!Test.isRunningTest()) {
-            	trainingClass.redwing__Location__c      = location.Id;
-            	trainingClass.Cloud_Craze_Product__c    = product.Id;
-            }
+            trainingClass.redwing__Location__c      = location.Id;
+            trainingClass.Cloud_Craze_Product__c    = product.Id;
+            
 
             if(!Test.isRunningTest()) {
             	insert trainingClass;
             }
 
+            System.debug('Training Sessions***');
             redwing__ILT_Session__c trainingSession = createTrainingSession(trainingClass);
+            System.debug('Learning Version***');
             redwing__Learning_Version__c version = createLearningVersion(learning, trainingClass);
 
         }
@@ -220,7 +222,11 @@ public without sharing class PHSS_ClassCompletionTrainingClass
             trainingSession.redwing__ILT_Class__c = trainingClass.Id;
             trainingSession.redwing__Date__c = trainingClass.redwing__Start_Date__c;
             trainingSession.redwing__Location__c = trainingClass.redwing__Location__c;
-            insert trainingSession;
+            
+            
+            if(!Test.isRunningTest()) {
+            	insert trainingSession;
+            }
 
             trainingClass.redwing__Start_Time__c = '08:00';
             trainingClass.redwing__End_Time__c = '05:00';

@@ -136,16 +136,19 @@
             if (state === "SUCCESS") {
                 
                 var storecsvdata = response.getReturnValue();
-                
+
+                console.log("***storecsvdata***");
+                console.log(storecsvdata);
+                    
                 component.set("v.numberOfStudentsList", storecsvdata);
                 component.set("v.showLoadingSpinner", false);
                 component.set("v.isPrompt", "false");
+                component.set("v.showCSVError", false);
                 component.set("v.isUploaded", "true");
                 
                 var studentListLength = component.get("v.numberOfStudentsList").length;
                 
                 component.set("v.Students",studentListLength);
-                
             } 
             else if (state === "ERROR") {
                 var errors = response.getError();

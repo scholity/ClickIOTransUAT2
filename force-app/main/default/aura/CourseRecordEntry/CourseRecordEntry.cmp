@@ -38,6 +38,7 @@
     <aura:attribute name = "Students" 				type = "Integer"  	default = ""/>
     <aura:attribute name = "Instructor1" 			type = "String"  	default = ""/>
     <aura:attribute name = "Instructor2" 			type = "String"  	default = ""/>
+    <aura:attribute name = "AdditionalInstructors" 	type = "User[]"  	default = ""/>
     <aura:attribute name = "isAddInstructors"       type = "Boolean"    default = "false"/>
     <aura:attribute name = "StudentInstructorRatio" type = "Integer"  	default = ""/>
     <aura:attribute name = "Location" 				type = "String"  	default = ""/>
@@ -119,8 +120,6 @@
     <aura:attribute name = "formattedStartTime" type = "String" />
     <aura:attribute name = "formattedEndTime" type = "String" />
     <aura:attribute name = "zoneError"      type = "Boolean"    default = "false"/>
-    
-    <aura:attribute name = "AdditionalInstructors" 	type = "User[]"  	default = ""/>    
 
     <aura:handler name="change" value="{!v.CCProductId}" action="{!c.calculateStudentInstructorRatio}" />
     <aura:handler name="change" value="{!v.Students}" action="{!c.calculateStudentInstructorRatio}" />
@@ -499,16 +498,15 @@
                                                     </header>
                                                     <div class="slds-modal__content slds-p-around_small slds-text-align_center" id="prompt-message-wrapper">
 
-                                                        <div><b>Step - 1 : </b>Your CSV file must match the format in the template given here</div> <br/>
+                                                        <div><b>Step - 1 : </b>Your CSV file must match the format in the template given <a href="https://www.redcrosslearningcenter.org/sfc/servlet.shepherd/version/download/0683o0000078fAbAAI" download="">here</a></div> <br/>
                                                         <div><b>Step - 2 : </b>Click Upload Files button or drop CSV file in drop files</div> <br/><br/>
 
-                                                        <lightning:input aura:id="fileId" onchange="{!c.handleFilesChange}" type="file" name="file" multiple="false" accept=".csv"/>
+                                                        <lightning:input aura:id="fileId" onchange="{!c.handleFilesChange}" type="file" name="file" multiple="false" accept=".csv"/><br/>
                                                         <aura:if isTrue="{!v.showLoadingSpinner}">
                                                             <div class="slds-text-body_small slds-text-color_error">Uploading...
                                                                 <img src="/auraFW/resources/aura/images/spinner.gif" class="spinner-img" alt="Loading"/>'
                                                             </div>
                                                         </aura:if>
-
                                                         <br/><br/>
                                                     </div>
 
@@ -626,8 +624,11 @@
                                             <span id="{!'reasonErr-'+(index+1)}" style="display:none">Complete this field.</span>
                                         </div>
                                         <div class="slds-size_5-of-12 slds-m-around_x-small">
-                                            <lightning:input value	= "{!item.AdditionalInfo}"
-                                                             label	= "Additional Information" maxlength="50"/>
+                                            <lightning:input value	                    = "{!item.AdditionalInfo}"
+                                                             label	                    = "Additional Information"
+                                                             aura:id	                = "field"
+                                                             pattern                    = ".{0,50}"
+                                                             messageWhenPatternMismatch	= "You have exceeded the limit of 50 characters."/>
                                         </div>
 
                                     </div>

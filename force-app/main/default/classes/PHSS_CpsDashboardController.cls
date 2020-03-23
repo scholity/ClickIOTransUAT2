@@ -34,6 +34,25 @@ public without sharing class PHSS_CpsDashboardController {
 		
         return cpsWrap;
     }
+	
+    @AuraEnabled
+    public static void deleteClass(String iltClassId) {
+
+        try {
+            
+            redwing__ILT_Class__c toDel = new redwing__ILT_Class__c();
+            
+            toDel.Class_Searchable__c = false;
+            toDel.Class_Online__c = false;
+            if(!Test.isRunningTest()) {
+                toDel.Id = iltClassId;
+        		update toDel;
+            }
+        }
+        catch(Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 
     @AuraEnabled
     public static void updateClass(String jsonStr) {
@@ -91,7 +110,7 @@ public without sharing class PHSS_CpsDashboardController {
             delete toDel;
              }
             
-            System.debug('test 456');
+            //System.debug('test 456');
             
             Integer sessionIndex = 0;
             List<redwing__ILT_Session__c> sessList = new List<redwing__ILT_Session__c>();
@@ -318,7 +337,7 @@ public without sharing class PHSS_CpsDashboardController {
         	List<PHSS_CpsWrapper> offerings = new List<PHSS_CpsWrapper>();
 
              if (accountId != null) {
-        	 for(redwing__ILT_Class__c offering : [Select Id, Name, redwing__Start_Date__c,redwing__Location__c,redwing__Timezone__c, CPS_Registration_URL__c, CPS_Registration_Phone__c,Offering_Id__c, Registration_Fee__c, Classroom_Setting__c From redwing__ILT_Class__c Where redwing__ILT_Class__c.Skedulo_Account__c =:accountId And Request_Type__c = 'CPS' and redwing__Location__c!=null and redwing__Start_Date__c>= TODAY and Class_Searchable__c=true and Class_Online__c=true]){
+        	 for(redwing__ILT_Class__c offering : [Select Id, Name, redwing__Start_Date__c,redwing__Location__c,redwing__Timezone__c, CPS_Registration_URL__c, CPS_Registration_Phone__c,Offering_Id__c, Registration_Fee__c, Classroom_Setting__c From redwing__ILT_Class__c Where redwing__ILT_Class__c.Skedulo_Account__c =:accountId And Request_Type__c = 'CPS' and redwing__Location__c!=null and redwing__Start_Date__c>= TODAY and Class_Searchable__c=true and Class_Online__c=true order by redwing__Start_Date__c]){
 				
                     if (offering != null){
                         //Class
@@ -348,8 +367,6 @@ public without sharing class PHSS_CpsDashboardController {
 						cpsWrap.geoLat = String.valueOf(loc.GeoLocation__Latitude__s);
 						cpsWrap.geoLng = String.valueOf(loc.GeoLocation__Longitude__s);
                        
-                        
-
                         cpsWrap.sessionList = new List<PHSS_CpsWrapper.SessionWrapper>();
                         
                         for(redwing__ILT_Session__c session : [Select Id, Name, redwing__ILT_Class__c, redwing__Date__c, redwing__Description__c, redwing__End_Time__c, redwing__Location__c, redwing__Start_Time__c, ltui__End_Time_Formatted__c, ltui__Start_Time_Formatted__c, Skedulo_Account__c, redwing__Type__c  From redwing__ILT_Session__c Where  redwing__ILT_Session__c.redwing__ILT_Class__c = :offering.Id ]){

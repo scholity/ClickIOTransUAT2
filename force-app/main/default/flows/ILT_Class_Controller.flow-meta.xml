@@ -223,6 +223,9 @@
         <label>myDecision3</label>
         <locationX>50</locationX>
         <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>myDecision6</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>default</defaultConnectorLabel>
         <rules>
             <name>myRule_4</name>
@@ -295,8 +298,44 @@
             <label>Cancelled Class?</label>
         </rules>
     </decisions>
+    <decisions>
+        <processMetadataValues>
+            <name>index</name>
+            <value>
+                <numberValue>2.0</numberValue>
+            </value>
+        </processMetadataValues>
+        <name>myDecision6</name>
+        <label>myDecision6</label>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>default</defaultConnectorLabel>
+        <rules>
+            <name>myRule_7</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_myRule_7</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Max Seats Reduced</label>
+        </rules>
+    </decisions>
     <description>Manages ILT Class Changes</description>
-    <interviewLabel>ILT_Class_Controller-1_InterviewLabel</interviewLabel>
+    <formulas>
+        <processMetadataValues>
+            <name>originalFormula</name>
+            <value>
+                <stringValue>PRIORVALUE( [redwing__ILT_Class__c].redwing__Max_Seats__c ) &gt; [redwing__ILT_Class__c].redwing__Max_Seats__c</stringValue>
+            </value>
+        </processMetadataValues>
+        <name>formula_myRule_7</name>
+        <dataType>Boolean</dataType>
+        <expression>PRIORVALUE( {!myVariable_current.redwing__Max_Seats__c} ) &gt; {!myVariable_current.redwing__Max_Seats__c}</expression>
+    </formulas>
+    <interviewLabel>ILT_Class_Controller-2_InterviewLabel</interviewLabel>
     <label>ILT Class Controller</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -404,7 +443,7 @@
         <object>redwing__ILT_Class__c</object>
     </recordUpdates>
     <startElementReference>isChangedDecision2_myRule_1_Generate_Roster_PDF_c</startElementReference>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>

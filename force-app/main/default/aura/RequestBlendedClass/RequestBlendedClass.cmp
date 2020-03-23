@@ -531,7 +531,7 @@
                                                 </header>
                                                 <div class="slds-modal__content slds-p-around_small slds-text-align_center" id="prompt-message-wrapper">
                                                     
-                                                    <div><b>Step - 1 : </b>Your CSV file must match the format in the template given here</div> <br/>
+                                                    <div><b>Step - 1 : </b>Your CSV file must match the format in the template given <a href="https://www.redcrosslearningcenter.org/sfc/servlet.shepherd/version/download/0683o0000078fJYAAY" download="">here</a></div> <br/>
                                                     <div><b>Step - 2 : </b>Click Upload Files button or drop CSV file in drop files</div> <br/><br/>
                                                     
                                                     <lightning:input aura:id="fileId" onchange="{!c.handleFilesChange}" type="file" name="file" multiple="false" accept=".csv"/>                                                    
