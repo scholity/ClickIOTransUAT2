@@ -240,7 +240,6 @@
     },
         
     onclickNext : function(component,event,helper){
-        debugger;
         var currentSN = component.get("v.stepNumber");
         if(currentSN == "One")
         {

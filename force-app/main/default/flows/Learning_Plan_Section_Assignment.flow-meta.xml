@@ -60,11 +60,11 @@
                 <stringValue>TODAY()</stringValue>
             </value>
         </processMetadataValues>
-        <name>formula_2_myRule_1_A1_0386208748</name>
+        <name>formula_2_myRule_1_A1_8270966961</name>
         <dataType>Date</dataType>
         <expression>TODAY()</expression>
     </formulas>
-    <interviewLabel>Learning_Plan_Section_Assignment-6_InterviewLabel</interviewLabel>
+    <interviewLabel>Learning_Plan_Section_Assignment-7_InterviewLabel</interviewLabel>
     <label>Learning Plan Section Assignment</label>
     <processMetadataValues>
         <name>ObjectType</name>
@@ -95,7 +95,7 @@
         <processMetadataValues>
             <name>evaluationType</name>
             <value>
-                <stringValue>always</stringValue>
+                <stringValue>criteria</stringValue>
             </value>
         </processMetadataValues>
         <processMetadataValues>
@@ -133,6 +133,55 @@
                 <elementReference>myVariable_current.redwing__Training_Plan_Assignment__c</elementReference>
             </value>
         </filters>
+        <filters>
+            <processMetadataValues>
+                <name>implicit</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>inputDataType</name>
+                <value>
+                    <stringValue>Number</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideLabel</name>
+                <value>
+                    <stringValue>Total Not Started Items</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideReferenceTo</name>
+                <value>
+                    <stringValue/>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>leftHandSideType</name>
+                <value>
+                    <stringValue>Number</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>operatorDataType</name>
+                <value>
+                    <stringValue>Number</stringValue>
+                </value>
+            </processMetadataValues>
+            <processMetadataValues>
+                <name>rightHandSideType</name>
+                <value>
+                    <stringValue>Number</stringValue>
+                </value>
+            </processMetadataValues>
+            <field>redwing__Total_NotStarted_Items__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
+        </filters>
         <inputAssignments>
             <processMetadataValues>
                 <name>dataType</name>
@@ -166,7 +215,7 @@
             </processMetadataValues>
             <field>redwing__Completed_On__c</field>
             <value>
-                <elementReference>formula_2_myRule_1_A1_0386208748</elementReference>
+                <elementReference>formula_2_myRule_1_A1_8270966961</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

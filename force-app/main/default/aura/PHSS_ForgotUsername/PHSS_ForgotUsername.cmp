@@ -95,7 +95,7 @@
                                      <aura:if isTrue="{!v.searchBool}">
                                             <aura:if isTrue="{!v.userRecord}">
                                                 <b>
-                                                Your Username is {!v.userRecord.Username}.
+                                                Your Username is {!v.userRecord.Username}
                                                 <!-- User Active? {!v.userRecord.IsActive} -->
                                                 </b>
                                             <aura:set attribute="else">

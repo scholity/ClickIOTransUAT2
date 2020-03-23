@@ -370,38 +370,43 @@ public without sharing class ILTInstructorCommunity{
             
             if(isCRE)
             {   
-                if(csvRecordData.size()>4){
-                if(csvRecordData[4]!=null && csvRecordData[4].trim()!=''){
-                    List<String> words = csvRecordData[4].trim().split(' ');
-                    String result = '';
-                    for (String word : words) {
-                        word = word.trim();
-                        if (word.length() > 1) {
-                            result += word.substring(0, 1).toUpperCase() + word.substring(1, word.length()).toLowerCase() + ' '; //DE1215 Ensure first letter of all words capitilized
+                if(csvRecordData.size()>4)
+                {
+                    if(csvRecordData[4]!=null && csvRecordData[4].trim()!='')
+                    {
+                        List<String> words = csvRecordData[4].trim().split(' ');
+                        String result = '';
+                        for (String word : words)
+                        {
+                            word = word.trim();
+                            if (word.length() > 1)
+                            {
+                                result += word.substring(0, 1).toUpperCase() + word.substring(1, word.length()).toLowerCase() + ' '; //DE1215 Ensure first letter of all words capitilized
+                            }
                         }
+                        stDetails.Grade = result.trim();
                     }
-                    stDetails.Grade = result.trim();
-
                 }
-            }
-                if(csvRecordData.size()>5){
-                if(csvRecordData[5]!=null && csvRecordData[5].trim()!=''){
-                    String result = csvRecordData[5].trim();
-                    if (result.length() > 1) {
-                        result = result.substring(0, 1).toUpperCase()
-                                + result.substring(1, result.length()).toLowerCase(); //DE888 must ensure case matches fail reason picklist values
+                if(csvRecordData.size()>5)
+                {
+                    if(csvRecordData[5]!=null && csvRecordData[5].trim()!='' && csvRecordData[4]!=null && csvRecordData[4].trim()!='' && (csvRecordData[4] == 'Unsuccessful' || csvRecordData[4] == 'Not Evaluated'))
+                    {
+                        String result = csvRecordData[5].trim();
+                        if (result.length() > 1)
+                        {
+                            result = result.substring(0, 1).toUpperCase()
+                                    + result.substring(1, result.length()).toLowerCase(); //DE888 must ensure case matches fail reason picklist values
+                        }
+                        stDetails.Fail_Reason = result;
                     }
-                    stDetails.Fail_Reason = result;
                 }
-            }
-                if(csvRecordData.size()>6){
-                if(csvRecordData[6]!=null && csvRecordData[6].trim()!=''){
-                    stDetails.AdditionalInfo = csvRecordData[6];    
+                if(csvRecordData.size()>6)
+                {
+                    if(csvRecordData[6]!=null && csvRecordData[6].trim()!='')
+                    {
+                        stDetails.AdditionalInfo = csvRecordData[6];    
+                    }
                 }
-            }
-                
-                
-                
             }
             objCourse.lstStudents.add(stDetails);
         }

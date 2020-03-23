@@ -266,7 +266,7 @@ public class TransactionPaymentTriggerHelper
                 else
                 {
                     // if it's entered by an agent don't send email
-                    if(profileName != 'SB ARC / TSC Agent' && profileName != 'SB ARC / TSC Manager')
+                    if(profileName != 'SB ARC / TSC Agent' && profileName != 'SB ARC / TSC Manager' && tpay.ccrz__TransactionType__c != 'CAPTURE')
                     {
                         tpay.Email_To__c = tpay.ccrz__CCOrder__r.Owner.Email;
                     	tPaymentList.add(tpay);

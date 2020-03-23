@@ -16115,7 +16115,7 @@
         <layout>Vendor_Compensation__c-Vendor Compensation Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Voucher__c-PHSS Voucher Layout</layout>
+        <layout>Voucher__c-PHSS Voucher Layout - Edit</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>WorkBadge-Badge Received Layout</layout>

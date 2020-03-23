@@ -167,7 +167,6 @@
         if(yes){
              //override iltClassId
         	component.set("v.cpsWrap.iltClassId",offering.iltClassId);
-             //alert(component.get("v.cpsWrap.iltClassId"));
 			//component.set("v.deleteiltClassId",offering.iltClassId);
             helper.deleteClass(component);
         }

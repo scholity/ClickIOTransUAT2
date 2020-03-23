@@ -152,7 +152,7 @@
                                     
                                                 </b>
                                                 <b>
-                                                    <!--<lightning:button  label="DELETE" value="{!offering.offeringId}" variant="base" class = "customButtonRed" onclick="{!c.deleteOffering }"/>-->
+                                                    <lightning:button  label="DELETE" value="{!offering.offeringId}" variant="base" class = "customButtonRed" onclick="{!c.deleteOffering }"/>
                                                 </b>
                                             </div>
                                         </div>
