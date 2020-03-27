@@ -391,6 +391,19 @@
                 } else {
                     console.log("Unknown error");
                 }
+
+                component.set("v.showLoadingSpinner", false);
+                component.set("v.isPrompt", "false");
+
+                var toastEvent = $A.get("e.force:showToast");
+    			toastEvent.setParams({
+                    "title"		: "Error",
+                    "mode"		: "pester",
+                    "duration"	: "20000",
+                    "type"      : "error",
+                    "message"	: $A.get("$Label.c.Error_Message_For_CRE_RBC_CSV_UPLOAD")
+    			});
+    			toastEvent.fire();
             }
         });
         $A.enqueueAction(action);

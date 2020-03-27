@@ -137,7 +137,7 @@ public with sharing class RCAchievementAssignmentsHelper {
                 
                     else if(aa.Evaluation_Result__c == 'Successful' && aa.Online_Class__c == null)
                     {
-                        aa.redwing__Status__c = 'On Hold';
+                        aa.redwing__Status__c = 'OnHold';
                     }
 
                     else if(aa.Evaluation_Result__c != 'Successful' && aa.Online_Class__c == null)

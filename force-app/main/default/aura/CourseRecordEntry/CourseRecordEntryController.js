@@ -106,6 +106,13 @@
         $A.enqueueAction(action);*/
     },
     
+    navToURL: function (component, event, helper)
+    {
+        console.log("***navToURL***");
+        var navToUrl = $A.get("$Label.c.ResourceTabURL");
+        window.open(navToUrl, '_blank');
+    },
+    
     productCountIncrement: function (component, event, helper) {
         var productQuantityMap = component.get('v.productQuantityMap');
         var productSfid = event.getParam('productSfid');
@@ -162,194 +169,7 @@
         //component.set("v.fileName", fileName);
         //component.set("v.showIcon", "true");
     },
-    processingCRE : function(cmp, evt, hlpr)
-    {    
-        var checkbox = cmp.get("v.tncCheck");
-      
-        
-        console.log("***checkbox***"+checkbox);
-        if(!checkbox){
-            cmp.set("v.tncError",true);
-        }else{
-            
-            //Organization
-            var accID = cmp.get("v.accId");
-            
-            //var accID = cmp.get("v.selectedValue");
-            
-            //Course
-            var course =  cmp.get("v.courseId");
-            
-            //Course Ending Date            
-            var endDate   = cmp.get("v.EndDate");
-            var splitDate = endDate.split('-');
-            
-            var year 	  = splitDate[0];
-            var month     = splitDate[1];
-            var day 	  = splitDate[2]; 
-            
-            var endDateFrmtd = month + '/' + day + '/' + year;
-            
-            var startDate 	= cmp.get("v.StartDate");
-            
-            console.log("startDate***"+startDate);
-            
-            var splitDate1 = startDate.split('-');
-            
-            var year1 	  = splitDate1[0];
-            var month1    = splitDate1[1];
-            var day1	  = splitDate1[2]; 
-            
-            var startDateFrmtd = month1 + '/' + day1 + '/' + year1;
-            
-            // User            
-            
-            
-            var extUser = cmp.get("v.isExtUser");
-            var isParnter = cmp.get("v.isPartner");
-          if(extUser === true && isParnter === false){
-               
     
-                        var user1 = cmp.get("v.instructor.Id");
-                        console.log("***userInt***"+user1);
-            }else{
-                var user1 = cmp.get("v.userId1");
-                console.log("***userExt***"+user1);
-            }
-            
-            console.log('***user1***'+user1);
-            var user2 = cmp.get("v.Instructor2"); 
-            
-            //Number of Students
-            var numOfStudents = cmp.get("v.Students");
-            console.log("numOfStudents" +numOfStudents);
-            
-            // Supplement Info
-            
-            var Suppinfo = cmp.get("v.SupplementInfo");
-            console.log("Supp Info" +Suppinfo);
-            //Training Site
-            var tSite = cmp.get("v.Location"); // TODO: Remove this
-            
-            var siteName  = cmp.get("v.SiteName");
-            var add1  = cmp.get("v.Address1");
-            var add2  = cmp.get("v.Address2");
-            var city  = cmp.get("v.City");
-            var state = cmp.get("v.State");
-            var zip   = cmp.get("v.Zip");
-            
-            
-            var obj = new Object();
-            
-            obj.Account		=	accID;
-            obj.Course		=	course;
-            obj.EndDate		=	endDateFrmtd;
-            obj.Students	=	numOfStudents;
-            obj.SupplementInfo  =   Suppinfo;
-            obj.Instructor1 =	user1;
-            obj.Instructor2 =	user2;
-            obj.Location	=	tSite;
-            
-            obj.StartDate	= 	startDateFrmtd;
-            obj.SiteName    =   siteName;
-            obj.Address1 	= 	add1;
-            obj.Address2 	= 	add2;
-            obj.City 		= 	city;
-            obj.State 		= 	state;
-            obj.Zip 		= 	zip;
-            obj.OpportunityId = cmp.get("v.oppIdParent");
-            var addInstr = '';
-            if(typeof cmp.get("v.AdditionalInstructors") !== 'undefined' && cmp.get("v.AdditionalInstructors") != null)
-            for(var i=0;i<cmp.get("v.AdditionalInstructors").length;i++){
-                if(cmp.get("v.AdditionalInstructors")[i] != null)
-                    addInstr = addInstr + cmp.get("v.AdditionalInstructors")[i].Id + ';';
-            }
-            obj.AdditionalInstructors = addInstr;
-            
-            console.log(obj);
-            
-            var classDetailJSON = JSON.stringify(obj);
-            
-            //Forming the json which accepts ILT Class details format
-            
-            classDetailJSON = '{'+'\"ClassDetails\": '+classDetailJSON+'}';
-            
-            console.log("***classDetailJSON***"+classDetailJSON);
-            //Calling the server to assign the organization, location and etc in ILT Class & Session
-            // Creating Json format and assigning the grades for that student(Passing value to server side controller)
-            
-            var studentDetails = cmp.get("v.numberOfStudentsList");
-            var ids=new Array();
-            var jsonStr = '';
-            for (var idx=0; idx<studentDetails.length; idx++) {
-                jsonStr += JSON.stringify(studentDetails[idx]);
-                if(idx != (studentDetails.length)-1)
-                    jsonStr+=',';
-            }
-            console.log(jsonStr);
-            jsonStr = '{'+'\"Students\": ['+jsonStr+'] } ';
-            console.log(jsonStr);
-            
-            var action = cmp.get("c.invokeMethods");
-            console.log("cpsWrap: " + JSON.stringify(cmp.get("v.cpsWrap")));
-            action.setParams({ JSON : classDetailJSON, JSON1 : jsonStr, wrapper: cmp.get("v.cpsWrap") });
-            action.setCallback(this, function(response) {
-                
-                var state = response.getState();
-                
-                cmp.set("v.isSubmitted", 'true');
-                
-                console.log(state);
-                if (state === "SUCCESS") {
-                    
-                     cmp.set("v.isSuccess", 'true');
-                    
-                    cmp.set("v.messageType", 'success' );
-                    cmp.set("v.message", 'Completed Successfully!' );
-                    
-                    var toastEvent = $A.get("e.force:showToast");
-                    toastEvent.setParams({
-                        "title": "Success!",
-                        "message": "Record Saved Successfully.",
-                        "type":"success"
-                    });
-                    toastEvent.fire();
-                    $A.get("e.force:refreshView").fire();
-                    //cmp.set("v.stepNumber", "Zero");
-
-                }
-                else if (state === "ERROR") {
-                    
-                    var toastEvent = $A.get("e.force:showToast");
-                    toastEvent.setParams({
-                        "title": "Error",
-                        "message": "An error has occurred.",
-                        "type":"error"
-                    });
-                    toastEvent.fire();
-                    
-                    //cmp.set("v.hasError", 'true');
-                    
-                    var errors = response.getError();
-                    if (errors) {
-                        
-                        if (errors[0] && errors[0].message) {
-                            console.log("Error message: " + 
-                                        errors[0].message);
-                            cmp.set("v.messageType", 'error');
-                            cmp.set("v.message", 'Please make sure you have selected a Valid Course');
-                            
-                        }
-                    } else {
-                        console.log("Unknown error");
-                    }
-                }
-                
-            });
-            
-            $A.enqueueAction(action);
-        }
-    },
     showPO : function(component, event, helper) {
         component.set("v.pMethod", "po");
     },
@@ -538,7 +358,10 @@
             }else{
                 component.set("v.crsError",false);
             }
-            var intUsrId = component.get("v.selectedLookUpRecord4").Id;
+            var intUsrId;
+            if (component.get("v.selectedLookUpRecord4")) {
+                intUsrId = component.get("v.selectedLookUpRecord4").Id;
+            }
             var usrBool	 = true;
             
             if(intUsrId === undefined){
@@ -568,7 +391,8 @@
             console.log("isParnterUser+++"+isParnterUser);
             
             var addInstr = [];
-            
+            var dupInstr = [];
+
             if(typeof component.get("v.AdditionalInstructors") !== 'undefined' && component.get("v.AdditionalInstructors") != null)
             {
                 for(var i=0;i<component.get("v.AdditionalInstructors").length;i++)
@@ -576,14 +400,20 @@
                     if(component.get("v.AdditionalInstructors")[i] != null)
                     {
                         addInstr.push(component.get("v.AdditionalInstructors")[i].Id) ;
+                        dupInstr.push(component.get("v.AdditionalInstructors")[i]);
+                        console.log('added to dup:'+component.get("v.AdditionalInstructors")[i].Name);
                     }
                 }
             }
-            console.log(addInstr.length);
+            component.set("v.DupAdditionalInstructors", dupInstr);
             
-            addInstr.push(intUsrId);
+            console.log('Before addInstr push:'+addInstr.length);
             
-            console.log(addInstr.length);
+            if (intUsrId) {
+                addInstr.push(intUsrId);
+            }
+            
+            console.log('After addInstr push:'+addInstr.length);
             
             helper.removeDuplicate(component,addInstr);
             
@@ -594,7 +424,7 @@
                 //if(allValid && orgBool && crsBool)
                 if(allValid && orgBool && !instBool)
                 {
-                    helper.stepOne(component, event);
+                    helper.stepOne(component, event, helper);
                     helper.createIltLocation(component); //DE2554
                 }
                 else
@@ -613,7 +443,7 @@
                 //if(allValid && orgBool && crsBool && usrBool)
                 if(allValid && orgBool && usrBool && !instBool)
                 {
-                    helper.stepOne(component, event);
+                    helper.stepOne(component, event, helper);
                     helper.createIltLocation(component); //DE2554
                 }
                 else
@@ -638,7 +468,6 @@
                 action.setCallback(this, function(response) {
                     var state = response.getState();
                     if (state === "SUCCESS") {
-                        // debugger;
                         
                         var data = response.getReturnValue();
                         console.log('data..'+data);
@@ -655,7 +484,19 @@
         
         else if(currentSN == "Two")
         {
-
+            var dupInstr = [];            
+            if(typeof component.get("v.DupAdditionalInstructors") !== 'undefined' && component.get("v.DupAdditionalInstructors") != null)
+            {
+                for(var i=0;i<component.get("v.DupAdditionalInstructors").length;i++)
+                {
+                    if(component.get("v.DupAdditionalInstructors")[i] != null)
+                    {
+                        dupInstr.push(component.get("v.DupAdditionalInstructors")[i]);
+                    }
+                }
+            }	
+            component.set("v.AdditionalInstructors", dupInstr);
+            
             var isLTS = component.get('v.isLearnToSwimProduct');
             if (isLTS) {
                 var isValid = component.get("v.allValid");
@@ -676,10 +517,12 @@
                     });
                     $A.enqueueAction(action);
 
+                    component.set("v.isAddInstructors",false);
                     for(var i=0;i<component.get("v.AdditionalInstructors").length;i++){
-                        var val = component.get("v.AdditionalInstructors")[0];
+                        var val = component.get("v.AdditionalInstructors")[i];
                         if(val) {
                             component.set("v.isAddInstructors",true);
+                            break;
                         }
                     }
 
@@ -713,10 +556,12 @@
                     });
                     $A.enqueueAction(action);
 
+                    component.set("v.isAddInstructors",false);                    
                     for(var i=0;i<component.get("v.AdditionalInstructors").length;i++){
-                        var val = component.get("v.AdditionalInstructors")[0];
+                        var val = component.get("v.AdditionalInstructors")[i];
                         if(val) {
                             component.set("v.isAddInstructors",true);
+                            break;
                         }
                     }
 

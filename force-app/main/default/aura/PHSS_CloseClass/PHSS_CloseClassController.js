@@ -247,13 +247,15 @@
     	console.log(requestType);
     	debugger;
 
-        //if (requestType === "Full Service") {
-        if (requestType.indexOf("Full Service") >= 0) {
+        if (requestType === "Full Service") {
+        //if (requestType.indexOf("Full Service") >= 0 && (requestType !== "Nurse Assistant Training" || requestType !== "Nurse Assistant Testing")) {
             console.log('running update order FS');
             helper.updateOrder(cmp, event);
         }
         //if (requestType === "Full Service" || requestType === "Community") {
-        if (requestType.indexOf("Full Service") >= 0 || requestType === "Community") {
+        if (requestType === "Full Service"   || requestType === "Community" ||
+            requestType === "Nurse Assistant Training" || requestType === "Nurse Assistant Testing") //DE2079
+        {
             console.log('running close class FS/Community');            
             helper.closingClass(cmp, event, helper);
         }

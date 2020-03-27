@@ -164,6 +164,7 @@
             //document.getElementById('formatSelect').classList.add('requiredSelect');
         }
         */
+        
         // Time Zone validation
         var tempList = component.get("v.cpsWrap.sessionList");
         tempList.forEach(function(session) {
@@ -565,45 +566,72 @@
 
     },
     setTimeZoneSelected : function(component, event, helper){
-        /*
-       var time_zone=component.get("v.cpsWrap.timeZone"));
-    	
-        if(time_zone=="US/Eastern")
-		{
         
+       var time_zone=component.get("v.cpsWrap.timeZone");
+        var time_zone_selected='';
+        //alert(time_zone); 
+        if(time_zone=='America/New_York')
+        {
+            
+            time_zone_selected='US/Eastern';
         }
-        else(time_zone=="US/Central")
+        
+        if(time_zone=="America/Chicago")
+		{
+        	time_zone_selected='US/Central';
         }
-        else(time_zone=="US/Mountain")
+        
+        if(time_zone=="America/Denver"){
+           time_zone_selected='US/Mountain';
         }
-         else(time_zone=="US/Pacific")
+        
+        if(time_zone=="America/Los_Angeles"){//
+            time_zone_selected='US/Pacific';
         }
-        else(time_zone=="US/Eastern")
+        
+        if(time_zone=="America/Anchorage"){
+           time_zone_selected='US/Alaska';
         }
-        else(time_zone=="US/Eastern")
+        
+        if(time_zone=="America/Phoenix"){
+            time_zone_selected='US/Arizona';
         }
-
-}
-elseif(US/Central")
-
-if("US/Central"
-if("US/Mountain"
-if("US/Pacific"
-if("US/Alaska"
-if("US/Arizona"
-if("US/Hawaii"
-if("America/Puerto_Rico"
-        */
+        
+        if(time_zone=="Pacific/Honolulu"){
+            time_zone_selected='US/Hawaii';
+        }
+		
+        if(time_zone=="America/Puerto_Rico"){
+            time_zone_selected='America/Puerto_Rico';
+        }
+        
+         var tempList = component.get("v.cpsWrap.sessionList");
+        tempList.forEach(function(session) {
+            session.timeZone = time_zone_selected;
+            if(session.timeZone) {
+                //document.getElementById('zoneSelect').classList.remove('requiredSelect');
+            }
+            else {
+                component.set("v.zoneError",true);
+                document.getElementById('zoneSelect').classList.add('requiredSelect');
+            }
+        });
+        component.set("v.cpsWrap.sessionList",tempList);
+        
+		//alert(time_zone_selected);
+		/*
         var tempList = component.get("v.cpsWrap.sessionList");
         tempList.forEach(function(session) {
             session.timeZone = component.get("v.cpsWrap.timeZone");
             if(session.timeZone) {
-                document.getElementById('zoneSelect').classList.remove('requiredSelect');
+                document.getElementById('zoneSelect').classList.remove('requiredSelect'); //not needed
+                document.querySelector('#zoneSelect').value='US/Mountain';
             }
             else {
-                document.getElementById('zoneSelect').classList.add('requiredSelect');
+                           
             }
         });
+		*/
         
     },
     getGeocode : function(component, event, helper){

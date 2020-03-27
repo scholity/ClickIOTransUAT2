@@ -512,8 +512,8 @@
                             <lightning:input value="{!v.Students}" label="Number of Students" readonly="true" />
                             <div class = "slds-grid slds-wrap slds-size_7-of-7 ">
                                 <div class="slds-size_7-of-7 slds-text-align_left ">
-                                    ENTER STUDENT INFORMATION BELOW - OR Upload Student Details (CSV File)
-                                
+                                    ENTER STUDENT INFORMATION BELOW - OR Upload Student Details (CSV File). A sample file and instructions on how to correctly populate the file can be found under the <lightning:button variant="base" label="Resource Tab" class="customButtonRed" onclick="{!c.navToURL}"/>.
+                                <br/><br/>
                                 <!-- <div class="slds-size_1-of-7 slds-text-align_center">
                             		- OR -
                                 </div> -->
@@ -531,7 +531,7 @@
                                                 </header>
                                                 <div class="slds-modal__content slds-p-around_small slds-text-align_center" id="prompt-message-wrapper">
                                                     
-                                                    <div><b>Step - 1 : </b>Your CSV file must match the format in the template given <a href="https://www.redcrosslearningcenter.org/sfc/servlet.shepherd/version/download/0683o0000078fJYAAY" download="">here</a></div> <br/>
+                                                    <div><b>Step - 1 : </b>Your CSV file must match the format in the template given here</div> <br/>
                                                     <div><b>Step - 2 : </b>Click Upload Files button or drop CSV file in drop files</div> <br/><br/>
                                                     
                                                     <lightning:input aura:id="fileId" onchange="{!c.handleFilesChange}" type="file" name="file" multiple="false" accept=".csv"/>                                                    

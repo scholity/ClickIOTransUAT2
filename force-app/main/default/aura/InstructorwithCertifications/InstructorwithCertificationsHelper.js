@@ -171,5 +171,50 @@
             });
             $A.enqueueAction(action);
         }
+    },
+    initiateSdocsJob : function(component, event, helper)
+    {
+        var action = component.get("c.createSDJob");
+        
+        var accId = component.get("v.selectedAccount");
+        
+        console.log("**accId***");
+        console.log(accId);
+        
+        action.setParams({"accountId" : accId });
+        
+        action.setCallback(this, function(response)
+		{
+            var state = response.getState();
+            if (state === "SUCCESS")
+            {
+                console.log("***SUCCESS***");
+                alert("We have received your request. You will receive an email shortly.");
+                /*var toastEvent = $A.get("e.force:showToast");
+    			toastEvent.setParams({
+                    "title"		: "Success!",
+                    "mode"		: "pester",
+                    "duration"	: "10000",
+                    "type"		: "success",
+                    "message"	: "We have received your request. You will receive an email shortly."
+    			});
+    			toastEvent.fire();*/
+            }
+            else
+            {
+                console.log("***Error***");
+                alert("Something went wrong. Please try again later.");
+                /*var toastEvent = $A.get("e.force:showToast");
+    			toastEvent.setParams({
+                    "title"		: "Error!",
+                    "mode"		: "pester",
+                    "duration"	: "10000",
+                    "type"		: "error",
+                    "message"	: "Something went wrong. Please try again later."
+    			});
+    			toastEvent.fire();*/
+            }
+        });
+        $A.enqueueAction(action);
     }
 })

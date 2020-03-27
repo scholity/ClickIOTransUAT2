@@ -32,6 +32,28 @@ public without sharing class CommunitypageInstructors
         return lstOfRecords;
     }
     
+    @AuraEnabled public static void createSDJob(String accountId)
+    {   
+        List<SDOC__SDJob__c> jobList = new List<SDOC__SDJob__c> ();
+        
+        SDOC__SDJob__c job 	= new SDOC__SDJob__c();
+        
+        job.SDOC__Start__c 			= true;
+        job.SDOC__Oid__c			= accountId;
+        job.SDOC__ObjApiName__c		= 'Account';
+        job.SDOC__SendEmail__c 		= '1';
+        job.SDOC__Doclist__c 		= System.Label.InsctructorwithCertifications_ExportAll_SDOC_List;
+        job.SDOC__RunAs__c			= System.Label.SDocsRunAsUserName;
+        job.Email_To__c				= UserInfo.getUserEmail();//'&emailTo='+emailAddress;
+        
+        jobList.add(job);
+        
+        if(jobList.size() > 0)
+        {
+            insert jobList;
+        }
+    }
+    
     // Get logged in user details:
     public static User fetchUser()
     {      

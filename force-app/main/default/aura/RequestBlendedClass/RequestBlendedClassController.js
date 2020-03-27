@@ -49,6 +49,13 @@
         today = yyyy + '-' + mm + '-' + dd;
         component.set("v.MaxDate",today);
     },
+    
+    navToURL: function (component, event, helper)
+    {
+        console.log("***navToURL***");
+        var navToUrl = $A.get("$Label.c.ResourceTabURL");
+        window.open(navToUrl, '_blank');
+    },
 
     validateEmail : function(component, event, helper) {
         log.console("validateEmail!!!");

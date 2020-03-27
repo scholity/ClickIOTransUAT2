@@ -1469,6 +1469,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TestPHSS_ClassCompletionService</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TestRCAchievementAssignmentsHelper</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -16179,7 +16183,7 @@
         <layout>Vendor_Compensation__c-Vendor Compensation Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Voucher__c-PHSS Voucher Layout</layout>
+        <layout>Voucher__c-PHSS Voucher Layout - Edit</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>WorkBadge-Badge Received Layout</layout>
@@ -16236,7 +16240,7 @@
         <layout>redwing__Achievement__c-PHSS Achievement Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>redwing__ILT_Class__c-PHSS ILT Class Layout</layout>
+        <layout>redwing__ILT_Class__c-PHSS ILT Class Layout - EDIT</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>redwing__ILT_Event__c-PHSS ILT Event Layout</layout>

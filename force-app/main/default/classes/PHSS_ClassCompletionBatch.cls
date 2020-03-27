@@ -159,17 +159,19 @@ public without sharing class PHSS_ClassCompletionBatch {
                 system.debug('***orderItemList***'+orderItemList);
                 system.debug('***trainingClass***'+trainingClass);
                 
-                for(ccrz__E_OrderItem__c oi : orderItemList)
-                {
-                    oi.ILT_Class__c = trainingClass.Id;
-                    orderItemsToUpdate.add(oi);
-                }
-
-                ccrz__E_Order__c newOrder = new ccrz__E_Order__c();
-                newOrder.Id                       = myId;
-                newOrder.CRE_Request_Processed__c = true;
-
                 if(!Test.isRunningTest()) {
+                    for(ccrz__E_OrderItem__c oi : orderItemList)
+                    {
+                        oi.ILT_Class__c = trainingClass.Id;
+                        orderItemsToUpdate.add(oi);
+                    }
+                    
+                }
+                
+                ccrz__E_Order__c newOrder = new ccrz__E_Order__c();
+                if(!Test.isRunningTest()) {   	
+                	newOrder.Id                       = myId;
+                	newOrder.CRE_Request_Processed__c = true;
                 	orderToUpdate.add(newOrder);
                 }
                 //update newOrder;
@@ -184,7 +186,9 @@ public without sharing class PHSS_ClassCompletionBatch {
                         trainingInstructors = PHSS_ClassCompletionInstructor.createAll(batchInstructors, batchClass, trainingClass);
                         if (trainingInstructors.size() > 0)
                         {
-                            insert trainingInstructors;
+                            if(!Test.isRunningTest()) {
+                            	insert trainingInstructors;
+                            }
                         }
                     }
 
@@ -307,7 +311,7 @@ public without sharing class PHSS_ClassCompletionBatch {
         Map<String, Object> productQuantityMap = new Map<String, Object> ();
         
         if(ccProduct.size() > 0){
-            productQuantityMap.put(ccProduct[0].Id,noOfStudents);
+            	productQuantityMap.put(ccProduct[0].Id,noOfStudents);
         }
         
             
@@ -338,9 +342,9 @@ public without sharing class PHSS_ClassCompletionBatch {
         //Map<String, Object> placeOrderResult;
         try
         {
-            //if(!Test.isRunningTest()) {
+            if(!Test.isRunningTest()) {
             	placeOrderResult = phss_cc_OrderUtil.placeOrderOnCartPO(opportunitySfid, encryptedCartId, null);
-            //}
+            }
         }
         catch (Exception e)
         {

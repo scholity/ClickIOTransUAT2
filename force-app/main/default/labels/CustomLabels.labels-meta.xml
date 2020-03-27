@@ -260,6 +260,13 @@
         <value>There is a problem on the page. Please check for highlighted errors.</value>
     </labels>
     <labels>
+        <fullName>Error_Message_For_CRE_RBC_CSV_UPLOAD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error_Message_For_CRE_RBC_CSV_UPLOAD</shortDescription>
+        <value>Something went wrong. Please make sure there isn&#39;t any special character in the CSV file.</value>
+    </labels>
+    <labels>
         <fullName>Global_Ghost_Contacts</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -279,7 +286,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>comma separated list of SDOC ids</shortDescription>
-        <value>a2u210000017FwnAAE</value>
+        <value>a2u210000017Lc2AAE,a2u210000017FwnAAE</value>
     </labels>
     <labels>
         <fullName>Instructors</fullName>
@@ -768,6 +775,13 @@ Select a voucher(s) with a status of &#39;Issued&#39;. Copy and paste the self-r
         <protected>false</protected>
         <shortDescription>Reset_Search</shortDescription>
         <value>Reset Search</value>
+    </labels>
+    <labels>
+        <fullName>ResourceTabURL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ResourceTabURL</shortDescription>
+        <value>https://transuat-americanredcross.cs26.force.com/learner/s/student-templates</value>
     </labels>
     <labels>
         <fullName>SBSkedToILTClassAllowedProfiles</fullName>

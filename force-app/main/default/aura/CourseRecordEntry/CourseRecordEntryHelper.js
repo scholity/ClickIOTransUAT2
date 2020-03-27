@@ -143,14 +143,15 @@
                 component.set("v.numberOfStudentsList", storecsvdata);
                 component.set("v.showLoadingSpinner", false);
                 component.set("v.isPrompt", "false");
-                component.set("v.showCSVError", false);
                 component.set("v.isUploaded", "true");
                 
                 var studentListLength = component.get("v.numberOfStudentsList").length;
                 
                 component.set("v.Students",studentListLength);
+                
             } 
-            else if (state === "ERROR") {
+            else if (state === "ERROR")
+            {
                 var errors = response.getError();
                 if (errors) {
                     if (errors[0] && errors[0].message) {
@@ -159,31 +160,36 @@
                 } else {
                     console.log("Unknown error");
                 }
+
+                component.set("v.showLoadingSpinner", false);
+                component.set("v.isPrompt", "false");
+
+                var toastEvent = $A.get("e.force:showToast");
+    			toastEvent.setParams({
+                    "title"		: "Error",
+                    "mode"		: "pester",
+                    "duration"	: "20000",
+                    "type"      : "error",
+                    "message"	: $A.get("$Label.c.Error_Message_For_CRE_RBC_CSV_UPLOAD")
+    			});
+    			toastEvent.fire();
             }
         });
         
         $A.enqueueAction(action);
     },
-    processingCRE : function(cmp, evt, hlpr)
+    
+    
+    createClass : function(component, event, helper)
     {
-        var checkbox = cmp.get("v.tncCheck");
-      
-        
-        console.log("***checkbox***"+checkbox);
-        if(!checkbox){
-            cmp.set("v.tncError",true);
-        }else{
-            
             //Organization
-            var accID = cmp.get("v.accId");
-            
-            //var accID = cmp.get("v.selectedValue");
+            var accID = component.get("v.accId");
             
             //Course
-            var course =  cmp.get("v.courseId");
+            var course = component.get("v.courseId");
             
             //Course Ending Date            
-            var endDate   = cmp.get("v.EndDate");
+            var endDate   = component.get("v.EndDate");
             var splitDate = endDate.split('-');
             
             var year 	  = splitDate[0];
@@ -192,9 +198,9 @@
             
             var endDateFrmtd = month + '/' + day + '/' + year;
             
-            var startDate 	= cmp.get("v.StartDate");
+            var startDate 	= component.get("v.StartDate");
             
-            console.log("startDate***"+startDate);
+            console.log("***startDate="+startDate);
             
             var splitDate1 = startDate.split('-');
             
@@ -204,44 +210,38 @@
             
             var startDateFrmtd = month1 + '/' + day1 + '/' + year1;
             
-            // User            
+            // User                  
             
-            
-            var extUser = cmp.get("v.isExtUser");
-            var isParnter = cmp.get("v.isPartner");
-          if(extUser === true && isParnter === false){
-               
-    
-                        var user1 = cmp.get("v.instructor.Id");
-                        console.log("***userInt***"+user1);
+            var extUser = component.get("v.isExtUser");
+            var isPartner = component.get("v.isPartner");
+          
+        	if(extUser === true && isPartner === false){
+                var user1 = component.get("v.instructor.Id");
             }else{
-                var user1 = cmp.get("v.userId1");
-                console.log("***userExt***"+user1);
+                var user1 = component.get("v.userId1");
+                console.log("***userExt="+user1);
             }
             
-            console.log('***user1***'+user1);
-            var user2 = cmp.get("v.Instructor2"); 
+            console.log('***user1='+user1);
+            var user2 = component.get("v.Instructor2"); 
             
             //Number of Students
-            var numOfStudents = cmp.get("v.Students");
+            var numOfStudents = component.get("v.Students");
             console.log("numOfStudents" +numOfStudents);
             
             // Supplement Info
             
-            var Suppinfo = cmp.get("v.SupplementInfo");
+            var Suppinfo = component.get("v.SupplementInfo");
             console.log("Supp Info" +Suppinfo);
-            //Training Site
-//            var tSite = cmp.get("v.Location"); // TODO: Remove this
             
-            var siteName  = cmp.get("v.SiteName");
-            var add1  = cmp.get("v.Address1");
-            var add2  = cmp.get("v.Address2");
-            var city  = cmp.get("v.City");
-            var state = cmp.get("v.State");
-            var zip   = cmp.get("v.Zip");
-            var location = cmp.get("v.locationId");
+            var siteName = component.get("v.SiteName");
+            var add1  = component.get("v.Address1");
+            var add2  = component.get("v.Address2");
+            var city  = component.get("v.City");
+            var state = component.get("v.State");
+            var zip   = component.get("v.Zip");
+            var location = component.get("v.locationId");
 
-            
             var obj = new Object();
             
             obj.Account		=	accID;
@@ -251,7 +251,6 @@
             obj.SupplementInfo  =   Suppinfo;
             obj.Instructor1 =	user1;
             obj.Instructor2 =	user2;
-//            obj.Location	=	tSite;
             obj.Location    =   location;
 
             obj.StartDate	= 	startDateFrmtd;
@@ -261,24 +260,25 @@
             obj.City 		= 	city;
             obj.State 		= 	state;
             obj.Zip 		= 	zip;
-            obj.OpportunityId = cmp.get("v.oppIdParent");
+            obj.OpportunityId = component.get("v.oppIdParent");
+        
             var addInstr = '';
-            if(typeof cmp.get("v.AdditionalInstructors") !== 'undefined' && cmp.get("v.AdditionalInstructors") != null)
-            for(var i=0;i<cmp.get("v.AdditionalInstructors").length;i++){
-                if(cmp.get("v.AdditionalInstructors")[i] != null)
-                    addInstr = addInstr + cmp.get("v.AdditionalInstructors")[i].Id + ';';
-            }
+        	if(typeof component.get("v.AdditionalInstructors") !== 'undefined' && component.get("v.AdditionalInstructors") != null) {
+            	for(var i=0; i<component.get("v.AdditionalInstructors").length; i++){
+                	if(component.get("v.AdditionalInstructors")[i] != null)
+                    	addInstr = addInstr + component.get("v.AdditionalInstructors")[i].Id + ';';
+            	}
+        	}
             obj.AdditionalInstructors = addInstr;
 
             // Learn to Swim
-            var isLearnToSwimProduct = cmp.get('v.isLearnToSwimProduct');
+            var isLearnToSwimProduct = component.get('v.isLearnToSwimProduct');
             if (isLearnToSwimProduct) {
                 obj.IsLearnToSwimProduct = true;
-                obj.SuccessfulEvals = cmp.get('v.numberOfSuccessfulEvaluations');
-                obj.UnsuccessfulEvals = cmp.get('v.numberOfUnsuccessfulEvaluations');
-                obj.NonEvals = cmp.get('v.numberOfNonEvaluations');
+                obj.SuccessfulEvals = component.get('v.numberOfSuccessfulEvaluations');
+                obj.UnsuccessfulEvals = component.get('v.numberOfUnsuccessfulEvaluations');
+                obj.NonEvals = component.get('v.numberOfNonEvaluations');
             }
-
 
             console.log(obj);
             
@@ -288,12 +288,83 @@
             
             classDetailJSON = '{'+'\"ClassDetails\": '+classDetailJSON+'}';
             
-            console.log("***classDetailJSON***"+classDetailJSON);
+            console.log("***classDetailJSON="+classDetailJSON);
             
             //Calling the server to assign the organization, location and etc in ILT Class & Session
             // Creating Json format and assigning the grades for that student(Passing value to server side controller)
             
-            var studentDetails = cmp.get("v.numberOfStudentsList");
+            var action = component.get("c.createClass");
+            action.setParams({ JSON : classDetailJSON });
+            action.setCallback(this, function(response) {
+
+                var state = response.getState();
+
+                console.log(state);
+                if (state === "SUCCESS") {
+					var storeResponse = response.getReturnValue();                      
+                    var responseValues = storeResponse.split(';');
+                    component.set("v.learningId", responseValues[0]);
+                    component.set("v.classId", responseValues[1]);
+                    console.log("*** LearningId="+component.get("v.learningId"));
+                    console.log("*** ClassId="+component.get("v.classId"));
+                    
+                    component.set("v.messageType", 'success' );
+                    component.set("v.message", 'Class Created Successfully!' );
+                }
+                else if (state === "ERROR") {
+
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        "title": "Error",
+                        "message": "An error has occurred when creating class",
+                        "type":"error"
+                    });
+                    toastEvent.fire();
+
+                    //component.set("v.hasError", 'true');
+
+                    var errors = response.getError();
+                    if (errors) {
+                        if (errors[0] && errors[0].message) {
+                            console.log("Error message: " +
+                                        errors[0].message);
+                            component.set("v.messageType", 'error');
+                            component.set("v.message", 'Please make sure you have selected a Valid Course');
+
+                        }
+                    } else {
+                        console.log("Unknown error");
+                    }
+                }
+            });
+
+            $A.enqueueAction(action);
+
+    },
+
+    
+    processingCRE : function(component, event, helper)
+    {
+        var checkbox = component.get("v.tncCheck");
+      
+        
+        console.log("***checkbox***"+checkbox);
+        if(!checkbox){
+            component.set("v.tncError",true);
+        }else{        
+            //Organization
+            var accID = component.get("v.accId");
+
+            //var accID = component.get("v.selectedValue");
+            //Course
+            var courseId =  component.get("v.courseId");
+            var classId = component.get("v.classId");
+            var learningId = component.get("v.learningId");
+            var opportunityId = component.get("v.oppIdParent");
+            
+            // Creating Json format and assigning the grades for that student(Passing value to server side controller)
+            
+            var studentDetails = component.get("v.numberOfStudentsList");
             var ids=new Array();
             var jsonStr = '';
             for (var idx=0; idx<studentDetails.length; idx++) {
@@ -301,28 +372,38 @@
                 if(idx != (studentDetails.length)-1)
                     jsonStr+=',';
             }
-            console.log(jsonStr);
-            jsonStr = '{'+'\"Students\": ['+jsonStr+'] } ';
-            console.log(jsonStr);
 
-            console.log('JASON: JSON parameter: ' + classDetailJSON);
+            jsonStr = '{'+'\"Students\": ['+jsonStr+'] } ';
+
             console.log('JASON: JSON1 parameter: ' + jsonStr);
             
-            var action = cmp.get("c.invokeMethods");
-            action.setParams({ JSON : classDetailJSON, JSON1 : jsonStr });
+            // Update Cart, Order, and Order Lines
+            var action0 = component.get("c.updateCartAndOrderWithClassId");
+            action0.setParams({opportunityId : opportunityId, classId : classId});
+            action0.setCallback(this, function(response) {
+                var state = response.getState();
+                if (state === "SUCCESS") {
+                    
+                } else if (state === "ERROR") {
+                    
+                }
+            });
+            $A.enqueueAction(action0);
+            
+            var action = component.get("c.addStudentsToClass");           
+            action.setParams({ theCourseId : courseId, theClassId : classId, theLearningId : learningId, JSON1 : jsonStr });
             action.setCallback(this, function(response) {
 
                 var state = response.getState();
 
-                cmp.set("v.isSubmitted", 'true');
+                component.set("v.isSubmitted", 'true');
 
                 console.log(state);
                 if (state === "SUCCESS") {
 
-                     cmp.set("v.isSuccess", 'true');
-
-                    cmp.set("v.messageType", 'success' );
-                    cmp.set("v.message", 'Completed Successfully!' );
+                    component.set("v.isSuccess", 'true');
+                    component.set("v.messageType", 'success' );
+                    component.set("v.message", 'Completed Successfully!' );
 
                     /*var toastEvent = $A.get("e.force:showToast");
                     toastEvent.setParams({
@@ -332,7 +413,7 @@
                     });
                     toastEvent.fire();*/
                     //$A.get("e.force:refreshView").fire();
-                    //cmp.set("v.stepNumber", "Zero");
+                    //component.set("v.stepNumber", "Zero");
 
                 }
                 else if (state === "ERROR") {
@@ -345,7 +426,7 @@
                     });
                     toastEvent.fire();
 
-                    //cmp.set("v.hasError", 'true');
+                    //component.set("v.hasError", 'true');
 
                     var errors = response.getError();
                     if (errors) {
@@ -353,8 +434,8 @@
                         if (errors[0] && errors[0].message) {
                             console.log("Error message: " +
                                         errors[0].message);
-                            cmp.set("v.messageType", 'error');
-                            cmp.set("v.message", 'Please make sure you have selected a Valid Course');
+                            component.set("v.messageType", 'error');
+                            component.set("v.message", 'Please make sure you have selected a Valid Course');
 
                         }
                     } else {
@@ -362,14 +443,15 @@
                     }
                 }
                 
-                cmp.set("v.isSubmitted", 'false');
-                cmp.set("v.showLoadingSpinner", false);
+                component.set("v.isSubmitted", 'false');
+                component.set("v.showLoadingSpinner", false);
             });
 
             $A.enqueueAction(action);
         }
     },
-    stepOne : function(component,event){
+    
+    stepOne : function(component,event,helper){
         
         //if(allValid && crsBool) {
         //Number of Students
@@ -427,8 +509,13 @@
                         if (state === "SUCCESS") {
                             var storeResponse = response.getReturnValue(); 
                             if(storeResponse) {
+                                console.log("Valid Learning Plan");
+								
+								// Create Class "Shell" (no Students or Order)
+                                helper.createClass(component, event);                                
                             	//Navigate to Step 2
         						component.set("v.stepNumber", "Two");    
+                                
                             }
                             else {
 

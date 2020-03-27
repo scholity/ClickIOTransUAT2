@@ -45,6 +45,7 @@
     <aura:attribute name = "myBool"				    type = "Boolean"    default = "false"/>
     <aura:attribute name = "accId" 					type = "String"  	default = ""/>
     <aura:attribute name = "accName" 				type = "String"  	default = ""/>
+    <aura:attribute name = "DupAdditionalInstructors" 	type = "User[]"  	default = ""/>     
     
     <aura:attribute name = "MaxDate" 				type = "String"  	default = ""/>
     <aura:attribute name = "SupplementInfo"			type = "String"  	default = ""/>
@@ -58,6 +59,8 @@
 
     <aura:attribute name = "courseId" 				type = "String"  	default = ""/>
     <aura:attribute name = "courseName" 			type = "String"  	default = ""/>
+    <aura:attribute name = "learningId"             type = "String"     default = ""/>
+    <aura:attribute name = "classId"                type = "String"     default = ""/>
     
     <aura:attribute name = "userId1" 				type = "String"  	default = ""/>
     <aura:attribute name = "userName1" 				type = "String"  	default = ""/>
@@ -481,7 +484,8 @@
 
                                 <div class = "slds-grid slds-wrap slds-size_7-of-7 ">
                                     <div class="slds-size_7-of-7 slds-text-align_left ">
-                                        ENTER STUDENT INFORMATION BELOW - OR Upload Student Details (CSV File)
+                                        ENTER STUDENT INFORMATION BELOW - OR Upload Student Details (CSV File). A sample file and instructions on how to correctly populate the file can be found under the <lightning:button variant="base" label="Resource Tab" class="customButtonRed" onclick="{!c.navToURL}"/>.
+                                        <br/><br/>
                                         <lightning:button class = "slds-button_neutral customButton" label = "Upload CSV" onclick = "{!c.showPrompt}" disabled="{!v.isUploaded}"/>
                                     </div>
 
@@ -498,7 +502,7 @@
                                                     </header>
                                                     <div class="slds-modal__content slds-p-around_small slds-text-align_center" id="prompt-message-wrapper">
 
-                                                        <div><b>Step - 1 : </b>Your CSV file must match the format in the template given <a href="https://www.redcrosslearningcenter.org/sfc/servlet.shepherd/version/download/0683o0000078fAbAAI" download="">here</a></div> <br/>
+                                                        <div><b>Step - 1 : </b>Your CSV file must match the format in the template given here</div> <br/>
                                                         <div><b>Step - 2 : </b>Click Upload Files button or drop CSV file in drop files</div> <br/><br/>
 
                                                         <lightning:input aura:id="fileId" onchange="{!c.handleFilesChange}" type="file" name="file" multiple="false" accept=".csv"/><br/>
@@ -781,7 +785,7 @@
 
                                             {! v.userName2 }
 
-                                            <aura:if isTrue="{! v.isAddInstructors }">
+                                            <aura:if isTrue="{!v.isAddInstructors}">
                                                 <aura:iteration items="{!v.AdditionalInstructors}" var="item" indexVar="index">
                                                     <aura:if isTrue="{!item.Name}">
                                                         {!item.Name} <br/>
