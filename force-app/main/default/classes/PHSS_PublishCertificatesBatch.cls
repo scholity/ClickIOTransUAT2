@@ -86,7 +86,7 @@ public without sharing class PHSS_PublishCertificatesBatch implements Database.B
         System.debug('blockedAccounts'+blockedAccounts);
         */
 
-        String theAssignmentQuery = 'SELECT Id, Name, Firstname__c, Lastname__c, Email__c, Account__c, ';
+        String theAssignmentQuery = 'SELECT Id, Name, Firstname__c, Lastname__c, Email__c, Account__c, Online_Class__c, ';
         theAssignmentQuery += 'ILT_Class__c, Evaluation_Result__c,redwing__Acquisition_Date__c,redwing__status__c, redwing__Achievement__c, QR_Code_Identifier__c ';
         theAssignmentQuery += 'FROM redwing__Achievement_Assignment__c WHERE Achievement_Type__c = \'Certifications\' AND redwing__status__c = \'Acquired\' ';
         theAssignmentQuery += 'AND Firstname__c != null AND Lastname__c != null ';
@@ -118,27 +118,41 @@ public without sharing class PHSS_PublishCertificatesBatch implements Database.B
         Map<Id, Id> accountIdMap = new Map<Id, Id>();
         Map<Id, Id> classIdMap = new Map<Id, Id>();
         Map<Id, Id> achievementIdMap = new Map<Id, Id>();
+        Map<Id, Id> learningIdMap = new Map<Id, Id>();
+        Map<Id, String> onlineProductMap = new Map<Id, String>();
+        Set<Id> onlineLearningPlanIds = new Set<Id>();
 
         for (redwing__Achievement_Assignment__c theAssignment : assignmentList) {
             if (theAssignment.Account__c != null) accountIdMap.put(theAssignment.Id, theAssignment.Account__c);
             if (theAssignment.ILT_Class__c != null) classIdMap.put(theAssignment.Id, theAssignment.ILT_Class__c);
             if (theAssignment.redwing__Achievement__c != null) achievementIdMap.put(theAssignment.Id, theAssignment.redwing__Achievement__c);
+            if (theAssignment.Online_Class__c != null) learningIdMap.put(theAssignment.Id, theAssignment.Online_Class__c);
         }
 
         Map<Id, Account> accountMap = new Map<Id, Account>();
         Map<Id, redwing__ILT_Class__c> classMap = new Map<Id, redwing__ILT_Class__c>();
         Map<Id, redwing__Achievement__c> achievementMap = new Map<Id, redwing__Achievement__c>();
         Map<Id, redwing__ILT_Instructor__c> instructorMap = new Map<Id, redwing__ILT_Instructor__c>();
+        Map<Id, redwing__Training_Plan_Section_Item__c> tpsiMap = new Map<Id, redwing__Training_Plan_Section_Item__c>();
 
         List<Account> accountList = [SELECT Id, Name from Account Where Id IN :accountIdMap.values()];
         List<redwing__ILT_Class__c> classList = [SELECT Id, Cloud_Craze_Product__c, Cloud_Craze_Product__r.ccrz__SKU__c, Cloud_Craze_Product__r.Name,
                 Classroom_Setting__c, Site_Name__c, Site_Address_1__c, Site_Address_2__c, Site_City__c, State__c, Site_Postal_Code__c,
                 Learning_Plan__r.Name, redwing__Location__c
-        FROM redwing__ILT_Class__c Where Id IN :classIdMap.values()];
+                FROM redwing__ILT_Class__c Where Id IN :classIdMap.values()];
         List<redwing__Achievement__c> achievementList = [SELECT Id, Name, redwing__Expiration_Date__c, Description__c,
                 redwing__Expiration_Term__c, redwing__Expiration_Term_Basis__c FROM redwing__Achievement__c WHERE Id IN :achievementIdMap.values()];
         List <redwing__ILT_Instructor__c> instructorList = [Select Id, Name, redwing__ILT_Class__c, redwing__Instructor__r.Name
-        From redwing__ILT_Instructor__c Where redwing__ILT_Class__c IN :classIdMap.values() /*And redwing__Primary__c = True*/ ];
+                From redwing__ILT_Instructor__c Where redwing__ILT_Class__c IN :classIdMap.values() /*And redwing__Primary__c = True*/ ];
+        List <redwing__Training_Plan_Section_Item__c> tpsiList = [Select Id, redwing__Learning__c, redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Id
+                From redwing__Training_Plan_Section_Item__c Where redwing__Learning__c IN :learningIdMap.values()];
+        for (redwing__Training_Plan_Section_Item__c theTPSI : tpsiList) {
+            onlineLearningPlanIds.add(theTPSI.redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Id);
+        }
+        List <ccrz__E_Product__c> productList = [Select Id, ccrz__SKU__c, LMS_Learning_Plan__c From ccrz__E_Product__c Where LMS_Learning_Plan__c IN :onlineLearningPlanIds];
+        for (ccrz__E_Product__c theProduct : productList) {
+            onlineProductMap.put(theProduct.LMS_Learning_Plan__c, theProduct.ccrz__SKU__c);
+        }
 
         for (Account theAccount : accountList){
             accountMap.put(theAccount.Id, theAccount);
@@ -151,6 +165,9 @@ public without sharing class PHSS_PublishCertificatesBatch implements Database.B
         }
         for (redwing__ILT_Instructor__c theInstructor : instructorList) {
             instructorMap.put(theInstructor.redwing__ILT_Class__c, theInstructor);
+        }
+        for (redwing__Training_Plan_Section_Item__c theTPSI : tpsiList) {
+            tpsiMap.put(theTPSI.redwing__Learning__c, theTPSI);
         }
 
         List<Integration_Files__c> integFiles = new List<Integration_Files__c>();
@@ -253,10 +270,13 @@ public without sharing class PHSS_PublishCertificatesBatch implements Database.B
             dataList.add('');
 
             // course_id
-            if(a.ILT_Class__c != null) {
-                if(classMap.get(a.ILT_Class__c).Classroom_Setting__c == 'Online') {
-                    dataList.add('');
-                    // This is wrong Learning object dataList.add('\"'+ a.ILT_Class__r.redwing__Learning__c +'\"');
+            if(a.ILT_Class__c != null || a.Online_Class__c != null) {
+                if(a.Online_Class__c != null) {
+                    if(tpsiMap.get(a.Online_Class__c) != null) {
+                        String courseId = tpsiMap.get(a.Online_Class__c).redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Id;
+                        if (courseId.length()>15) courseId = courseId.substring(0,15);
+                        dataList.add('\"'+ courseId +'\"');
+                    } else dataList.add('');
                 }
                 else {
                     if(classMap.get(a.ILT_Class__c).Learning_Plan__c != null) {
@@ -271,10 +291,20 @@ public without sharing class PHSS_PublishCertificatesBatch implements Database.B
             }
 
             // course_num
-            if(a.ILT_Class__c != null && classMap.get(a.ILT_Class__c).Cloud_Craze_Product__r.ccrz__SKU__c != null) {
-                dataList.add('\"'+ classmap.get(a.ILT_Class__c).Cloud_Craze_Product__r.ccrz__SKU__c +'\"');
-            }
-            else {
+            if(a.ILT_Class__c != null || a.Online_Class__c != null) {
+                if (a.Online_Class__c != null) {
+                    if (tpsiMap.get(a.Online_Class__c) != null) {
+                        String courseId = tpsiMap.get(a.Online_Class__c).redwing__Training_Plan_Section__r.redwing__Training_Plan__r.Id;
+                        if (onlineProductMap.get(courseId) != null) {
+                            dataList.add('\"' + onlineProductMap.get(courseId) + '\"');
+                        } else dataList.add('');
+                    } else dataList.add('');
+                } else {
+                    if (classMap.get(a.ILT_Class__c).Cloud_Craze_Product__r.ccrz__SKU__c != null) {
+                        dataList.add('\"' + classmap.get(a.ILT_Class__c).Cloud_Craze_Product__r.ccrz__SKU__c + '\"');
+                    } else dataList.add('');
+                }
+            } else {
                 dataList.add('');
             }
 
@@ -337,18 +367,21 @@ public without sharing class PHSS_PublishCertificatesBatch implements Database.B
             dataList.add('\"Delivered - Normal\"');
 
             // delivery_typ
-            if(a.ILT_Class__c != null && classMap.get(a.ILT_Class__c).Classroom_Setting__c != null) {
-                if(classMap.get(a.ILT_Class__c).Classroom_Setting__c == 'Online') {
+            if(a.ILT_Class__c != null || a.Online_Class__c != null) {
+                if(a.Online_Class__c != null) {
                     dataList.add('\"Web Based\"');
+                } else {
+                    if (classMap.get(a.ILT_Class__c).Classroom_Setting__c != null) {
+                        if (classMap.get(a.ILT_Class__c).Classroom_Setting__c == 'Online') {
+                            dataList.add('\"Web Based\"');
+                        } else if (classMap.get(a.ILT_Class__c).Classroom_Setting__c == 'Online + Classroom') {
+                            dataList.add('\"Web Based / Classroom\"');
+                        } else {
+                            dataList.add('\"' + classMap.get(a.ILT_Class__c).Classroom_Setting__c + '\"');
+                        }
+                    } else dataList.add('');
                 }
-                else if(classMap.get(a.ILT_Class__c).Classroom_Setting__c == 'Online + Classroom') {
-                    dataList.add('\"Web Based / Classroom\"');
-                }
-                else {
-                    dataList.add('\"'+ classMap.get(a.ILT_Class__c).Classroom_Setting__c +'\"');
-                }
-            }
-            else {
+            } else {
                 dataList.add('');
             }
 

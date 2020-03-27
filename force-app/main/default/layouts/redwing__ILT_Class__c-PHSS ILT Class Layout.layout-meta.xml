@@ -36,15 +36,15 @@
                 <field>redwing__End_Date__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>redwing__Start_Time__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>redwing__End_Time__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>redwing__Timezone__c</field>
             </layoutItems>
             <layoutItems>
@@ -160,7 +160,7 @@
                 <field>Supplemental_Information__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>redwing__Location__c</field>
             </layoutItems>
             <layoutItems>
@@ -259,11 +259,11 @@
                 <field>Site_Name__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>CPS_Registration_URL__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>Registration_Fee__c</field>
             </layoutItems>
             <layoutItems>
@@ -277,7 +277,7 @@
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>CPS_Registration_Phone__c</field>
             </layoutItems>
             <layoutItems>

@@ -2,13 +2,9 @@
 private class PHSS_ClassCompletionServiceTest {
     
     @isTest static  void testGetCallout() {
-        String fileContent = '001d000001QuLKHAA3|0005|a3J21000000HXXX|A|001d000001QuLKHAA3|Cardio Partners, Inc.|My Test PO|AP-HSSAQU402|02/11/2020|02/11/2020|4|Cardio Partners, Inc. HQ|6105 Rockwell Dr. NE|Cedar Rapids|IA|52402\n'
-            + '001d000001QuLKHAA3|0005|a3J21000000HXXX|B|christian.hernandez@cardiopartners.com.transuat|Christian|Hernandez|christian.hernandez@cardiopartners.com.transuat\n'
-            + '001d000001QuLKHAA3|0005|a3J21000000HXXX|C|Isaac|Barker||800-345-4444|Successful||ibarker123@maildrop.cc\n'
-            + '001d000001QuLKHAA3|0005|a3J21000000HXXX|C|Suzanne|Miller||800-123-4444|Successful|smiller123@maildrop.cc\n'
-            + '001d000001QuLKHAA3|0005|a3J21000000HXXX|C|Johnny|Rocket||800-321-4444|Successful|jrocker123@maildrop.cc\n'
-            + '001d000001QuLKHAA3|0005|a3J21000000HXXX|C|Jack|Black||800-666-4444|Unsuccessful|test note\n';
 		
+        String fileContent = null;
+        
         // Create community user record
         List<Profile> profList = [SELECT Id FROM Profile WHERE Name = 'SB PHSS-Partner-Community Plus Login' LIMIT 1];
         String profId;
@@ -74,20 +70,56 @@ private class PHSS_ClassCompletionServiceTest {
                 redwing__Training_Plan__c TPlan = new redwing__Training_Plan__c();
                 TPlan.Name = 'Plan2';
                 insert TPlan;
-                
                 System.debug('learning plan id' + TPlan.id);
                 
+                
+                redwing__Training_Plan_Achievement__c TPlanAchievement = new redwing__Training_Plan_Achievement__c();
+                TPlanAchievement.redwing__Training_Plan__c = TPlan.Id;
+                //TPlanAchievement.redwing__Achievement__c = 'a3E21000000DGIiEAO';
+                insert TPlanAchievement;	
+                System.debug('Training Plan Achievement id' + TPlanAchievement.id);
+				
+                
                 ccprod = new ccrz__E_Product__c(
-                    Name = 'Lifeguarding',
-                    ccrz__SKU__c = 'AP-HSSAQU402',
+                    Name = 'Basic Life Support',
+                    ccrz__SKU__c = 'AP-HSSBLS101 r.19',
                     ccrz__Quantityperunit__c = 1,
                     ccrz__StartDate__c = Date.today(),
                     ccrz__EndDate__c = Date.today().addMonths(12),
-                    ccrz__ProductId__c = 'AP-HSSAQU402',
+                    ccrz__ProductId__c = 'AP-HSSBLS101 r.19',
                     //AP-HSSAQU402
                     LMS_Learning_Plan__c = TPlan.id
                 );
                 insert ccprod;
+                
+                List <redwing__Achievement_Assignment__c> studentAchievements;
+                
+                redwing__Achievement_Assignment__c studentAchievement = new redwing__Achievement_Assignment__c();
+				studentAchievement.Account__c = acc.Id;
+                studentAchievement.Firstname__c = 'First';
+                studentAchievement.ILT_Class__c  = null;
+                studentAchievement.Lastname__c  = 'Last';
+                //studentAchievement.Name = '';
+                studentAchievement.Phone__c  = '2025551212';
+                studentAchievement.QR_Code_Identifier__c = 'XXXXX';
+                //studentAchievement.QR_Code_Web_Address__c = '';
+                //studentAchievement.QR_Code__c = '';
+                //studentAchievement.redwing__Acquisition_Date__c = '';
+                studentAchievement.redwing__Status__c = '';
+                studentAchievement.redwing__User__c = partnerUser.Id;
+                //studentAchievement.Request_Type__c = '';
+                //studentAchievement.Student_name__c = '';
+                //studentAchievement.Achievement_Type__c = 'Certifications' 
+                insert studentAchievement;
+                
+                
+                fileContent = acc.Id + '|0005|a3J21000000HXXX|A|' + acc.Id + '|Cardio Partners, Inc.|My Test PO|AP-HSSBLS101 r.19|02/11/2020|02/11/2020|4|Cardio Partners, Inc. HQ|6105 Rockwell Dr. NE|Cedar Rapids|IA|52402\n'
+                + acc.Id + '|0005|a3J21000000HXXX|B|christian.hernandez@cardiopartners.com.transuat|Christian|Hernandez|christian.hernandez@cardiopartners.com.transuat\n'
+                + acc.Id + '|0005|a3J21000000HXXX|C|Isaac|Barker||800-345-4444|Successful||ibarker123@maildrop.cc\n'
+                + acc.Id + '|0005|a3J21000000HXXX|C|Suzanne|Miller||800-123-4444|Successful|smiller123@maildrop.cc\n'
+                + acc.Id + '|0005|a3J21000000HXXX|C|Johnny|Rocket||800-321-4444|Successful|jrocker123@maildrop.cc\n'
+                + acc.Id + '|0005|a3J21000000HXXX|C|Jack|Black||800-666-4444|Unsuccessful|test note\n';
+
                 
             }
         
@@ -136,7 +168,7 @@ private class PHSS_ClassCompletionServiceTest {
             	system.debug('***Test Product Select***'+ccProduct);
                 
                 // Create the mock response based on a static resource
-               
+               /*
                 StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
                 mock.setStaticResource('PHSS_ClassCompletionService');
                 mock.setStatusCode(200);
@@ -160,7 +192,7 @@ private class PHSS_ClassCompletionServiceTest {
                 // Verify the array contains 3 items     
                 String results = result.getBody();
                 System.debug('Response: ' + results);
-                
+                */
                 
                 RestRequest req = new RestRequest();
                 RestResponse res = new RestResponse();
@@ -174,7 +206,7 @@ private class PHSS_ClassCompletionServiceTest {
                 PHSS_ClassCompletionService.process();
                 
                 PHSS_ClassCompletionResponseWrapper rw = new PHSS_ClassCompletionResponseWrapper();
-                rw.account_Id = '001d000001QuLKHAA3';
+                rw.account_Id = acc.Id;
                 rw.batch_Id = '0005';
                 rw.offering_Id= '';
                 rw.student_achievement = '';

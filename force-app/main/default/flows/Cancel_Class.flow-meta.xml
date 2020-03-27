@@ -112,9 +112,38 @@
         <locationX>283</locationX>
         <locationY>228</locationY>
         <defaultConnector>
-            <targetReference>NotClosed</targetReference>
+            <targetReference>IsClosedMessage</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>ILT_Class_Request_Type</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>sILTClass.Request_Type__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>LTP/AP</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sILTClass.Class_Closed_Date__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>sILTClass.Skedulo_Job_Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Cancelled</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>NotLTPAPMessage</targetReference>
+            </connector>
+            <label>ILT Class Request Type</label>
+        </rules>
         <rules>
             <name>ClassClosed</name>
             <conditionLogic>and</conditionLogic>
@@ -138,7 +167,7 @@
             <label>ClassClosed</label>
         </rules>
     </decisions>
-    <description>Allows the TSC to cancel a class and void achievement assignments associated to class</description>
+    <description>Allows the TSC to cancel a class and void achievement assignments associated to class for AP/LTP Class only</description>
     <interviewLabel>Cancel Class {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Cancel Class</label>
     <loops>
@@ -272,6 +301,7 @@
         <queriedFields>redwing__Timezone__c</queriedFields>
         <queriedFields>Class_Closed_Date__c</queriedFields>
         <queriedFields>Site_City__c</queriedFields>
+        <queriedFields>Request_Type__c</queriedFields>
     </recordLookups>
     <recordUpdates>
         <name>Update_Achievement_Assignments</name>
@@ -297,7 +327,7 @@
         <name>Cancel_Class</name>
         <label>Cancel Class</label>
         <locationX>396</locationX>
-        <locationY>228</locationY>
+        <locationY>227</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -328,10 +358,27 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <description>Class is not closed, please contact scheduling to cancel class</description>
+        <name>IsClosedMessage</name>
+        <label>IsClosedMessage</label>
+        <locationX>289</locationX>
+        <locationY>387</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>closeclassmsg</name>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 20px; color: rgb(240, 8, 8);&quot;&gt;Class Closed: Class can not be cancelled&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Class is closed or has previously been canceled, please contact scheduling to cancel class&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Not_Cancelled</name>
         <label>Not Cancelled</label>
-        <locationX>500</locationX>
-        <locationY>387</locationY>
+        <locationX>501</locationX>
+        <locationY>384</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -345,16 +392,16 @@
     </screens>
     <screens>
         <description>Class is not closed, please contact scheduling to cancel class</description>
-        <name>NotClosed</name>
-        <label>NotClosed</label>
-        <locationX>287</locationX>
-        <locationY>385</locationY>
+        <name>NotLTPAPMessage</name>
+        <label>NotLTPAPMessage</label>
+        <locationX>148</locationX>
+        <locationY>390</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>closeclassmsg</name>
-            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 20px;&quot;&gt;Class can not be cancelled&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Class is not closed or has previously been canceled, please contact scheduling to cancel class&lt;/p&gt;</fieldText>
+            <name>closeclassmsg_0</name>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 20px; color: rgb(250, 4, 4);&quot;&gt;Not AP/LTP Class: Class can not be cancelled - Contact Scheduling&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Class is not an AP/LTP Class and is not closed or has previously been canceled, please contact scheduling to cancel class&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -363,7 +410,7 @@
     <screens>
         <name>SuccessMessage</name>
         <label>SuccessMessage</label>
-        <locationX>1407</locationX>
+        <locationX>1400</locationX>
         <locationY>362</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -376,7 +423,13 @@
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
-    <startElementReference>Get_ILT_Record</startElementReference>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Get_ILT_Record</targetReference>
+        </connector>
+    </start>
     <status>Active</status>
     <variables>
         <name>colAchievementAssignments</name>

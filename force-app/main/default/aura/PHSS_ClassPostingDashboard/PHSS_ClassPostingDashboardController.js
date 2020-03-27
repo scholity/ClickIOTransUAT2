@@ -150,7 +150,7 @@
 		//helper.formatTime(component,event,helper);
         //alert("cpsWrapper "+ JSON.stringify(component.get("v.cpsWrap")));
 		component.set("v.stepNumber", "One"); 
-        //helper.setTimeZoneSelected(component, event, helper);
+        helper.setTimeZoneSelected(component, event, helper);
     },
     
     deleteOffering : function(component, event, helper) {

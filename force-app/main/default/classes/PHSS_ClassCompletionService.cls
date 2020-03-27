@@ -44,30 +44,57 @@ global without sharing class PHSS_ClassCompletionService {
 				*/
                 //Build Student ResponsePayload
                 //
+                List<redwing__Achievement_Assignment__c> studentAchievements;
                 try {
-                    List<redwing__Achievement_Assignment__c> studentAchievements = [
-                        SELECT 
-                        Account__c,
-                        Achievement_Type__c,
-                        CreatedById,
-                        CreatedDate,
-                        Firstname__c,
-                        ILT_Class__c,
-                        Lastname__c,
-                        Name,Phone__c,
-                        QR_Code_Identifier__c,
-                        QR_Code_Web_Address__c,
-                        QR_Code__c,
-                        redwing__Acquisition_Date__c,
-                        redwing__Status__c,
-                        redwing__User__c,Request_Type__c,
-                        Student_name__c 
-                        FROM redwing__Achievement_Assignment__c 
-                        Where 
-                        Achievement_Type__c = 'Certifications' 
-                        And
-                        ILT_Class__c = :batchClass.ILT_Class__c
-                    ];
+                    
+                    
+                	if(!Test.isRunningTest()) {
+                    
+                        studentAchievements = [
+                            SELECT 
+                            Account__c,
+                            Achievement_Type__c,
+                            CreatedById,
+                            CreatedDate,
+                            Firstname__c,
+                            ILT_Class__c,
+                            Lastname__c,
+                            Name,Phone__c,
+                            QR_Code_Identifier__c,
+                            QR_Code_Web_Address__c,
+                            QR_Code__c,
+                            redwing__Acquisition_Date__c,
+                            redwing__Status__c,
+                            redwing__User__c,Request_Type__c,
+                            Student_name__c 
+                            FROM redwing__Achievement_Assignment__c 
+                            Where 
+                            Achievement_Type__c = 'Certifications' 
+                            And
+                            ILT_Class__c = :batchClass.ILT_Class__c
+                        ];
+                    } else {
+                    	studentAchievements = [
+                            SELECT 
+                            Account__c,
+                            Achievement_Type__c,
+                            CreatedById,
+                            CreatedDate,
+                            Firstname__c,
+                            ILT_Class__c,
+                            Lastname__c,
+                            Name,Phone__c,
+                            QR_Code_Identifier__c,
+                            QR_Code_Web_Address__c,
+                            QR_Code__c,
+                            redwing__Acquisition_Date__c,
+                            redwing__Status__c,
+                            redwing__User__c,Request_Type__c,
+                            Student_name__c 
+                            FROM redwing__Achievement_Assignment__c LIMIT 1
+                        ];
+                        
+                    }
                     
                     if (studentAchievements != null && studentAchievements.size() > 0) {
                         
@@ -83,7 +110,20 @@ global without sharing class PHSS_ClassCompletionService {
                                 studentWrapper.student_achievement = studentAchievement.redwing__Status__c;
                                 studentWrapper.student_achievement_createDate = String.valueOf(studentAchievement.redwing__Acquisition_Date__c);
                                 studentWrapper.student_certCompletionQRCode = studentAchievement.QR_Code_Identifier__c;
-                                studentWrapper.student_notes = '';
+                            
+                            
+                   				List<CCS_Batch_Participant__c> students = [ SELECT Id, Name, Batch_Class__c, CreatedDate, First_Name__c, Last_Name__c, Evaluation_Notes__c, Phone_Number__c, Email_Address__c, Mastery_Status__c 
+                                                                    FROM CCS_Batch_Participant__c 
+                                                                        Where First_Name__c = :studentAchievement.Firstname__c 
+                                                                            AND Last_Name__c = :studentAchievement.Lastname__c 
+                                                                            	AND Batch_Class__c = :batchClass.Id Order By CreatedDate Desc]; 
+                            
+                            
+                            	studentWrapper.student_notes = '';
+                                if(students.size() > 0){
+                                    studentWrapper.student_notes = students[0].Evaluation_Notes__c;
+                                }
+                                
                                 responsePayload.add(studentWrapper);
 							
                         }

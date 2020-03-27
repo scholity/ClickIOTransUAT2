@@ -31,15 +31,15 @@
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>redwing__Status__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>redwing__Attended__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>redwing__Grade__c</field>
             </layoutItems>
             <layoutItems>
@@ -64,7 +64,7 @@
                 <field>redwing__ILT_Class__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>redwing__ILT_Session__c</field>
             </layoutItems>
         </layoutColumns>
@@ -131,11 +131,6 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
-            <actionName>redwing__ILT_Roster__c.Resend_Confirmation_Email</actionName>
-            <actionType>QuickAction</actionType>
-            <sortOrder>0</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
             <actionName>redwing__ILT_Roster__c.Cancel_Enrollment</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>1</sortOrder>
@@ -169,6 +164,11 @@
             <actionName>Submit</actionName>
             <actionType>StandardButton</actionType>
             <sortOrder>7</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>redwing__ILT_Roster__c.Resend_Confirmation_Email</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>0</sortOrder>
         </platformActionListItems>
     </platformActionList>
     <relatedLists>

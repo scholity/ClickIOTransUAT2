@@ -1469,6 +1469,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TestPHSS_ClassCompletionService</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TestRCAchievementAssignmentsHelper</apexClass>
         <enabled>false</enabled>
     </classAccesses>

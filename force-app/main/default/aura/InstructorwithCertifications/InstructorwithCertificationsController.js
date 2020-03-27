@@ -11,7 +11,7 @@
         }    
         else { 
             component.set("v.objName","User");
-            helper.getValues(component, event, helper); 
+            helper.getValues(component, event, helper);
         }
     },
     sortOrgName: function(component, event, helper) {
@@ -51,5 +51,12 @@
         sendData(dataToSend, 'XLS', function(){
             //handle callback
         });
+    },
+    
+    createSdocsJob : function(component, event, helper)
+    {
+        console.log("createSdocsJob");
+        helper.initiateSdocsJob(component, event, helper);
     }
+    
 })

@@ -213,6 +213,10 @@
         <name>Error_Message_For_CRE_RBC</name>
     </customLabels>
     <customLabels>
+        <label><!-- Error_Message_For_CRE_RBC_CSV_UPLOAD --></label>
+        <name>Error_Message_For_CRE_RBC_CSV_UPLOAD</name>
+    </customLabels>
+    <customLabels>
         <label><!-- Global Ghost Contacts --></label>
         <name>Global_Ghost_Contacts</name>
     </customLabels>
@@ -467,6 +471,10 @@
     <customLabels>
         <label><!-- Reset_Search --></label>
         <name>Reset_Search</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- ResourceTabURL --></label>
+        <name>ResourceTabURL</name>
     </customLabels>
     <customLabels>
         <label><!-- Sked Job trigger - eligible profiles - Enter names separated by semi-colons --></label>
@@ -1919,7 +1927,7 @@
     </flowDefinitions>
     <flowDefinitions>
         <flows>
-            <fullName>Cancel_Class-1</fullName>
+            <fullName>Cancel_Class-2</fullName>
             <screens>
                 <fields>
                     <name>Information</name>
@@ -1936,7 +1944,13 @@
                 <fields>
                     <name>closeclassmsg</name>
                 </fields>
-                <name>NotClosed</name>
+                <name>IsClosedMessage</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>closeclassmsg_0</name>
+                </fields>
+                <name>NotLTPAPMessage</name>
             </screens>
             <screens>
                 <fields>

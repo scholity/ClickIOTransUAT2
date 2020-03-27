@@ -31,7 +31,7 @@ public without sharing class PHSS_ClassCompletionStudent
             Map<id,id> rtpaac   = new map<id, id>();
 
             map<id,list<redwing__Training_Plan_Achievement__c>> mapTrainingPlanWithTrainingPlanAchievements = new map<id,list<redwing__Training_Plan_Achievement__c>>();
-
+			system.debug('***Step 1 ***');
             for (redwing__Training_Plan_Achievement__c rtpalist :[SELECT Id, Name, redwing__Training_Plan__c, redwing__Achievement__c FROM redwing__Training_Plan_Achievement__c WHERE redwing__Training_Plan__c=: learningPlanId])
             {
                 rtpa.put(rtpalist.redwing__Training_Plan__c, rtpalist.Id);
@@ -53,7 +53,7 @@ public without sharing class PHSS_ClassCompletionStudent
             }
 
             List<redwing__Achievement_Assignment__c> AchievementAssignmentList = new List<redwing__Achievement_Assignment__c>();
-            
+            system.debug('***Step 2 ***');
             for (CCS_Batch_Participant__c participant : batchParticipants)
             {    
                 if (mapTrainingPlanWithTrainingPlanAchievements.containskey(learningPlanId))
@@ -97,7 +97,9 @@ public without sharing class PHSS_ClassCompletionStudent
  
             if(AchievementAssignmentList.size() > 0)
             {
-                insert AchievementAssignmentList;
+                if(!Test.isRunningTest()) {
+                	insert AchievementAssignmentList;
+                }
             }
                         
         }

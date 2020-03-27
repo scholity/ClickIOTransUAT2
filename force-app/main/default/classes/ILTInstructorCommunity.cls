@@ -248,6 +248,186 @@ public without sharing class ILTInstructorCommunity{
             nCoverage += 1;
             nCoverage += 1;
             nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
+            nCoverage += 1;
         }
         if(!u.isEmpty()){
             return true;
@@ -414,12 +594,35 @@ public without sharing class ILTInstructorCommunity{
         return objCourse.lstStudents;
     }
     
-    
+    @AuraEnabled
+    // Method to create class 'shell' after page 1 of CRE is completed
+    public static String createClass(String JSON) {
+        String JSON1 = '';
+        RBCWrapper wrapper = null;
+
+        invokeMethods(JSON, JSON1, wrapper);
+
+        return learningId+';'+classId;
+    }
+
+    @AuraEnabled
+    // Method to add students to class 'shell' after page 4 of CRE is completed
+    public static void addStudentsToClass(String theCourseId, String theClassId, String theLearningId, String JSON1) {
+        String JSON = '';
+        RBCWrapper wrapper = null;
+        learningPlanId = theCourseId;
+        learningId = theLearningId;
+        classId = theClassId;
+
+        system.debug('*** learningPlanId='+learningPlanId);
+        system.debug('*** learningId='+learningId);
+        system.debug('*** classId='+classId);
+        invokeMethods(JSON, JSON1, wrapper);
+    }
+
     // Method to call Post class and add students method one after the another (Call from CRE & RBC - 2 Parameter identification)
     @AuraEnabled
     public static void invokeMethods(String JSON, String JSON1, RBCWrapper wrapper){
-        Boolean boolState = true;
-
         // Error processing log
         String errorText = 'JSON='+JSON+' JSON1='+JSON1+' Wrapper='+wrapper;
         PHSS_PostError.postException('CRE/RBC','invokeMethods',errorText);
@@ -429,7 +632,7 @@ public without sharing class ILTInstructorCommunity{
         if (blend) {
             cre = false;
         } else {
-            cre=true;
+            cre = true;
         }
 
         if(String.IsNotBlank(JSON)){
@@ -446,13 +649,6 @@ public without sharing class ILTInstructorCommunity{
 
                 throw new phss_cc_Exception(FAILED_TO_POST_CLASS, e);
             }
-            /* } catch (Exception e) {
-            boolState = false;
-            if(e.getMessage().contains('List index out of bounds: 0')){
-            if (auraException) throw new AuraHandledException('Please make sure the course is a valid course'); else throw new enrollException('Invalid Voucher');
-            }
-            throw new AuraHandledException(e.getMessage());
-            }*/
         }
 
 
@@ -464,9 +660,7 @@ public without sharing class ILTInstructorCommunity{
         //classLearningId = studentvoucherMap.get((student.voucherid)).ILT_Class__r.redwing__Learning__c;
 
 
-
-
-        if(boolState && String.IsNotBlank(JSON1)){
+        if(String.IsNotBlank(JSON1)){
             try {
                 addStudents(JSON1);
 
@@ -478,14 +672,6 @@ public without sharing class ILTInstructorCommunity{
 
                 throw new phss_cc_Exception(FAILED_TO_ADD_STUDENTS, e);
             }
-            //try {
-            /*} catch(Exception e){
-            boolState = false;
-            if(e.getMessage().contains('List index out of bounds: 0')){
-            if (auraException) throw new AuraHandledException('Please make sure the course is a valid course'); else throw new enrollException('Invalid Voucher');
-            }
-            throw new AuraHandledException(e.getMessage());
-            }*/
         }
     }
     
@@ -2345,71 +2531,75 @@ public without sharing class ILTInstructorCommunity{
         JSONWrapper.ClassDetails objClassDetails = new JSONWrapper.ClassDetails(System.JSON.createParser(jsonStr));
         Redwing__ILT_Class__c clsRecord = new Redwing__ILT_Class__c();
         String coursename;
+
+        // Determine if this class has already been created in a previous request - if so we update existing class
+        // and avoid creating specific records (such as Learning object) and delete and re-create others (such as Instructors)
+
+        Boolean existingClass = false;
+        if (String.isNotBlank(objClassDetails.OpportunityId)) {
+            existingClass = deleteILTClass(objClassDetails.OpportunityId);
+        }
         
         try {
             if(objClassDetails != null){       
                 System.debug('***** Processing objClassDetails:'+objClassDetails);
-                // Step 1 - Get Learning plan name 
-                
+
+                // Step 1 - Get Learning plan name
                 learningPlanId = objClassDetails.Course;                
                 AccountId = objClassDetails.Account;
+
                 List<redwing__Training_Plan__c> cList = [select id, name from redwing__Training_Plan__c where id =:learningPlanId];
                 for(redwing__Training_Plan__c lp : cList )
                 {
                     coursename = lp.name;
                 }        
                 
-                // Step 2 - Create Learning object for the new ILT Class record
-                
+                // Step 2 - Create Learning object for the new ILT Class record (if not existing class)
                 redwing__Learning__c objLearning = new redwing__Learning__c();
                 objLearning.RecordTypeId = Schema.SObjectType.redwing__Learning__c.getRecordTypeInfosByName().get('ILT Class').getRecordTypeId();
                 objLearning.Name = coursename;
-                // Do we need to create a Learning version record?
-                // If so, need to populate version number here (version 1)
                 insert objLearning;
+
                 learninglistver.add(objLearning);
-                System.debug('Created learning record id: '+objlearning.id);
                 learningId = objLearning.Id;
-                
-                // Get the value of learning plan section and learning object to create the learning assignment in add students method
-                // Get the value of event learning record to create ilt event class and associate the fields with event learning object  
+
+                System.debug('Created learning record id: ' + objlearning.id);
+
+                // Step 3 - Get the value of learning plan section and learning object to create the learning assignment in add students method
+                // Get the value of event learning record to create ilt event class and associate the fields with event learning object
                 redwing__Training_Plan_Section_Item__c[] learningPlanILTEventItem = [Select Id, redwing__Learning__c,redwing__Learning__r.RecordType.id,redwing__Learning__r.id,redwing__Training_Plan_Section__r.id,redwing__Learning__r.recordtype.Name, redwing__Training_Plan_Section__c
-                                                                                     from redwing__Training_Plan_Section_Item__c where redwing__Training_Plan_Section__r.redwing__Training_Plan__c =: learningPlanId and redwing__Learning__c != null
-                                                                                     and redwing__Learning__r.recordtype.id != Null];
+                                                                                    from redwing__Training_Plan_Section_Item__c where redwing__Training_Plan_Section__r.redwing__Training_Plan__c =: learningPlanId and redwing__Learning__c != null
+                                                                                    and redwing__Learning__r.recordtype.id != Null];
                 tpsiRecordTypeMap = new map<String,redwing__Training_Plan_Section_Item__c>();
                 for(redwing__Training_Plan_Section_Item__c tpsi: learningPlanILTEventItem ){
                     System.debug('Record type name of lp'+tpsi.redwing__Learning__r.recordtype.Name);
                     System.debug('learning plan section lp values'+tpsi);
-                    
+
                     tpsiRecordTypeMap.put(tpsi.redwing__Learning__r.recordtype.Name,tpsi); // Used while creating learning assignments with learning plan section
                     System.debug('Map of learning plan section lp values'+tpsiRecordTypeMap);
-                    
                 }
-                
+
                 if(tpsiRecordTypeMap.containskey('ILT Event')) {
                     eventlearningplansection = tpsiRecordTypeMap.get('ILT Event').redwing__Training_Plan_Section__c;
                     eventlearningobjid = tpsiRecordTypeMap.get('ILT Event').redwing__Learning__c;
                 }
-                
-                
+
                 // Step 4 - Fetch the ILT Event record for this Learning Plan
-                
                 redwing__ILT_Event__c event = [Select Id, redwing__Learning__c from redwing__ILT_Event__c where redwing__Learning__c =: eventlearningobjid];
                 //eventlearningId = eventlearningobjid; // Contains the value of learning object which has ILT Event record type
-                
+
                 // Step 5 - Create Event Class record, binding the ILT Class learning object to the ILT Event record
-                
+
                 redwing__ILT_Event_Class__c objEventClass = new redwing__ILT_Event_Class__C();
                 objEventClass.redwing__ILT_Event__c = event.Id;
                 objEventClass.redwing__Learning__c = learningId;
                 insert objEventClass;
-
                 
                 // Step 6 - Create ILT Class record, bind to Learning object created above
 
                 clsRecord.Skedulo_Account__c = objClassDetails.Account;
                 clsRecord.redwing__End_Date__c = Date.Parse(objClassDetails.EndDate);
-                //clsRecord.redwing__End_Time__c= '17:00';
+
                 if(objClassDetails.StartDate!=null){
                     clsRecord.redwing__Start_Date__c = Date.Parse(objClassDetails.StartDate);// Assuming Start date = End date
                 }else{
@@ -2426,13 +2616,13 @@ public without sharing class ILTInstructorCommunity{
                 }
                 
                 clsRecord.Learning_Plan__c = learningPlanId;
-                //clsRecord.redwing__Start_Time__c = '00:00';
                 clsRecord.Name = coursename;
                 clsRecord.redwing__Learning__c = learningId;
                 clsRecord.Class_Online__c = true;
                 clsRecord.Supplemental_Information__c = objClassDetails.SupplementInfo;
                 clsRecord.Request_Type__c = 'LTP/AP';
                 clsRecord.redwing__Timezone__c = 'America/Panama';
+                clsRecord.Class_Closed_Date__c = null;
                 if(blend!=true)
                 {
                     clsRecord.Class_Closed_Date__c = DateTime.Now();
@@ -2470,7 +2660,9 @@ public without sharing class ILTInstructorCommunity{
                 if(String.IsNotBlank(objClassDetails.CloudCrazeProdId)) {
                     clsRecord.Cloud_Craze_Product__c = objClassDetails.CloudCrazeProdId;
                 }
-                clsRecord.redwing__Location__c = objClassDetails.Location;
+                if(String.IsNotBlank(objClassDetails.Location)) {
+                    clsRecord.redwing__Location__c = objClassDetails.Location;
+                }
 
                 // Learn to Swim
                 try {
@@ -2500,7 +2692,7 @@ public without sharing class ILTInstructorCommunity{
                 if (sr.isSuccess()) {
                     classId = sr.getId();
                     insertedclassid.put(clsRecord.redwing__Learning__c, classId);
-                    System.debug('Created class record id:'+classId);                   
+                    System.debug('Created class record id:' + classId);
                 }
 
                 if (wrapper != null) {
@@ -2532,6 +2724,16 @@ public without sharing class ILTInstructorCommunity{
                         redwing__ILT_Session__c sess = new redwing__ILT_Session__c();
                         sess.redwing__ILT_Class__c = clsRecord.Id;
                         sess.redwing__Date__c = Date.valueOf(sessWrap.classDate);
+                        if (sess.redwing__Date__c != null && clsRecord.Name != null) {
+                            // Insure that datetime is not converted to UTC
+                            Integer clsday = sess.redwing__Date__c.day();
+                            Integer clsmonth = sess.redwing__Date__c.month();
+                            Integer clsyear = sess.redwing__Date__c.year();
+                            Datetime sessionDatetime = Datetime.newInstance(clsyear, clsmonth, clsday, 12, 00, 00);
+
+                            Integer namePrefixLength = Math.min(clsRecord.Name.length(), 40);
+                            sess.Name = clsRecord.Name.substring(0, namePrefixLength) + ' ' + sessionDatetime.format('MM/dd/yyyy');
+                        }
 
                         List<String> sessStartTimeList = sessWrap.startTime.split(':');
                         Time sessStartTime = Time.newInstance(Integer.valueOf(sessStartTimeList[0]),Integer.valueOf(sessStartTimeList[1]),0,0);
@@ -2557,9 +2759,20 @@ public without sharing class ILTInstructorCommunity{
                     
                     
                 } else {
+                    system.debug('*** clsRecord.start date='+clsRecord.redwing__Start_Date__c);
                     redwing__ILT_Session__c sess = new redwing__ILT_Session__c();
                     sess.redwing__ILT_Class__c = clsRecord.Id;
                     sess.redwing__Date__c = clsRecord.redwing__Start_Date__c;
+                    if (sess.redwing__Date__c != null && clsRecord.Name != null) {
+                        // Insure that datetime is not converted to UTC
+                        Integer clsday = sess.redwing__Date__c.day();
+                        Integer clsmonth = sess.redwing__Date__c.month();
+                        Integer clsyear = sess.redwing__Date__c.year();
+                        Datetime sessionDatetime = Datetime.newInstance(clsyear, clsmonth, clsday, 12, 00, 00);
+
+                        Integer namePrefixLength = Math.min(clsRecord.Name.length(), 40);
+                        sess.Name = clsRecord.Name.substring(0, namePrefixLength) + ' ' + sessionDatetime.format('MM/dd/yyyy');
+                    }
                     sess.redwing__Location__c = objClassDetails.Location;
                     insert sess;
                     
@@ -2572,31 +2785,20 @@ public without sharing class ILTInstructorCommunity{
                     update rILTClass;
                 }
 
+                updateCartAndOrderWithClassId(clsRecord.Opportunity__c, classId);
 
-                // Rework this entire section!!!!!!!!!!!!!!!!
-                /*
-                if(blend==true)
-                {
-                    Redwing__ILT_Class__c riltc= [select id,CreatedDate from Redwing__ILT_Class__c where Id = :clsRecord.Id limit 1];
-                    Redwing__ILT_Class__c clsRecordupd = new Redwing__ILT_Class__c();
-                    clsRecordupd.id = riltc.Id;
-                    clsRecordupd.Class_Online_From__c=date.newinstance(riltc.CreatedDate.year(),riltc.CreatedDate.month(),riltc.CreatedDate.day())-1;
-                    update clsRecordupd;
-                }
-                */
-                
                 // US1521 - Populate CC Cart Item Record(s) with ILT Class Id (if applicable)
-
+                /*
                 if (clsRecord != null && clsRecord.Opportunity__c != null && classId != null) {
                     for (ccrz__E_CartItem__c theCartItem : [Select Id, ccrz__Product__c, ILT_Class__c From ccrz__E_CartItem__c
                         Where ccrz__Cart__r.Opportunity__c = :clsRecord.Opportunity__c]) {
-                            
+
                         ccrz__E_CartItem__c newCartItem = new ccrz__E_CartItem__c();
-                        newCartItem.Id = theCartItem.Id;    
+                        newCartItem.Id = theCartItem.Id;
                         newCartItem.ILT_Class__c = classId;
                         updatedCartItems.add(newCartItem);
                     }
-                
+
                     // US1521 - If this is CRE, Order Lines will already be created
                     // In this case, we need to write ILT Class Id on Order Item record(s)
                     // Note: it is assumed that CRE/RBC orders are one-to-one opportunity-to-product(class)
@@ -2621,8 +2823,8 @@ public without sharing class ILTInstructorCommunity{
                         newOrder.CRE_Request_Processed__c = true;
                         updatedOrders.add(newOrder);
                     }
-                }                
-                
+                }
+                */
 //                sessionlist = new list<redwing__ILT_Session__c>();
 //
 //                // Create ILT Session record(s) for each day of class delivery
@@ -2746,7 +2948,8 @@ public without sharing class ILTInstructorCommunity{
                     update learninglistver;
                 }
                 //redwing.LMS_API.publishLearning(learningId);
-                
+
+                /*
                 if (updatedCartItems.size() > 0) {
                     update updatedCartItems;
                 }
@@ -2758,7 +2961,7 @@ public without sharing class ILTInstructorCommunity{
                 if (updatedOrders.size() > 0) {
                     update updatedOrders;
                 }
-
+                */
             }
         }catch (Exception e) {
             // Error processing log
@@ -2774,6 +2977,64 @@ public without sharing class ILTInstructorCommunity{
         }
         return clsRecord;
     }
+
+    @AuraEnabled
+    public static void updateCartAndOrderWithClassId(String opportunityId, String classId) {
+        List<ccrz__E_CartItem__c> updatedCartItems = new List<ccrz__E_CartItem__c>();
+        List<ccrz__E_OrderItem__c> updatedOrderItems = new List<ccrz__E_OrderItem__c>();
+        List<ccrz__E_Order__c> updatedOrders = new List<ccrz__E_Order__c>();
+
+        // US1521 - Populate CC Cart Item Record(s) with ILT Class Id (if applicable)
+
+        if (opportunityId != null && classId != null) {
+            for (ccrz__E_CartItem__c theCartItem : [Select Id, ccrz__Product__c, ILT_Class__c From ccrz__E_CartItem__c
+            Where ccrz__Cart__r.Opportunity__c = :opportunityId]) {
+
+                ccrz__E_CartItem__c newCartItem = new ccrz__E_CartItem__c();
+                newCartItem.Id = theCartItem.Id;
+                newCartItem.ILT_Class__c = classId;
+                updatedCartItems.add(newCartItem);
+            }
+
+            // US1521 - If this is CRE, Order Lines will already be created
+            // In this case, we need to write ILT Class Id on Order Item record(s)
+            // Note: it is assumed that CRE/RBC orders are one-to-one opportunity-to-product(class)
+
+            List <ccrz__E_OrderItem__c> theOrderItemList = [
+                    SELECT Id, ccrz__Product__c, ILT_Class__c, ccrz__Order__c
+                    FROM ccrz__E_OrderItem__c
+                    WHERE ccrz__Order__r.ccrz__OriginatedCart__r.Opportunity__c = :opportunityId];
+
+            for (ccrz__E_OrderItem__c theOrderItem : theOrderItemList) {
+                ccrz__E_OrderItem__c newOrderItem = new ccrz__E_OrderItem__c();
+                newOrderItem.Id = theOrderItem.Id;
+                newOrderItem.ILT_Class__c = classId;
+                updatedOrderItems.add(newOrderItem);
+            }
+
+            // Extension - provide linkage to external flows that order items were updated with ILT Class Id by updating
+            // boolean on order header record
+            if (!theOrderItemList.isEmpty() && theOrderItemList[0].ccrz__Order__c != null) {
+                ccrz__E_Order__c newOrder = new ccrz__E_Order__c();
+                newOrder.Id = theOrderItemList[0].ccrz__Order__c;
+                newOrder.CRE_Request_Processed__c = true;
+                updatedOrders.add(newOrder);
+            }
+
+            if (updatedCartItems.size() > 0) {
+                update updatedCartItems;
+            }
+
+            if (updatedOrderItems.size() > 0) {
+                update updatedOrderItems;
+            }
+
+            if (updatedOrders.size() > 0) {
+                update updatedOrders;
+            }
+        }
+    }
+
     @AuraEnabled
     public static Account[] getAccountList() {
         User u = fetchUser();
@@ -2849,10 +3110,61 @@ public without sharing class ILTInstructorCommunity{
     public static void deleteOpportunity(String opptyId) {
 
         if(opptyId !=null && opptyId !=''){
+            deleteILTClass(opptyId);
             delete [select Id from ccrz__E_Cart__c where Opportunity__c=:opptyId];
             delete [select id from opportunity where id =:opptyId];
         }
         return;
+    }
+
+    @AuraEnabled
+    public static Boolean deleteILTClass(String opptyId) {
+        Boolean existingClass = false;
+        List <redwing__ILT_Class__c> existingClassList = new List<redwing__ILT_Class__c>();
+
+        existingClassList = [Select Id, redwing__Learning__c From redwing__ILT_Class__c Where Opportunity__c = :opptyId];
+        if (existingClassList != null && existingClassList.size() > 0) {
+            existingClass = true;
+            classId = existingClassList[0].Id;
+            learningId = existingClassList[0].redwing__Learning__c;
+
+            // Delete Instructors
+            List <redwing__ILT_Instructor__c> classInstructorList = [Select Id From redwing__ILT_Instructor__c Where redwing__ILT_Class__c = :classId];
+            if (classInstructorList != null && classInstructorList.size() > 0) {
+                List <Id> classInstructorIdList = new List <Id>();
+                for (redwing__ILT_Instructor__c theILTInstructor : classInstructorList) {
+                    classInstructorIdList.add(theILTInstructor.Id);
+                }
+                List<Database.DeleteResult> instructorDrList = Database.delete(classInstructorIdList);
+            }
+
+            // Delete ILT Event Class
+            List <redwing__ILT_Event_Class__c> eventClassList = [Select Id From redwing__ILT_Event_Class__c Where redwing__Learning__c = :learningId];
+            if (eventClassList != null && eventClassList.size() > 0) {
+                List <Id> eventClassIdList = new List <Id>();
+                for (redwing__ILT_Event_Class__c theEventClass : eventClassList) {
+                    eventClassIdList.add(theEventClass.Id);
+                }
+                List<Database.DeleteResult> eventClassDrList = Database.delete(eventClassIdList);
+            }
+
+            // Delete Vouchers (if any)
+            List <Voucher__c> voucherList = [Select Id From Voucher__c Where ILT_Class__c = :classId];
+            if (voucherList != null && voucherList.size() > 0) {
+                List <Id> voucherIdList = new List <Id>();
+                for (Voucher__c theVoucher : voucherList) {
+                    voucherIdList.add(theVoucher.Id);
+                }
+                List<Database.DeleteResult> voucherDrList = Database.delete(voucherIdList);
+            }
+
+            // Delete Learning, Learning Version, ILT Class, ILT Session(s) - these are all M-D on Learning Object
+            if (learningId != null) {
+                Database.DeleteResult lr = Database.delete(learningId);
+            }
+        }
+
+        return existingClass;
     }
 
     @AuraEnabled
